@@ -1,4 +1,5 @@
-# In case anything happens, this is the docker config for the server.
+# In case anything happens, like the server (or ssd) crashing, catching fire, etc.
+# Ideally we'd have a backup, but this can be used to deploy a new instance of the db.
 
 version: '3.1'
 
