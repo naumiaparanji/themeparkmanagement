@@ -1,0 +1,7 @@
+*
+!.gitignore
+!database
+!server
+!themepark_website
+!mini_world_ER_1.drawio
+!README.md

@@ -1,0 +1,8 @@
+*
+!.gitignore
+!*.js
+!deploy.sh
+!test.sh
+!test.bat
+!README.md
+!docker-compose.yml
