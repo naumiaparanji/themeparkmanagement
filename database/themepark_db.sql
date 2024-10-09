@@ -5,18 +5,16 @@ DROP TABLE IF EXISTS EMPLOYEE;
 DROP TABLE IF EXISTS MAINTENANCE;
 DROP TABLE IF EXISTS MEMBERSHIP;
 DROP TABLE IF EXISTS M_STATUS;
-DROP TABLE IF EXISTS PRODUCT;
-DROP TABLE IF EXISTS PURCHASES;
 DROP TABLE IF EXISTS RIDES;
 DROP TABLE IF EXISTS RUNS;
-DROP TABLE IF EXISTS SALE;
 DROP TABLE IF EXISTS TICKET;
-DROP TABLE IF EXISTS TRANSACTIONS;
 DROP TABLE IF EXISTS RIDE_STATUS;
-SET FOREIGN_KEY_CHECKS = 1;
-
--- Note that the default charset for our database is utf8mb4.
--- All varchars will use this charset unless specified with CHARACTER SET <charset name> COLLATE <collation>
+DROP TABLE IF EXISTS EVENTS;
+DROP TABLE IF EXISTS EVENT_TICKET;
+DROP TABLE IF EXISTS RESTAURANT;
+DROP TABLE IF EXISTS RESTAURANT_TRANSACTIONS;
+DROP TABLE IF EXISTS CONCESSION_STALL;
+DROP TABLE IF EXISTS CONCESSION_TRANSACTIONS;
 
 CREATE TABLE CUSTOMER (
   CustomerID bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -26,7 +24,7 @@ CREATE TABLE CUSTOMER (
   Address varchar(255) NOT NULL,
   Email varchar(255) NOT NULL,
   Password varchar(255) NOT NULL,
-  Created date NOT NULL,
+  Created date NOT NULL DEFAULT (CURRENT_DATE),
   PRIMARY KEY (CustomerID),
   UNIQUE (Email)
 );
@@ -37,7 +35,7 @@ CREATE TABLE TICKET (
   Price bigint NOT NULL,
   ExpirationDate date NOT NULL,
   Scanned date DEFAULT NULL,
-  Bought date NOT NULL,
+  Bought date NOT NULL DEFAULT (CURRENT_DATE),
   PRIMARY KEY (TicketID),
   FOREIGN KEY (CustomerID) REFERENCES CUSTOMER (CustomerID) ON DELETE RESTRICT ON UPDATE CASCADE
 );
@@ -46,7 +44,7 @@ CREATE TABLE MEMBERSHIP (
   MembershipID bigint unsigned NOT NULL AUTO_INCREMENT,
   MembershipTier varchar(255) NOT NULL,
   ExpiryDate date NOT NULL,
-  PurchaseDate date NOT NULL,
+  PurchaseDate date NOT NULL DEFAULT (CURRENT_DATE),
   CustomerID bigint unsigned NOT NULL,
   PRIMARY KEY (MembershipID),
   FOREIGN KEY (CustomerID) REFERENCES CUSTOMER (CustomerID) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -63,7 +61,7 @@ CREATE TABLE EMPLOYEE (
   Password varchar(255) NOT NULL,
   StartDate date NOT NULL,
   EndDate date NOT NULL,
-  Created date NOT NULL,
+  Created date NOT NULL DEFAULT (CURRENT_DATE),
   PRIMARY KEY (EmployeeID),
   UNIQUE (Email)
 );
@@ -82,7 +80,7 @@ CREATE TABLE RIDES (
 CREATE TABLE MAINTENANCE (
   MaintenanceID bigint unsigned NOT NULL AUTO_INCREMENT,
   RideID bigint unsigned NOT NULL,
-  Date datetime(3) NOT NULL,
+  Date datetime(3) NOT NULL DEFAULT (CURRENT_TIMESTAMP),
   Description varchar(255) NOT NULL,
   PRIMARY KEY (MaintenanceID),
   FOREIGN KEY (RideID) REFERENCES RIDES (RideID) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -93,7 +91,7 @@ CREATE TABLE RIDE_STATUS (
   RideID bigint unsigned NOT NULL,
   WeatherCondition varchar(255) NOT NULL,
   Status tinyint unsigned NOT NULL,
-  Created datetime(3) NOT NULL,
+  Created datetime(3) NOT NULL DEFAULT (CURRENT_TIMESTAMP),
   PRIMARY KEY (RideStatusID),
   UNIQUE (RideID, Created),
   FOREIGN KEY (RideID) REFERENCES RIDES (RideID) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -117,43 +115,65 @@ CREATE TABLE RUNS (
   FOREIGN KEY (RideID) REFERENCES RIDES (RideID) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
-CREATE TABLE PRODUCT (
-  ProductID bigint unsigned NOT NULL AUTO_INCREMENT,
-  Name varchar(255) NOT NULL,
-  Image varchar(255) NOT NULL,
-  CurrentPrice double NOT NULL,
-  Description varchar(255) NOT NULL,
-  Inventory int unsigned NOT NULL DEFAULT 0,
-  SKU char(255) NOT NULL,
-  UPC char(255) NOT NULL,
-  PRIMARY KEY (ProductID)
+CREATE TABLE EVENTS (
+  EventID bigint unsigned NOT NULL AUTO_INCREMENT,
+  EventType bigint unsigned NOT NULL,
+  EventDateTime datetime(3) NOT NULL,
+  Location varchar(255) NOT NULL,
+  Capacity bigint unsigned NOT NULL,
+  PRIMARY KEY (EventID)
 );
 
-CREATE TABLE PURCHASES (
-  PurchaseID bigint unsigned NOT NULL AUTO_INCREMENT,
-  ProductID bigint unsigned NOT NULL,
-  Quantity int unsigned NOT NULL,
-  PurchaseDate date NOT NULL,
-  EmployeeID bigint unsigned NOT NULL,
-  PRIMARY KEY (PurchaseID),
-  FOREIGN KEY (EmployeeID) REFERENCES EMPLOYEE (EmployeeID) ON DELETE RESTRICT ON UPDATE CASCADE,
-  FOREIGN KEY (ProductID) REFERENCES PRODUCT (ProductID) ON DELETE RESTRICT ON UPDATE CASCADE
+CREATE TABLE EVENT_TICKET (
+  EventTicketID bigint unsigned NOT NULL AUTO_INCREMENT,
+  CustomerID bigint unsigned NOT NULL,
+  EventID bigint unsigned NOT NULL,
+  Bought datetime(3) NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  ExpirationDate datetime(3) NOT NULL,
+  Scanned date,
+  PRIMARY KEY (EventTicketID),
+  FOREIGN KEY (CustomerID) REFERENCES CUSTOMER (CustomerID) ON DELETE RESTRICT ON UPDATE CASCADE,
+  FOREIGN KEY (EventID) REFERENCES EVENTS (EventID) ON DELETE RESTRICT ON UPDATE CASCADE,
+  UNIQUE (CustomerID, EventID)
 );
 
-CREATE TABLE TRANSACTIONS (
-  TransactionID bigint unsigned NOT NULL AUTO_INCREMENT,
-  Date date NOT NULL,
+CREATE TABLE RESTAURANT (
+  RestaurantID bigint unsigned NOT NULL AUTO_INCREMENT,
+  SeatingCapacity bigint unsigned NOT NULL,
+  OpensAt time NOT NULL,
+  OpenDuration time NOT NULL,
+  Location varchar(255) NOT NULL,
+  PRIMARY KEY (RestaurantID)
+);
+
+CREATE TABLE RESTAURANT_TRANSACTIONS (
+  RTransactionID bigint unsigned NOT NULL AUTO_INCREMENT,
+  RestaurantID bigint unsigned NOT NULL,
+  Date date NOT NULL DEFAULT (CURRENT_DATE),
   CustomerID bigint unsigned NOT NULL,
   Subtotal double NOT NULL,
-  PRIMARY KEY (TransactionID),
+  PRIMARY KEY (RTransactionID),
+  FOREIGN KEY (RestaurantID) REFERENCES RESTAURANT (RestaurantID) ON DELETE RESTRICT ON UPDATE CASCADE,
   FOREIGN KEY (CustomerID) REFERENCES CUSTOMER (CustomerID) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
-CREATE TABLE SALE (
-  TransactionID bigint unsigned NOT NULL,
-  ProductID bigint unsigned NOT NULL,
-  Quantity int unsigned NOT NULL,
-  UNIQUE (TransactionID, ProductID),
-  FOREIGN KEY (TransactionID) REFERENCES TRANSACTIONS (TransactionID) ON DELETE RESTRICT ON UPDATE CASCADE,
-  FOREIGN KEY (ProductID) REFERENCES PRODUCT (ProductID) ON DELETE RESTRICT ON UPDATE CASCADE
+CREATE TABLE CONCESSION_STALL (
+  ConcessionID bigint unsigned NOT NULL AUTO_INCREMENT,
+  OpensAt time NOT NULL,
+  OpenDuration time NOT NULL,
+  Location varchar(255) NOT NULL,
+  PRIMARY KEY (ConcessionID)
 );
+
+CREATE TABLE CONCESSION_TRANSACTIONS (
+  CTransactionID bigint unsigned NOT NULL AUTO_INCREMENT,
+  ConcessionID bigint unsigned NOT NULL,
+  Date date NOT NULL DEFAULT (CURRENT_DATE),
+  CustomerID bigint unsigned NOT NULL,
+  Subtotal double NOT NULL,
+  PRIMARY KEY (CTransactionID),
+  FOREIGN KEY (ConcessionID) REFERENCES CONCESSION_STALL (ConcessionID) ON DELETE RESTRICT ON UPDATE CASCADE,
+  FOREIGN KEY (CustomerID) REFERENCES CUSTOMER (CustomerID) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+SET FOREIGN_KEY_CHECKS = 1;
