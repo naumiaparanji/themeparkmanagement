@@ -2,7 +2,7 @@
 
 cd %~dp0
 
-set MYSQL_ADDR=192.168.1.84
+set MYSQL_ADDR=172.16.0.2
 set MYSQL_DB=themepark_db
 set MYSQL_KEYSTORE_DB=keystore_db
 set MYSQL_USER=admin
