@@ -1,0 +1,7 @@
+*
+!.gitignore
+!docker-compose.yml
+!gen_data.py
+!names.json
+!keystore_db.sql
+!themepark_db.sql
