@@ -25,14 +25,19 @@ else
     exit 1
 fi
 
+mkdir $SRC_DIR/server_root
+
 echo "Pulling node.js image..."
 $DOCKER_CMD pull
 
 echo "Installing dependencies..."
-$DOCKER_CMD run themepark-server npm install libsodium-wrappers-sumo express express-session mysql2 knex --save # other packages can be added here
+$DOCKER_CMD run themepark-server npm install libsodium-wrappers-sumo express express-session ejs mysql2 knex express-mysql-session --save # other packages can be added here
 
 echo "Copying server scripts..."
 cp $SRC_DIR/main.js $SRC_DIR/tp_auth.js $SRC_DIR/tp_db.js $SRC_DIR/server_root
+
+echo "Copying server certs..."
+cp $SRC_DIR/server-cert.pem $SRC_DIR/server-key.pem $SRC_DIR/server_root
 
 echo "Starting server..."
 $DOCKER_CMD up --remove-orphans

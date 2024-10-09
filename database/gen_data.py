@@ -90,7 +90,7 @@ def gen_rides():
 def get_mcf_str(algo, ops, mem, salt, key):
     encoded_salt = base64.b64encode(salt)
     encoded_key = base64.b64encode(key)
-    return f'${algo}${ops}${mem}${encoded_salt.decode("utf-8")}${encoded_key.decode("utf-8")}'
+    return f'{algo}${ops}${mem}${encoded_salt.decode("utf-8")}${encoded_key.decode("utf-8")}'
 
 
 def rand_pass():
@@ -100,7 +100,7 @@ def rand_pass():
     # argon2id seems to be the recommended approach for new web apps
     salt = nacl.utils.random(nacl.pwhash.argon2id.SALTBYTES)
     key = nacl.pwhash.argon2id.kdf(32, 'password'.encode('utf-8'), salt, 2, 19 * 1024 * 1024)
-    return get_mcf_str('argon2id', 2, 19, salt, key)
+    return get_mcf_str('2', 2, 19, salt, key)
 
 
 def gen_customers(num_customers):
@@ -175,7 +175,7 @@ def main():
         host='192.168.1.84',
         user='admin',
         password='Ckq2Pd4VwytKZjLv',
-        database='themepark_db'
+        database='themepark_db_backup'
     )
 
     cur = db.cursor()

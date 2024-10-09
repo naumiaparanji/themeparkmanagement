@@ -9,9 +9,11 @@ services:
     environment:
       - MYSQL_ADDR=192.168.1.84 # Address of db host in server network. Change to 172.16.0.2 for local tests with vpn.
       - MYSQL_DB=themepark_db
+      - MYSQL_KEYSTORE_DB=keystore_db
       - MYSQL_USER=admin
       - MYSQL_PASS=Ckq2Pd4VwytKZjLv # Honestly no one can access without the vpn so this is fine
       - SERVER_PORT=8080
+      - SERVER_ENV=production
     volumes:
       - ./server_root:/usr/src/app
     working_dir: /usr/src/app

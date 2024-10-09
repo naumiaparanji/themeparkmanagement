@@ -1,8 +1,10 @@
 *
 !.gitignore
 !*.js
+!gen_keys.sh
 !deploy.sh
 !test.sh
 !test.bat
 !README.md
 !docker-compose.yml
+!views
