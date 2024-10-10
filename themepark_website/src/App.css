@@ -36,3 +36,58 @@
     transform: rotate(360deg);
   }
 }
+
+body {
+    background-image: url("background-photo.jpg"); /* Looks wonky. Will fix later. */
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.navbar {
+    background-color: rgb(255, 255, 255, .9);
+    position: static;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 50;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Drop Shadow */
+}
+
+.navbar-logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.navbar-links {
+    list-style: none;
+    display: flex;
+    margin-right: 10%;
+    margin-left: 10%;
+    padding: 0%;
+}
+
+.navbar-links li {
+    display: inline;
+}
+
+.navbar-links a {
+    text-decoration: none;
+    color: #333;
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+.navbar-links a:hover {
+    color: #007BFF; /* Hover color */
+    transform: scale(1.1);
+}
+
+.navbar-links:hover:active {
+    transform: scale(1.05);
+}
+
+.mainText {
+    text-align: center;
+}
