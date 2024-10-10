@@ -37,12 +37,21 @@
   }
 }
 
+
 body {
-    background-image: url("background-photo.jpg"); /* Looks wonky. Will fix later. */
+    background-image: url("stock_footage_bg.mp4"); /* Looks wonky. Will fix later. */
     background-repeat: no-repeat;
     background-size: cover;
 }
 
+.bgVid {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -1;
+}
 .navbar {
     background-color: rgb(255, 255, 255, .9);
     position: static;

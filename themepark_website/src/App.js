@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import navbar from './navbar';
+import BgVideo from './stock_footage_bg.mp4';
 
 function App() {
     return (
@@ -25,6 +26,7 @@ function App() {
             </div>
 
             <div className="mainText">
+                <video autoPlay loop muted className="bgVid"><source src={BgVideo} type="video/mp4" /> </video>
                 <h1>7-Flags: Family Theme Park</h1>
                 <hr></hr>
                 <p>Located in Houston Texas, 7 Flags is a new thrilling Theme Park to spend time with the Family.</p>
