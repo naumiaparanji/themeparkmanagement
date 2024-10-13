@@ -37,7 +37,6 @@
   }
 }
 
-
 body {
     background-image: url("stock_footage_bg.mp4"); /* Looks wonky. Will fix later. */
     background-repeat: no-repeat;
@@ -52,6 +51,7 @@ body {
     min-height: 100%;
     z-index: -1;
 }
+
 .navbar {
     background-color: rgb(255, 255, 255, .9);
     position: static;
@@ -72,8 +72,8 @@ body {
 .navbar-links {
     list-style: none;
     display: flex;
-    margin-right: 10%;
-    margin-left: 10%;
+    margin-right: 5%;
+    margin-left: 5%;
     padding: 0%;
 }
 
@@ -99,4 +99,18 @@ body {
 
 .mainText {
     text-align: center;
+}
+
+h1 {
+    font-size: 3em;
+    font-family: 'ITC Kabel Std', sans-serif;
+}
+
+#bg-Video {
+    background-color: black;
+    width: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

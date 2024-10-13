@@ -1,13 +1,17 @@
-import logo from './logo.svg';
 import './App.css';
 import navbar from './navbar';
 import BgVideo from './stock_footage_bg.mp4';
+import MainLogo from './flagslogo.png';
 
 function App() {
     return (
         <body>
-
             <div className="navbar">
+                <section className="navbar-links">
+                    <a href="App.js">
+                        <img src={MainLogo} alt="logo" />
+                    </a>
+                </section>
                 <section className="navbar-links">
                     <a href="App.js">Home</a>
                 </section>
@@ -26,11 +30,13 @@ function App() {
             </div>
 
             <div className="mainText">
-                <video autoPlay loop muted className="bgVid"><source src={BgVideo} type="video/mp4" /> </video>
-                <h1>7-Flags: Family Theme Park</h1>
+                <video autoPlay loop muted id="bg-Video"><source src={BgVideo} type="video/mp4" /> </video>
+                <h1>A New Exhilirating Experience for that special day.</h1>
+                <img src="flagslogo.png" alt="logo" />
                 <hr></hr>
-                <p>Located in Houston Texas, 7 Flags is a new thrilling Theme Park to spend time with the Family.</p>
+                <p>Explore our Website and book your next family outing with us!</p>
             </div>
+            <br></br><br></br><br></br><br></br><br></br>
       </body>
   );
 }
