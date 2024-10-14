@@ -38,9 +38,61 @@
 }
 
 body {
-    background-image: url("stock_footage_bg.mp4"); /* Looks wonky. Will fix later. */
-    background-repeat: no-repeat;
-    background-size: cover;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.notificationbar {
+    position: static;
+    background-color: yellow;
+    padding: .1%;
+    width: 100%;
+    border-bottom: 1px solid goldenrod;
+    display: inline-block;
+}
+
+h1 {
+    float: left;
+    font-size: 100%;
+}
+
+
+.loginbutton {
+    height: 25px;
+    width: 100px;
+    text-align: center;
+    margin-left: 90%;
+    border: solid;
+    border-color: gold;
+    border-radius: 20px;
+    padding: .5%;
+}
+
+.loginbutton a {
+    text-decoration: none;
+    color: black;
+    transition: color 0.3s ease;
+    display: inline-block;
+}
+
+.loginbutton a:hover {
+    color: white; /* Hover color */
+    box-shadow: inset 5 5 5px black;
+    height: 25px;
+    width: 100px;
+    background-color: goldenrod;
+    text-align: center;
+    position: relative;
+    border-radius: 20px;
+}
+
+.loginbutton:hover:active {
+    transform: scale(1.05);
+}
+
+#logintext {
+    padding: .5%;
+    font-size: 100%;
 }
 
 .bgVid {
@@ -84,7 +136,7 @@ body {
 .navbar-links a {
     text-decoration: none;
     color: #333;
-    font-size: 18px;
+    font-size: 100%;
     transition: color 0.3s ease;
 }
 
@@ -101,7 +153,7 @@ body {
     text-align: center;
 }
 
-h1 {
+h2 {
     font-size: 3em;
     font-family: 'ITC Kabel Std', sans-serif;
 }

@@ -6,6 +6,14 @@ import MainLogo from './flagslogo.png';
 function App() {
     return (
         <body>
+            <div className="notificationbar">
+            {/* Edit Notification Text */}
+            <h1 className="notificationtext">**WINTER SEASON PASSES AVAILABLE! LOGIN OR CREATE AN ACCOUNT FOR MORE INFORMATION.</h1>
+            <section className="loginbutton">
+                <a href="login.js" id="logintext">Log In</a>
+            </section>
+            </div>
+
             <div className="navbar">
                 <section className="navbar-links">
                     <a href="App.js">
@@ -31,8 +39,7 @@ function App() {
 
             <div className="mainText">
                 <video autoPlay loop muted id="bg-Video"><source src={BgVideo} type="video/mp4" /> </video>
-                <h1>A New Exhilirating Experience for that special day.</h1>
-                <img src="flagslogo.png" alt="logo" />
+                <h2>A New Exhilirating Experience for that special day.</h2>
                 <hr></hr>
                 <p>Explore our Website and book your next family outing with us!</p>
             </div>
