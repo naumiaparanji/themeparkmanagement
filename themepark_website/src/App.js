@@ -15,7 +15,7 @@ function App() {
             </div>
 
             <div className="navbar">
-                <section className="navbar-links">
+                <section className="navbar-links" id="navbar-logo">
                     <a href="App.js">
                         <img src={MainLogo} alt="logo" />
                     </a>
