@@ -72,7 +72,11 @@ setInterval(async () => {
 
 (async () => {
     // Any async stuff that needs to happen before the server starts should go here
+
+    // Update session secrets in database
     await auth.updateSessionSecrets(sessionSecrets);
+
+    // Enable session manager middleware
     app.use(session({
         secret: sessionSecrets, 
         resave: false,
@@ -84,96 +88,84 @@ setInterval(async () => {
         store: sessionStore,
     }));
 
-    // Assign routes for server
-    app.post("/login/validate", customerAuth, async (req, res) => {
-        console.log(`Received response from ${req.ip} at path /login/validate`);
+    // Logger
+    app.use(async (req, res, next) => {
+        console.log(`Received ${req.method} from ${req.ip} at ${req.baseUrl + req.path}`);
+        next();
+    });
+
+    // API routes for server
+    app.post("/customer/login", customerAuth, async (req, res) => {
         if (req.authorized) {
             req.session.regenerate((err) => { // This sets a new SID. Should be called on logins only.
-                if (err) res.redirect("/"); // Replace with an actual error response
+                if (err) {
+                    res.status(500).json({success: false, error: 'SessionUpdateFailed', errorDetails: err});
+                    return;
+                }
                 req.session.user = req.body.username;
 
                 // save the session before redirection to ensure page
                 // load does not happen before session is saved
                 req.session.save((err) => {
-                    if (err) res.redirect("/");
-                    res.redirect("/post-login");
+                    if (err) {
+                        res.status(500).json({success: false, error: 'SessionUpdateFailed', errorDetails: err});
+                        return;
+                    }
+                    res.status(200).json({success: true});
                 });
             });
-        }
-        else {
-            if(req.auth_err !== undefined) console.log(`Error in authentication from ${req.ip}: ${req.auth_err}`);
-            res.redirect("/login");
-        }
-    });
-
-    app.post("/auth/validate", employeeAuth, async (req, res) => {
-        console.log(`Received response from ${req.ip} at path /auth/validate`);
-        if (req.authorized) {
-            req.session.regenerate((err) => {
-                if (err) res.redirect("/");
-                req.session.employee_user = req.body.username;
-                req.session.save((err) => {
-                    if (err) res.redirect("/");
-                    res.redirect("/post-auth");
-                })
-            });
+        } else {
+            // Need to add logic for bad email and bad password.
+            // Also login attempts.
+            res.status(400).json({success: false, error: 'IncorrectLogin'});
         }
     });
 
-    app.get("/login", async (req, res, next) => {
-        console.log(`Received request from ${req.ip} at path /login`);
-        res.render('login');
+    app.get("/customer/info", async (req, res) => {
+        if (req.session.user == undefined) {
+            res.status(401).json({success: false, error: 'NotAuthorized'});
+            return;
+        }
+        res.status(200).json({success: true, user: req.session.user});
     });
 
-    app.get("/auth", async (req, res, next) => {
-        console.log(`Received request from ${req.ip} at path /auth`);
-        res.render('auth');
+    app.post("/customer/register", db.registerCustomer, async (req, res) => {
+        if(req.registrationError) {
+            if (req.registrationErrorInfo === 'UserExists')
+                res.status(409)
+            else
+                res.status(500);
+            res.json({success: false, error: req.registrationErrorInfo});
+            return;
+        }
+        res.status(200).json({success: true});
     });
 
-    app.get("/post-login", async (req, res) => {
-        console.log(`Received request from ${req.ip} at path /post-login`);
-
-        // Read express-session docs for more info on how this works
-        res.send("<pre>" 
-            + "SUCCESS!\n"
-            + `user=${req.session.user}\n`
-            + "</pre>");
-    });
-
-    app.get("/post-auth", async (req, res) => {
-        console.log(`Received request from ${req.ip} at path /post-auth`);
-        res.send("<pre>" + "SUCCESS!" + "</pre>");
-    });
-
-    app.get("/logout", async (req, res) => {
-        console.log(`Received request from ${req.ip} at path /logout`);
+    app.post("/customer/logout", async (req, res) => {
+        if (req.session.user == undefined) {
+            res.status(401).json({error: 'NotAuthorized'});
+            return;
+        }
+        if (req.body.user != req.session.user) {
+            // This check is to prevent unintended state changes to the session store. 
+            // The client must have clear intent when requesting a logout.
+            res.status(400).json({error: 'UserDoesNotMatchSession'});
+            return;
+        }
         req.session.user = null;
         req.session.save((err) => {
-            if (err) res.redirect("/");
+            if (err) {
+                res.status(500).json({success: false, error: 'SessionUpdateFailed', errorDetails: err});
+                return;
+            }
             req.session.regenerate((err) => {
-                res.redirect("/");
+                if (err) {
+                    res.status(500).json({success: false, error: 'SessionUpdateFailed', errorDetails: err});
+                    return;
+                }
             });
         });
-    });
-
-    app.get("/register", async (req, res) => {
-        console.log(`Received request from ${req.ip} at path /register`);
-        res.render('register');
-    });
-
-    app.post("/login/register", db.registerCustomer, async (req, res) => {
-        console.log(`Received response from ${req.ip} at path /login/register`);
-        if(req.reg_error)
-            res.redirect('/');
-        else
-            res.redirect('/login');
-    });
-
-    app.get("/", async (req, res) => {
-        console.log(`Received request from ${req.ip} at path /`);
-        res.send("<pre>" 
-            + `user=${req.session.user}\n`
-            + "</pre>");
+        res.status(200).json({success: true});
     });
 
     http.createServer(options, app).listen(port, () => {

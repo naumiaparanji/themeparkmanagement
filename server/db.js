@@ -23,28 +23,29 @@ async function setCustomer(fields){
 
 /**
  * Query the database for user authentication info and returns a password hash if the user exists
- * @param {String} user_email 
- * @param {Boolean} is_employee 
+ * @param {String} userEmail 
+ * @param {Boolean} isEmployee 
  * @returns {String | undefined}
  */
-async function getAuthInfo(user_email, is_employee=false) {
+async function getAuthInfo(userEmail , isEmployee =false) {
     var target = "CUSTOMER";
-    if (is_employee)
+    if (isEmployee)
         target = "EMPLOYEE";
-    const dbObj = await db(target).select("Password").where("Email", user_email).first();
+    const dbObj = await db(target).select("Password").where("Email", userEmail).first();
     if (dbObj !== undefined) return dbObj.Password;
     return dbObj;
 }
 
 async function registerCustomer(req, res, next) {
-    // Just an example. Needs work.
+    // This will fail atm because all of the customer fields are NOT NULL
     await db("CUSTOMER").insert({Email: req.body.username, Password: await auth.hashpw(req.body.password)})
-    .returning('CustomerID')
     .then((result) => {
-        req.reg_error = result.length === 0;
+        req.registrationError = result.length === 0;
+        req.registrationErrorInfo = 'UserExists';
     })
     .catch((error) => {
-        req.reg_error = true;
+        req.registrationError = true;
+        req.registrationErrorInfo = 'SQLError';
         console.error(error);
     });
     next();
