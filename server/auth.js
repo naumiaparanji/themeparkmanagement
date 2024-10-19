@@ -136,9 +136,9 @@ async function updateSessionSecrets(secrets, renewAfter=7, discardAfter=30) {
  * Function to be used as middleware for express.
  * Returns a function that can process a login request and determine whether the request was valid.
  * 
- * If valid, request object obtains the authorized = true attribute.
+ * If valid, req.authorized = true
  * 
- * If invalid, request object obtains the authorized = true and auth_error = reason_str attributes.
+ * If invalid, req.authorized = false
  * 
  * @param {(user: String) => String | undefined} getPassFunc Callback function to use as the user lookup method.
  * @returns 
@@ -147,17 +147,14 @@ function authenticate(getPassFunc) {
     return async function (req, res, next) {
         if (req.body === undefined || req.body.username === undefined || req.body.password === undefined) {
             req.authorized = false;
-            req.auth_err = "Bad request";
             return next();
         }
-        const hashed_pw = await getPassFunc(req.body.username);
-        if (hashed_pw === undefined) {
+        const hashedpw = await getPassFunc(req.body.username);
+        if (hashedpw === undefined) {
             req.authorized = false;
-            req.auth_err = "Invalid user";
             return next();
         }
-        req.authorized = await checkpw(req.body.password, hashed_pw).catch((err) => {
-            req.auth_err = "Failed to parse user password from database";
+        req.authorized = await checkpw(req.body.password, hashedpw).catch((err) => {
             return false;
         });
         return next();

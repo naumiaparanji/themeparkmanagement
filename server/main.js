@@ -7,8 +7,14 @@ const express = require("express");
 const fs = require("fs");
 const app = express();
 const port = Number(process.env.SERVER_PORT);
+const cors = require('cors');
 app.use(express.json());
 app.set('trust proxy', 1);
+
+app.use(cors({
+    origin: process.env.CLIENT_ORIGIN,
+    credentials: true
+}));
 
 if (process.env.SERVER_ENV === 'production') {
     var http = require("https");
@@ -49,7 +55,7 @@ setInterval(async () => {
 }, 6 * 60 * 60 * 1000); // Update session secrets every 6 hours
 
 (async () => {
-    // Any async stuff that needs to happen before the server starts should go here
+    // Any awaits that needs to happen before the server starts should go here
 
     // Set admin account for customer and employee tables
     await db.setCustomer({
