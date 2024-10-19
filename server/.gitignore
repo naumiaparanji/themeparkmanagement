@@ -7,5 +7,3 @@
 !test.bat
 !README.md
 !docker-compose.yml
-!views
-!views/*.ejs

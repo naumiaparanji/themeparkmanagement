@@ -9,6 +9,8 @@ export MYSQL_DB=themepark_db
 export MYSQL_KEYSTORE_DB=keystore_db
 export MYSQL_USER=admin
 export MYSQL_PASS=Ckq2Pd4VwytKZjLv
+export APP_ADMIN_USER=root
+export APP_ADMIN_PASS=password
 export SERVER_PORT=8080
 
 echo "Installing dependencies..."

@@ -164,8 +164,23 @@ function authenticate(getPassFunc) {
     }
 }
 
+async function pruneSessions(user, maxSessions, isEmployee=false) {
+    await keystoreDB('SESSIONS').whereNotIn('session_id', function() {
+        this.select('session_id')
+        .from(function() {
+            this.select('session_id')
+            .from('SESSIONS')
+            .where(keystoreDB.raw(`JSON_EXTRACT(data, '$.${isEmployee ? 'employeeUser' : 'user'}') = '${user}'`))
+            .orderBy('created', 'desc')
+            .limit(maxSessions)
+            .as('latest_sessions')
+        });
+    })
+    .andWhere(keystoreDB.raw(`JSON_EXTRACT(data, '$.${isEmployee ? 'employeeUser' : 'user'}') = '${user}'`))
+    .del();
+}
+
 module.exports = {
-    keystoreDB,
     hashpw,
     hashpwModerate,
     hashpwSecure,
@@ -173,4 +188,5 @@ module.exports = {
     splithash,
     updateSessionSecrets,
     authenticate,
+    pruneSessions
 };

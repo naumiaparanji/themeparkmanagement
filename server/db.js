@@ -21,6 +21,12 @@ async function setCustomer(fields){
     .merge();
 }
 
+async function setEmployee(fields){
+    return await db("EMPLOYEE").insert(fields)
+    .onConflict("Email")
+    .merge();
+}
+
 /**
  * Query the database for user authentication info and returns a password hash if the user exists
  * @param {String} userEmail 
@@ -41,21 +47,61 @@ async function registerCustomer(req, res, next) {
     await db("CUSTOMER").insert({Email: req.body.username, Password: await auth.hashpw(req.body.password)})
     .then((result) => {
         req.registrationError = result.length === 0;
-        req.registrationErrorInfo = 'UserExists';
+        if (req.registrationError) {
+            req.registrationErrorInfo = 'UserExists';
+            res.status(409);
+        }
     })
     .catch((error) => {
         req.registrationError = true;
         req.registrationErrorInfo = 'SQLError';
+        res.status(500);
         console.error(error);
     });
     next();
 }
 
-// etc...
+async function registerEmployee(req, res, next) {
+    if (req.session.employeeUser === undefined) {
+        req.registrationError = true;
+        req.registrationErrorInfo = 'NotAuthorized';
+        res.status(401);
+        return next();
+    }
+    let newEmplyee = {
+        FirstName: req.body.firstName,
+        LastName: req.body.lastName,
+        DOB: req.body.dob,
+        Address: req.body.address,
+        PhoneNumber: req.body.phoneNumber,
+        Email: req.body.email,
+        Password: req.body.password,
+        StartDate: req.body.startDate,
+        EndDate: req.body.endDate
+    };
+    if (req.body.created != undefined) newEmplyee.Created = req.body.created; // Defaults to curdate() in the database
+    await db("EMPLOYEE").insert(newEmplyee)
+    .then((result) => {
+        req.registrationError = result.length === 0;
+        if (req.registrationError) {
+            req.registrationErrorInfo = 'UserExists';
+            res.status(409);
+        }
+    })
+    .catch((error) => {
+        req.registrationError = true;
+        req.registrationErrorInfo = 'SQLError';
+        res.status(500);
+        console.error(error);
+    });
+    next();
+}
 
 module.exports = {
     getCustomers,
     setCustomer,
+    setEmployee,
     getAuthInfo,
-    registerCustomer
+    registerCustomer,
+    registerEmployee
 };

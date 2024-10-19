@@ -12,6 +12,8 @@ services:
       - MYSQL_KEYSTORE_DB=keystore_db
       - MYSQL_USER=admin
       - MYSQL_PASS=Ckq2Pd4VwytKZjLv # Honestly no one can access without the vpn so this is fine
+      - APP_ADMIN_USER=root
+      - APP_ADMIN_PASS=password
       - SERVER_PORT=8080
       - SERVER_ENV=production
     volumes:
