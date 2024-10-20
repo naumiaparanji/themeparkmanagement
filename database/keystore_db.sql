@@ -8,6 +8,7 @@ CREATE TABLE SESSIONS (
   session_id varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   expires int unsigned NOT NULL,
   data mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
+  created datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (session_id)
 );
 

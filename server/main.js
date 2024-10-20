@@ -88,7 +88,8 @@ setInterval(async () => {
         saveUninitialized: false,
         cookie: {
             maxAge: 1000 * 60 * 60 * 24, // 1 day
-            secure: secure_cookies
+            secure: secure_cookies,
+            sameSite: true
         },
         store: sessionStore,
     }));
