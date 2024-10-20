@@ -2,6 +2,8 @@ import './App.css';
 import navbar from './navbar';
 import BgVideo from './stock_footage_bg.mp4';
 import MainLogo from './flagslogo.png';
+import './CustomerAccount'
+import CustomerAccount from './CustomerAccount';
 
 function Home() {
     return (
@@ -10,7 +12,9 @@ function Home() {
             {/* Edit Notification Text */}
             <h1 className="notificationtext">**WINTER SEASON PASSES AVAILABLE! LOGIN OR CREATE AN ACCOUNT FOR MORE INFORMATION.</h1>
             <section className="loginbutton">
-                <a href="login" id="logintext">Log In</a>
+                <a href="login" id="logintext">
+                    <CustomerAccount text="Log In" /> {/* Looks ugly but works */}
+                </a>
             </section>
             </div>
 
