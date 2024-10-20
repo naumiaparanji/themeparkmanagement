@@ -1,6 +1,6 @@
 import './Login.css'
 import { apiUrl } from './App';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import MainLogo from './flagslogo.png';
 import BgA from './login-a.jpg'
 import BgB from './login-b.jpg'
@@ -9,18 +9,15 @@ import BgD from './login-d.jpg'
 
 const BgImgs = [BgA, BgB, BgC, BgD];
 
-export default function RandomBGImg() {
-    const [currentImageIndex, setCurrentImageIndex] = useState(Math.floor(Math.random() * BgImgs.length))
-    const changeImage = () => {
-      const randomNumber = Math.floor(Math.random() * BgImgs.length);
-      setCurrentImageIndex(randomNumber);
-    }
-    useEffect(() => changeImage(), [])
-
+function RandomBGImg() {
+    const currentImageIndex = Math.floor(Math.random() * BgImgs.length);
     return (
-        <div id="login-bg" style={{ backgroundImage: `url(${BgImgs[currentImageIndex]})` }}></div>
-    )
-}
+      <div
+        id="login-bg"
+        style={{ backgroundImage: `url(${BgImgs[currentImageIndex]})` }}
+      ></div>
+    );
+  }
 
 const defaultInputStyle = {
     boxSizing: 'border-box',
@@ -53,26 +50,19 @@ const defaultContainerStyle = {
     margin: "12px"
 };
 
-const InputField = React.forwardRef((props, ref) => {
-    const [value, setValue] = useState(props.default || '');
-
-    const handleChange = (event) => {
-        setValue(event.target.value);
-    };
-
+function InputField(props) {
     return (
         <div style={props.containerStyle || defaultContainerStyle}>
             <input
               style={props.style || defaultInputStyle}
-              onChange={handleChange}
+              onChange={props.onChange}
               type={props.type || 'text'}
-              value={value}
-              ref={ref}
               placeholder={props.name || ''}
+              value={props.value}
             />
         </div>
     );
-});
+}
 
 function FancyButton(props) {
     return (
@@ -96,18 +86,12 @@ function MessageBox(props) {
     );
 };
 
-class LoginBox extends React.Component {
-    constructor(props) {
-        super(props);
-        this.EmailField = React.createRef();
-        this.PasswordField = React.createRef();
-        
-        this.state = {
-            message: ''
-        };
-    }
+function LoginBox(props) {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [message, setMessage] = useState('');
 
-    loginSubmit = async () => {
+    const loginSubmit = async () => {
         try {
             const response = await fetch(apiUrl + '/customer/login', {
                 method: 'POST',
@@ -117,56 +101,63 @@ class LoginBox extends React.Component {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    username: this.EmailField.current.value, 
-                    password: this.PasswordField.current.value
+                    username: email, 
+                    password: password
                 }),
             });
             const data = await response.json();
             if (data.success) {
-                window.location.pathname = this.props.redirect;
+                window.location.pathname = props.redirect;
             } else {
-                this.setState({message: 'Invalid email/password'});
+                setMessage('Invalid email/password');
             }
         } catch (error) {
             console.log(error);
         }
     }
 
-    render() {
-
-        return (
-            <div className='loginbox'>
-                <img src={MainLogo} />
-                <div style={{
-                    fontSize: "20px",
-                    margin: "-18px 0px 14px 0px"
-                }}>Customer Portal</div>
-                <hr style={{
-                    color: "lightgrey",
-                    margin:"0px 8px 16px 8px"
-                }} />
-                <MessageBox message={this.state.message} />
-                <InputField name="Email" containerStyle={{margin: "0px 12px"}} ref={this.EmailField} />
-                <InputField name="Password" type="password" ref={this.PasswordField} />
-                <FancyButton text='Login' action={this.loginSubmit} />
-                <FancyButton text='Register' 
-                    action={() => window.location.pathname = "/register"} 
-                    style={Object.assign({}, defaultButtonStyle, {
-                        backgroundColor: "#55ACEE",
-                    })}
-                />
-                <FancyButton text="Forgot password?" 
-                    action={() => window.location.pathname = "/"} 
-                    style={Object.assign({}, defaultButtonStyle, {
-                        color: "blue",
-                        backgroundColor: "white",
-                        padding: "2px 0px",
-                        width: "auto"
-                    })}
-                />
-            </div>
-        );
-    }
+    return (
+        <div className='loginbox'>
+            <img src={MainLogo} />
+            <div style={{
+                fontSize: "20px",
+                margin: "-18px 0px 14px 0px"
+            }}>Customer Portal</div>
+            <hr style={{
+                color: "lightgrey",
+                margin:"0px 8px 16px 8px"
+            }} />
+            <MessageBox message={message} />
+            <InputField 
+                name="Email" 
+                containerStyle={{margin: "0px 12px"}} 
+                value={email} 
+                onChange={(e) => setEmail(e.target.value)}
+            />
+            <InputField 
+                name="Password" 
+                type="password" 
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)}
+            />
+            <FancyButton text='Login' action={loginSubmit} />
+            <FancyButton text='Register' 
+                action={() => window.location.pathname = "/register"} 
+                style={Object.assign({}, defaultButtonStyle, {
+                    backgroundColor: "#55ACEE",
+                })}
+            />
+            <FancyButton text="Forgot password?" 
+                action={() => window.location.pathname = "/"} 
+                style={Object.assign({}, defaultButtonStyle, {
+                    color: "blue",
+                    backgroundColor: "white",
+                    padding: "2px 0px",
+                    width: "auto"
+                })}
+            />
+        </div>
+    );
 }
 
 export function Login() {
