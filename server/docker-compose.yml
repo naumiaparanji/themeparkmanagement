@@ -20,6 +20,6 @@ services:
     volumes:
       - ./server_root:/usr/src/app
     working_dir: /usr/src/app
-    command: npm install && node main.js
+    command: /bin/sh -c "npm install && node main.js"
     ports:
       - 8080:8080/tcp
