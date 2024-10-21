@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './CustomerAccount'
 import CustomerAccount from './CustomerAccount';
+import Navbar from './Navbar'; 
 import './Rides.css'; 
 
 const ridesData = [
@@ -50,6 +51,7 @@ const Rides = () => {
                 </a>
             </section>
             </div>
+            <Navbar />
       <div className="rides-container">
           <button className="back-button" onClick={() => navigate('/')}>
               Back to Home

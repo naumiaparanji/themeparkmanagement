@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './CustomerAccount'
 import CustomerAccount from './CustomerAccount';
+import Navbar from './Navbar'; 
 import './AboutUs.css'; 
 
 const AboutUs = () => {
@@ -19,6 +20,7 @@ const AboutUs = () => {
             </section>
             </div>
               
+              <Navbar />
     <div className="about-us-container">
       {/* Title Section */}
       <button className="back-button" onClick={() => navigate('/')}>

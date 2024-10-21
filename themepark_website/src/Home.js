@@ -1,18 +1,10 @@
 import './App.css';
-import { Link } from 'react-router-dom';
 import BgVideo from './images/stock_footage_bg.mp4';
-import MainLogo from './images/flagslogo.png';
+import Navbar from './Navbar'; 
 import './CustomerAccount';
 import CustomerAccount from './CustomerAccount';
 
 function Home() {
-    // Common style for navbar links
-    const linkStyle = {
-        fontSize: '20px', // Change this to your desired size
-        fontWeight: 'bold', // Use 'fontWeight' for bold text
-        color: '#333', // Change this to your desired color
-        margin: '0 10px', // Optional: Add margin for spacing between links
-    };
 
     return (
         <div>
@@ -26,28 +18,7 @@ function Home() {
                 </section>
             </div>
 
-            <div className="navbar">
-                <section className="navbar-links" id="navbar-logo">
-                    <Link to="/">
-                        <img src={MainLogo} alt="logo" style={{ width: '180px', height: 'auto' }} />
-                    </Link>
-                </section>
-                <section className="navbar-links">
-                    <Link to="/" style={linkStyle}>Home</Link>
-                </section>
-                <section className="navbar-links">
-                    <Link to="/rides" style={linkStyle}>Rides</Link>
-                </section>
-                <section className="navbar-links">
-                    <Link to="/attractions" style={linkStyle}>Attractions</Link>
-                </section>
-                <section className="navbar-links">
-                    <Link to="/events" style={linkStyle}>Events</Link>
-                </section>
-                <section className="navbar-links">
-                    <Link to="/about" style={linkStyle}>About Us</Link>
-                </section>
-            </div>
+            <Navbar /> 
 
             <div className="mainText">
                 <video autoPlay loop muted id="bg-Video">
