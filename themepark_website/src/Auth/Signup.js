@@ -1,8 +1,8 @@
 import './Auth.css'
-import { apiUrl } from '../App';
 import React, { useState } from 'react';
 import MainLogo from '../images/flagslogo.png';
 import { RandomBGImg, MessageBox, InputField, FancyButton, Validation, defaultButtonStyle } from './AuthComponents';
+import { apiPost } from '../CRUDApi';
 
 export function SignUpBox(props) {
     const [email, setEmail] = useState('');
@@ -24,28 +24,24 @@ export function SignUpBox(props) {
             setMessage('Passwords do not match');
             return;
         }
-        try {
-            const response = await fetch(apiUrl + '/customer/register', {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    username: email, 
-                    password: password
-                }),
-            });
-            const data = await response.json();
-            if (data.success) {
-                window.location.pathname = props.redirect;
-            } else {
-                if (response.status === 409) setMessage('An account with this email already exists');
-                else setMessage('Sign-up failed');
+        const response = await apiPost('/customer/register', 
+            {
+                username: email,
+                password: password
             }
-        } catch (error) {
-            console.log(error);
+        ).catch((error) => console.log(error));
+        if (!response) {
+            setMessage('Failed to connect to server');
+        } else if (response.code === 500) {
+            setMessage('Server error');
+        } else if (response.code === 409) {
+            setMessage('An account with this email already exists');
+        } else if (!response.body) {
+            setMessage('Unknown error');
+        } else if (!response.body.success) {
+            setMessage('Sign-up failed');
+        } else {
+            window.location.pathname = props.redirect;
         }
     }
 
