@@ -6,8 +6,8 @@ import Attractions from './Attractions';
 import Events from './Events';
 import AboutUs from './AboutUs';
 import Rides from './Rides';
-import { Login } from './Login';
-import { SignUp } from './Signup/Signup';
+import { Login } from './Auth/Login';
+import { SignUp } from './Auth/Signup';
 
 export const apiUrl = 'http://localhost:8080';
 

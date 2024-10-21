@@ -18,10 +18,10 @@ DROP TABLE IF EXISTS CONCESSION_TRANSACTIONS;
 
 CREATE TABLE CUSTOMER (
   CustomerID bigint unsigned NOT NULL AUTO_INCREMENT,
-  FirstName varchar(255) NOT NULL,
-  LastName varchar(255) NOT NULL,
-  DOB date NOT NULL,
-  Address varchar(255) NOT NULL,
+  FirstName varchar(255),
+  LastName varchar(255),
+  DOB date,
+  Address varchar(255),
   Email varchar(255) NOT NULL,
   Password varchar(255) NOT NULL,
   Created date NOT NULL DEFAULT (CURRENT_DATE),

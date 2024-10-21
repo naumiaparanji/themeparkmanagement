@@ -1,98 +1,25 @@
-import '../Login.css'
+import './Auth.css'
 import { apiUrl } from '../App';
 import React, { useState } from 'react';
 import MainLogo from '../images/flagslogo.png';
-import BgA from '../images/login-a.jpg'
-import BgB from '../images/login-b.jpg'
-import BgC from '../images/login-c.jpg'
-import BgD from '../images/login-d.jpg'
+import { RandomBGImg, MessageBox, InputField, FancyButton, Validation, defaultButtonStyle } from './AuthComponents';
 
-const BgImgs = [BgA, BgB, BgC, BgD];
-
-function RandomBGImg() {
-    const currentImageIndex = Math.floor(Math.random() * BgImgs.length);
-    return (
-      <div
-        id="login-bg"
-        style={{ backgroundImage: `url(${BgImgs[currentImageIndex]})` }}
-      ></div>
-    );
-  }
-
-const defaultInputStyle = {
-    boxSizing: 'border-box',
-    padding: "12px",
-    fontSize: "14px",
-    margin: "0px",
-    width: "100%",
-    borderRadius: "8px", 
-    border: "grey 1px solid"
-};
-
-const defaultButtonStyle = {
-    backgroundColor: "#86af49",
-    boxSizing: 'border-box',
-    border: "none",
-    padding: "10px 60px",
-    color: "white",
-    margin: "0px",
-    borderRadius: "6px", 
-    fontSize: "18px",
-    cursor: "pointer",
-    width: "100%"
-};
-
-const defaultMessageStyle = {
-    color: "red"
-}
-
-const defaultContainerStyle = {
-    margin: "12px"
-};
-
-function InputField(props) {
-    return (
-        <div style={props.containerStyle || defaultContainerStyle}>
-            <input
-              style={props.style || defaultInputStyle}
-              onChange={props.onChange}
-              type={props.type || 'text'}
-              placeholder={props.name || ''}
-              value={props.value}
-            />
-        </div>
-    );
-}
-
-function FancyButton(props) {
-    return (
-        <div style={props.containerStyle || defaultContainerStyle}>
-            <button 
-              style={props.style || defaultButtonStyle}
-              onClick={props.action}>{props.text}
-            </button>
-        </div>
-    );
-}
-
-function MessageBox(props) {    
-    return (props.message?
-        <div style={props.containerStyle || defaultContainerStyle}>
-            <p style={props.style || defaultMessageStyle}>
-                {props.message}
-            </p>
-        </div>
-        : (null)
-    );
-};
-
-function SignUpBox(props) {
+export function SignUpBox(props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState('');
 
     const signUpSubmit = async () => {
+        const inputCheck = Validation({email: email, password: password});
+        if (inputCheck.email) {
+            setMessage(inputCheck.email);
+            return;
+        }
+        if (inputCheck.password) {
+            setMessage(inputCheck.password);
+            return;
+        }
         if (password !== confirmPassword) {
             setMessage('Passwords do not match');
             return;
@@ -114,7 +41,8 @@ function SignUpBox(props) {
             if (data.success) {
                 window.location.pathname = props.redirect;
             } else {
-                setMessage('Sign-up failed');
+                if (response.status === 409) setMessage('An account with this email already exists');
+                else setMessage('Sign-up failed');
             }
         } catch (error) {
             console.log(error);
@@ -169,7 +97,7 @@ export function SignUp() {
     return (
     <div className='container'>
         <RandomBGImg />
-        <SignUpBox redirect="/" />
+        <SignUpBox redirect="/login" />
     </div>
     );
 };

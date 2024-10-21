@@ -44,9 +44,12 @@ async function getAuthInfo(userEmail , isEmployee =false) {
 
 async function registerCustomer(req, res, next) {
     // This will fail atm because all of the customer fields are NOT NULL
-    await db("CUSTOMER").insert({Email: req.body.username, Password: await auth.hashpw(req.body.password)})
+    await db("CUSTOMER")
+    .insert({Email: req.body.username, Password: await auth.hashpw(req.body.password)})
+    .onConflict('Email')
+    .ignore()
     .then((result) => {
-        req.registrationError = result.length === 0;
+        req.registrationError = result[0] === 0;
         if (req.registrationError) {
             req.registrationErrorInfo = 'UserExists';
             res.status(409);
