@@ -171,3 +171,7 @@ h2 {
 .rides-container {
     overflow-y: auto; /* Allow vertical scrolling */
 }
+
+.about-us-container {
+    overflow-y: auto; /* Allow vertical scrolling */
+}
