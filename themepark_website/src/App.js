@@ -7,6 +7,7 @@ import Events from './Events';
 import AboutUs from './AboutUs';
 import Rides from './Rides';
 import { Login } from './Login';
+import { SignUp } from './Signup/Signup';
 
 export const apiUrl = 'http://localhost:8080';
 
@@ -18,6 +19,7 @@ function App() {
                 <Route exact path='/rides' element={<Rides />} />
                 <Route exact path='/' element={<Home />} />
                 <Route exact path='/login' element={<Login />} />
+                <Route exact path='/signup' element={<SignUp />} />
                 <Route exact path='/attractions' element={<Attractions />} />
                 <Route exact path='/events' element={<Events />} />
                 <Route exact path='/about' element={<AboutUs />} />
