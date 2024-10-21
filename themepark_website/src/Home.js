@@ -1,7 +1,7 @@
 import './App.css';
-import navbar from './navbar';
-import BgVideo from './stock_footage_bg.mp4';
-import MainLogo from './flagslogo.png';
+import { Link } from 'react-router-dom';
+import BgVideo from './images/stock_footage_bg.mp4';
+import MainLogo from './images/flagslogo.png';
 import './CustomerAccount'
 import CustomerAccount from './CustomerAccount';
 
@@ -17,29 +17,29 @@ function Home() {
                 </a>
             </section>
             </div>
-
             <div className="navbar">
                 <section className="navbar-links" id="navbar-logo">
-                    <a href="App.js">
+                    <Link to="/">
                         <img src={MainLogo} alt="logo" />
-                    </a>
+                    </Link>
                 </section>
                 <section className="navbar-links">
-                    <a href="App.js">Home</a>
+                    <Link to="/">Home</Link>
                 </section>
                 <section className="navbar-links">
-                    <a href="App.js">Rides</a>
+                    <Link to="/rides">Rides</Link>
                 </section>
                 <section className="navbar-links">
-                    <a href="App.js">Attractions</a>
+                    <Link to="/attractions">Attractions</Link>
                 </section>
                 <section className="navbar-links">
-                    <a href="App.js">Events</a>
+                    <Link to="/events">Events</Link>
                 </section>
                 <section className="navbar-links">
-                    <a href="App.js">About Us</a>
+                    <Link to="/about">About Us</Link>
                 </section>
             </div>
+
 
             <div className="mainText">
                 <video autoPlay loop muted id="bg-Video"><source src={BgVideo} type="video/mp4" /> </video>

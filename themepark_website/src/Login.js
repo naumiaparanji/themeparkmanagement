@@ -1,11 +1,11 @@
 import './Login.css'
 import { apiUrl } from './App';
 import React, { useState } from 'react';
-import MainLogo from './flagslogo.png';
-import BgA from './login-a.jpg'
-import BgB from './login-b.jpg'
-import BgC from './login-c.jpg'
-import BgD from './login-d.jpg'
+import MainLogo from './images/flagslogo.png';
+import BgA from './images/login-a.jpg'
+import BgB from './images/login-b.jpg'
+import BgC from './images/login-c.jpg'
+import BgD from './images/login-d.jpg'
 
 const BgImgs = [BgA, BgB, BgC, BgD];
 
