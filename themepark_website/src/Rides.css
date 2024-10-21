@@ -1,20 +1,36 @@
+.back-button {
+    float: left;
+    margin-bottom: 0px; /* Space below the button */
+    padding: 10px 20px; /* Padding around the button */
+    background-color: white; /* Button background color */
+    color: black; /* Button text color */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Font size */
+}
+
+.back-button:hover {
+    background-color: gray; /* Darker shade on hover */
+}
+
 .rides-container {
     padding: 20px;
-    max-width: 1200px;
+    max-width: 210vh;
     margin: auto;
-    height: calc(100vh - 120px); /* Adjust based on your navbar height */
+    height: calc(100vh); /* Adjust based on your navbar height */
     overflow-y: auto; /* Allow vertical scrolling */
-    background-image: url('./images/login-b.jpg'); /* Update the path */
+    background-image: url('./images/login-b.jpg'); 
     background-size: cover; /* Scale the image to cover the entire container */
     background-position: center; /* Center the image */
     background-repeat: no-repeat; /* Prevent repeating of the image */
-    border-radius: 8px; /* Optional: add rounded corners */
-    color: white; /* Optional: set text color for contrast */
+    color: white; 
 }
 
 
 .ride-category {
     margin-bottom: 40px; /* Space between categories */
+    color: white;
 }
 
 .ride-list {
@@ -27,11 +43,17 @@
     background-color: #f9f9f9; /* Card background color */
     border: 1px solid #ddd; /* Card border */
     border-radius: 8px; /* Rounded corners */
-    padding: 15px; /* Padding inside cards */
-    width: calc(30% - 20px); /* Adjust width based on how many cards you want in a row */
+    padding: 10px; /* Padding inside cards */
+    width: calc(25% - 40px); /* Adjust width based on how many cards you want in a row */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Shadow effect */
+    color: black; /* Change text color to black */
 }
 
 .ride-card h3 {
     margin-top: 0; /* Remove margin from the top of the card title */
+    color: black; /* Change card title color to black */
+}
+
+.ride-card p {
+    color: black; /* Change paragraph text color to black */
 }

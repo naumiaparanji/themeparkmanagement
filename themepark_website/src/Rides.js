@@ -1,35 +1,59 @@
 import React from 'react';
-import './Rides.css'; // Make sure to create this CSS file for styling
+import { useNavigate } from 'react-router-dom';
+import './CustomerAccount'
+import CustomerAccount from './CustomerAccount';
+import './Rides.css'; 
 
 const ridesData = [
-    // Array of ride objects with categories
+    // Existing rides
     { id: 1, name: 'Thunder Mountain', category: 'Land', ageLimit: 8, heightLimit: '42 inches', restrictions: 'No heart conditions' },
     { id: 2, name: 'Splash Water Ride', category: 'Water', ageLimit: 6, heightLimit: '36 inches', restrictions: 'Must wear life jacket' },
     { id: 3, name: 'Adventure River', category: 'Water', ageLimit: 5, heightLimit: '40 inches', restrictions: 'Supervision required' },
     { id: 4, name: 'Dragon Roller Coaster', category: 'Land', ageLimit: 10, heightLimit: '48 inches', restrictions: 'Pregnant women not allowed' },
-    { id: 5, name: 'Pirate Ship', category: 'Hybrid', ageLimit: 7, heightLimit: '40 inches', restrictions: 'No loose items' },
-    { id: 6, name: 'Sky Dive', category: 'Hybrid', ageLimit: 12, heightLimit: '54 inches', restrictions: 'No back problems' },
-    { id: 7, name: 'Wave Pool', category: 'Water', ageLimit: 4, heightLimit: '30 inches', restrictions: 'Must be with an adult' },
-    { id: 8, name: 'Haunted Mansion', category: 'Land', ageLimit: 10, heightLimit: 'None', restrictions: 'No pregnant women' },
-    { id: 9, name: 'Zipline Adventure', category: 'Hybrid', ageLimit: 8, heightLimit: '42 inches', restrictions: 'Max weight 250 lbs' },
-    { id: 10, name: 'Kiddie Carousel', category: 'Land', ageLimit: 2, heightLimit: 'None', restrictions: 'Adult supervision required' },
-    { id: 11, name: 'Lazy River', category: 'Water', ageLimit: 0, heightLimit: 'None', restrictions: 'Must wear a life jacket for kids' },
-    { id: 12, name: 'Twister Slide', category: 'Water', ageLimit: 6, heightLimit: '42 inches', restrictions: 'No jewelry' },
-    { id: 13, name: 'Bumper Cars', category: 'Land', ageLimit: 4, heightLimit: 'None', restrictions: 'Must be seated at all times' },
-    { id: 14, name: 'Super Splash', category: 'Water', ageLimit: 8, heightLimit: '44 inches', restrictions: 'Must be able to swim' },
-    { id: 15, name: 'Family Coaster', category: 'Hybrid', ageLimit: 6, heightLimit: '38 inches', restrictions: 'Children must be accompanied' },
-    { id: 16, name: 'Rock Climbing Wall', category: 'Land', ageLimit: 10, heightLimit: 'None', restrictions: 'Waiver required' },
-    { id: 17, name: 'Wet and Wild', category: 'Water', ageLimit: 5, heightLimit: '36 inches', restrictions: 'Supervision required' },
-    { id: 18, name: 'Spin Zone', category: 'Hybrid', ageLimit: 4, heightLimit: 'None', restrictions: 'Maximum of 2 per car' },
-    { id: 19, name: 'Scenic Train Ride', category: 'Land', ageLimit: 0, heightLimit: 'None', restrictions: 'None' },
-    { id: 20, name: 'River Rapids', category: 'Water', ageLimit: 7, heightLimit: '42 inches', restrictions: 'No pregnant women' }
+    { id: 5, name: 'Sky Dive', category: 'Thrill', ageLimit: 12, heightLimit: '54 inches', restrictions: 'No back problems' },
+    { id: 6, name: 'Wave Pool', category: 'Water', ageLimit: 4, heightLimit: '30 inches', restrictions: 'Must be with an adult' },
+    { id: 7, name: 'Zipline Adventure', category: 'Thrill', ageLimit: 8, heightLimit: '42 inches', restrictions: 'Max weight 250 lbs' },
+    { id: 8, name: 'Kiddie Carousel', category: 'Land', ageLimit: 2, heightLimit: 'None', restrictions: 'Adult supervision required' },
+    { id: 9, name: 'Lazy River', category: 'Water', ageLimit: 0, heightLimit: 'None', restrictions: 'Must wear a life jacket for kids' },
+    { id: 10, name: 'Bumper Cars', category: 'Land', ageLimit: 4, heightLimit: 'None', restrictions: 'Must be seated at all times' },
+    { id: 11, name: 'Super Splash', category: 'Water', ageLimit: 8, heightLimit: '44 inches', restrictions: 'Must be able to swim' },
+    { id: 12, name: 'Rock Climbing Wall', category: 'Land', ageLimit: 10, heightLimit: 'None', restrictions: 'Waiver required' },
+    { id: 13, name: 'Scenic Train Ride', category: 'Land', ageLimit: 0, heightLimit: 'None', restrictions: 'None' },
+    { id: 14, name: 'River Rapids', category: 'Water', ageLimit: 7, heightLimit: '42 inches', restrictions: 'No pregnant women' },
+    { id: 15, name: 'Dragon Coaster', category: 'Thrill', ageLimit: 12, heightLimit: '4ft+', restrictions: 'No heart conditions' },
+    { id: 16, name: 'Sky Drop', category: 'Thrill', ageLimit: 14, heightLimit: '4.5ft+', restrictions: 'No fear of heights' },
+    { id: 17, name: 'Tornado Twister', category: 'Thrill', ageLimit: 12, heightLimit: '4ft+', restrictions: 'No back problems' },
+    { id: 18, name: 'Pirate’s Adventure', category: 'Thrill', ageLimit: 8, heightLimit: '3ft+', restrictions: 'None' },
+    { id: 19, name: 'Haunted Mansion', category: 'Horror', ageLimit: 8, heightLimit: 'None', restrictions: 'None' },
+    { id: 20, name: 'Alien Invasion', category: 'Horror', ageLimit: 12, heightLimit: 'None', restrictions: 'None' },
+    { id: 21, name: 'Dino Safari', category: 'Horror', ageLimit: 'All ages', heightLimit: 'None', restrictions: 'None' },
+    { id: 22, name: 'Virtual Space Mission', category: 'Horror', ageLimit: 12, heightLimit: 'None', restrictions: 'None' },
+    { id: 23, name: 'Flight Simulator', category: 'Horror', ageLimit: 10, heightLimit: 'None', restrictions: 'None' },
+    { id: 24, name: 'Race Car Challenge', category: 'Horror', ageLimit: 12, heightLimit: 'None', restrictions: 'None' },
+    { id: 25, name: 'Mini Bumper Cars', category: 'Kids', ageLimit: '5-10', heightLimit: 'None', restrictions: 'None' },
+    { id: 26, name: 'Tiny Teacups', category: 'Kids', ageLimit: '3-8', heightLimit: 'None', restrictions: 'None' },
+    { id: 27, name: 'Kiddie Coaster', category: 'Kids', ageLimit: '5-10', heightLimit: '2.5ft+', restrictions: 'None' },
 ];
 
 const Rides = () => {
+  const navigate = useNavigate(); // Initialize useNavigate hook
   const categories = [...new Set(ridesData.map(ride => ride.category))]; // Unique categories
 
   return (
+      <div>
+        <div className="notificationbar">
+            {/* Edit Notification Text */}
+            <h1 className="notificationtext">**WINTER SEASON PASSES AVAILABLE! LOGIN OR CREATE AN ACCOUNT FOR MORE INFORMATION.</h1>
+            <section className="loginbutton">
+                <a href="login" id="logintext">
+                    <CustomerAccount text="Log In" /> {/* Looks ugly but works */}
+                </a>
+            </section>
+            </div>
       <div className="rides-container">
+          <button className="back-button" onClick={() => navigate('/')}>
+              Back to Home
+          </button>
           {categories.map(category => (
               <div className="ride-category" key={category}>
                   <h2>{category} Rides</h2>
@@ -45,6 +69,7 @@ const Rides = () => {
                   </div>
               </div>
           ))}
+      </div>
       </div>
   );
 };
