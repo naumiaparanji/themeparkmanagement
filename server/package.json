@@ -1,0 +1,19 @@
+{
+    "name": "themepark_server",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "libsodium-wrappers-sumo": "*",
+        "express": "*",
+        "express-session": "*",
+        "express-mysql-session": "*",
+        "mysql2": "*",
+        "knex": "*",
+        "cors": "*"
+    },
+    "scripts": {
+        "deploy": "./deploy.sh",
+        "test-win": ".\\test.bat",
+        "test-linux": "./test.sh"
+    }
+}
