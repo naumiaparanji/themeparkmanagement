@@ -1,181 +1,52 @@
 import React from 'react';
+import './Rides.css'; // Make sure to create this CSS file for styling
 
-function Rides() {
-  const thrillRides = [
-    { name: 'Dragon Coaster', description: 'A high-speed coaster with loops and sharp turns.', age: '12+', height: '4ft+', restrictions: 'No heart conditions' },
-    { name: 'Sky Drop', description: 'A terrifying freefall from 200 feet in the air.', age: '14+', height: '4.5ft+', restrictions: 'No fear of heights' },
-    { name: 'Tornado Twister', description: 'A spinning thrill ride that will leave you breathless.', age: '12+', height: '4ft+', restrictions: 'No back problems' },
-  ];
+const ridesData = [
+    // Array of ride objects with categories
+    { id: 1, name: 'Thunder Mountain', category: 'Land', ageLimit: 8, heightLimit: '42 inches', restrictions: 'No heart conditions' },
+    { id: 2, name: 'Splash Water Ride', category: 'Water', ageLimit: 6, heightLimit: '36 inches', restrictions: 'Must wear life jacket' },
+    { id: 3, name: 'Adventure River', category: 'Water', ageLimit: 5, heightLimit: '40 inches', restrictions: 'Supervision required' },
+    { id: 4, name: 'Dragon Roller Coaster', category: 'Land', ageLimit: 10, heightLimit: '48 inches', restrictions: 'Pregnant women not allowed' },
+    { id: 5, name: 'Pirate Ship', category: 'Hybrid', ageLimit: 7, heightLimit: '40 inches', restrictions: 'No loose items' },
+    { id: 6, name: 'Sky Dive', category: 'Hybrid', ageLimit: 12, heightLimit: '54 inches', restrictions: 'No back problems' },
+    { id: 7, name: 'Wave Pool', category: 'Water', ageLimit: 4, heightLimit: '30 inches', restrictions: 'Must be with an adult' },
+    { id: 8, name: 'Haunted Mansion', category: 'Land', ageLimit: 10, heightLimit: 'None', restrictions: 'No pregnant women' },
+    { id: 9, name: 'Zipline Adventure', category: 'Hybrid', ageLimit: 8, heightLimit: '42 inches', restrictions: 'Max weight 250 lbs' },
+    { id: 10, name: 'Kiddie Carousel', category: 'Land', ageLimit: 2, heightLimit: 'None', restrictions: 'Adult supervision required' },
+    { id: 11, name: 'Lazy River', category: 'Water', ageLimit: 0, heightLimit: 'None', restrictions: 'Must wear a life jacket for kids' },
+    { id: 12, name: 'Twister Slide', category: 'Water', ageLimit: 6, heightLimit: '42 inches', restrictions: 'No jewelry' },
+    { id: 13, name: 'Bumper Cars', category: 'Land', ageLimit: 4, heightLimit: 'None', restrictions: 'Must be seated at all times' },
+    { id: 14, name: 'Super Splash', category: 'Water', ageLimit: 8, heightLimit: '44 inches', restrictions: 'Must be able to swim' },
+    { id: 15, name: 'Family Coaster', category: 'Hybrid', ageLimit: 6, heightLimit: '38 inches', restrictions: 'Children must be accompanied' },
+    { id: 16, name: 'Rock Climbing Wall', category: 'Land', ageLimit: 10, heightLimit: 'None', restrictions: 'Waiver required' },
+    { id: 17, name: 'Wet and Wild', category: 'Water', ageLimit: 5, heightLimit: '36 inches', restrictions: 'Supervision required' },
+    { id: 18, name: 'Spin Zone', category: 'Hybrid', ageLimit: 4, heightLimit: 'None', restrictions: 'Maximum of 2 per car' },
+    { id: 19, name: 'Scenic Train Ride', category: 'Land', ageLimit: 0, heightLimit: 'None', restrictions: 'None' },
+    { id: 20, name: 'River Rapids', category: 'Water', ageLimit: 7, heightLimit: '42 inches', restrictions: 'No pregnant women' }
+];
 
-  const familyRides = [
-    { name: 'Ferris Wheel', description: 'Enjoy a relaxing panoramic view of the entire park.', age: 'All ages', height: '3ft+', restrictions: 'None' },
-    { name: 'Park Train', description: 'A gentle ride through the scenic areas of the park.', age: 'All ages', height: 'None', restrictions: 'None' },
-    { name: 'Carousel', description: 'A classic merry-go-round with beautifully painted horses.', age: 'All ages', height: 'None', restrictions: 'None' },
-  ];
-
-  const kidsRides = [
-    { name: 'Mini Bumper Cars', description: 'Fun-sized bumper cars for younger children.', age: '5-10', height: 'None', restrictions: 'None' },
-    { name: 'Tiny Teacups', description: 'Gentle spinning cups for the little ones.', age: '3-8', height: 'None', restrictions: 'None' },
-    { name: 'Kiddie Coaster', description: 'A small, kid-friendly roller coaster.', age: '5-10', height: '2.5ft+', restrictions: 'None' },
-  ];
-
-  const waterRides = [
-    { name: 'Splash Mountain', description: 'A water ride with a big splash at the end.', age: '10+', height: '3.5ft+', restrictions: 'Swimwear required' },
-    { name: 'Lazy River', description: 'Relax as you float along a slow-moving river.', age: 'All ages', height: 'None', restrictions: 'Life jacket for young children' },
-    { name: 'Wave Pool', description: 'Experience waves in a huge pool with simulated tides.', age: 'All ages', height: 'None', restrictions: 'Swimwear required' },
-  ];
-
-  const hybridRides = [
-    { name: 'Water Coaster', description: 'A blend of roller coaster thrills with water splashes.', age: '12+', height: '4ft+', restrictions: 'No back problems' },
-    { name: 'Pirate’s Adventure', description: 'A land and water ride where you navigate a pirate ship through twists and turns.', age: '8+', height: '3ft+', restrictions: 'None' },
-    { name: 'Jungle Rapids', description: 'A thrilling raft ride through rapid water streams.', age: '10+', height: '3.5ft+', restrictions: 'None' },
-  ];
-
-  const darkRides = [
-    { name: 'Haunted Mansion', description: 'A spooky dark ride through haunted rooms and corridors.', age: '8+', height: 'None', restrictions: 'None' },
-    { name: 'Alien Invasion', description: 'A sci-fi themed ride battling aliens in space.', age: '12+', height: 'None', restrictions: 'None' },
-    { name: 'Dino Safari', description: 'Take a journey through prehistoric times with animatronic dinosaurs.', age: 'All ages', height: 'None', restrictions: 'None' },
-  ];
-
-  const simulators = [
-    { name: 'Virtual Space Mission', description: 'Experience the feeling of a real space launch and mission in this immersive simulator.', age: '12+', height: 'None', restrictions: 'None' },
-    { name: 'Flight Simulator', description: 'Soar through the skies in a virtual airplane simulation.', age: '10+', height: 'None', restrictions: 'None' },
-    { name: 'Race Car Challenge', description: 'Compete in a virtual race car competition with friends.', age: '12+', height: 'None', restrictions: 'None' },
-  ];
-
-  const sectionStyle = {
-    padding: '20px',
-    marginBottom: '30px',
-    backgroundColor: '#f4f4f4',
-    borderRadius: '8px',
-  };
-
-  const titleStyle = {
-    color: '#2c3e50',
-    textAlign: 'center',
-    marginBottom: '20px',
-  };
-
-  const rideItemStyle = {
-    padding: '10px',
-    borderBottom: '1px solid #ccc',
-  };
-
-  const ridesListStyle = {
-    listStyle: 'none',
-    paddingLeft: '0',
-  };
+const Rides = () => {
+  const categories = [...new Set(ridesData.map(ride => ride.category))]; // Unique categories
 
   return (
-    <div style={{ padding: '40px' }}>
-      <h1 style={{ textAlign: 'center', color: '#2980b9' }}>Explore Our Rides</h1>
-      
-      <section style={sectionStyle}>
-        <h2 style={titleStyle}>Thrill Rides</h2>
-        <ul style={ridesListStyle}>
-          {thrillRides.map((ride, index) => (
-            <li key={index} style={rideItemStyle}>
-              <h3>{ride.name}</h3>
-              <p>{ride.description}</p>
-              <p><strong>Age:</strong> {ride.age}</p>
-              <p><strong>Height:</strong> {ride.height}</p>
-              <p><strong>Restrictions:</strong> {ride.restrictions}</p>
-            </li>
+      <div className="rides-container">
+          {categories.map(category => (
+              <div className="ride-category" key={category}>
+                  <h2>{category} Rides</h2>
+                  <div className="ride-list">
+                      {ridesData.filter(ride => ride.category === category).map(ride => (
+                          <div className="ride-card" key={ride.id}>
+                              <h3>{ride.name}</h3>
+                              <p><strong>Age Limit:</strong> {ride.ageLimit}+</p>
+                              <p><strong>Height Requirement:</strong> {ride.heightLimit}</p>
+                              <p><strong>Restrictions:</strong> {ride.restrictions}</p>
+                          </div>
+                      ))}
+                  </div>
+              </div>
           ))}
-        </ul>
-      </section>
-
-      <section style={sectionStyle}>
-        <h2 style={titleStyle}>Family Rides</h2>
-        <ul style={ridesListStyle}>
-          {familyRides.map((ride, index) => (
-            <li key={index} style={rideItemStyle}>
-              <h3>{ride.name}</h3>
-              <p>{ride.description}</p>
-              <p><strong>Age:</strong> {ride.age}</p>
-              <p><strong>Height:</strong> {ride.height}</p>
-              <p><strong>Restrictions:</strong> {ride.restrictions}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section style={sectionStyle}>
-        <h2 style={titleStyle}>Kids Rides</h2>
-        <ul style={ridesListStyle}>
-          {kidsRides.map((ride, index) => (
-            <li key={index} style={rideItemStyle}>
-              <h3>{ride.name}</h3>
-              <p>{ride.description}</p>
-              <p><strong>Age:</strong> {ride.age}</p>
-              <p><strong>Height:</strong> {ride.height}</p>
-              <p><strong>Restrictions:</strong> {ride.restrictions}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section style={sectionStyle}>
-        <h2 style={titleStyle}>Water Rides</h2>
-        <ul style={ridesListStyle}>
-          {waterRides.map((ride, index) => (
-            <li key={index} style={rideItemStyle}>
-              <h3>{ride.name}</h3>
-              <p>{ride.description}</p>
-              <p><strong>Age:</strong> {ride.age}</p>
-              <p><strong>Height:</strong> {ride.height}</p>
-              <p><strong>Restrictions:</strong> {ride.restrictions}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section style={sectionStyle}>
-        <h2 style={titleStyle}>Hybrid Rides (Land & Water)</h2>
-        <ul style={ridesListStyle}>
-          {hybridRides.map((ride, index) => (
-            <li key={index} style={rideItemStyle}>
-              <h3>{ride.name}</h3>
-              <p>{ride.description}</p>
-              <p><strong>Age:</strong> {ride.age}</p>
-              <p><strong>Height:</strong> {ride.height}</p>
-              <p><strong>Restrictions:</strong> {ride.restrictions}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section style={sectionStyle}>
-        <h2 style={titleStyle}>Dark Rides</h2>
-        <ul style={ridesListStyle}>
-          {darkRides.map((ride, index) => (
-            <li key={index} style={rideItemStyle}>
-              <h3>{ride.name}</h3>
-              <p>{ride.description}</p>
-              <p><strong>Age:</strong> {ride.age}</p>
-              <p><strong>Height:</strong> {ride.height}</p>
-              <p><strong>Restrictions:</strong> {ride.restrictions}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section style={sectionStyle}>
-        <h2 style={titleStyle}>Simulators</h2>
-        <ul style={ridesListStyle}>
-          {simulators.map((ride, index) => (
-            <li key={index} style={rideItemStyle}>
-              <h3>{ride.name}</h3>
-              <p>{ride.description}</p>
-              <p><strong>Age:</strong> {ride.age}</p>
-              <p><strong>Height:</strong> {ride.height}</p>
-              <p><strong>Restrictions:</strong> {ride.restrictions}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
-    </div>
+      </div>
   );
-}
+};
 
 export default Rides;

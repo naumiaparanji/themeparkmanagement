@@ -1,0 +1,37 @@
+.rides-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+    height: calc(100vh - 120px); /* Adjust based on your navbar height */
+    overflow-y: auto; /* Allow vertical scrolling */
+    background-image: url('./images/login-b.jpg'); /* Update the path */
+    background-size: cover; /* Scale the image to cover the entire container */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Prevent repeating of the image */
+    border-radius: 8px; /* Optional: add rounded corners */
+    color: white; /* Optional: set text color for contrast */
+}
+
+
+.ride-category {
+    margin-bottom: 40px; /* Space between categories */
+}
+
+.ride-list {
+    display: flex; /* Use flexbox for the ride cards */
+    flex-wrap: wrap; /* Wrap cards to the next line if needed */
+    gap: 20px; /* Space between cards */
+}
+
+.ride-card {
+    background-color: #f9f9f9; /* Card background color */
+    border: 1px solid #ddd; /* Card border */
+    border-radius: 8px; /* Rounded corners */
+    padding: 15px; /* Padding inside cards */
+    width: calc(30% - 20px); /* Adjust width based on how many cards you want in a row */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Shadow effect */
+}
+
+.ride-card h3 {
+    margin-top: 0; /* Remove margin from the top of the card title */
+}
