@@ -1,0 +1,84 @@
+.banner-image {
+    align-items: center;
+    flex-direction: column;
+    width: 100vm;
+    background-image: url('./images/login-c.jpg');
+    background-position: center;
+    background-size: cover;
+    display: flex;
+    box-shadow: 5px 5px 0 lightgrey;
+    overflow: visible;
+}
+
+h4 {
+    color: black;
+    text-shadow: -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 2px 2px 0 white, 5px 5px 0 black;
+    font-size: 5em;
+    text-align: center;
+    background-color: rgba(255, 255, 201, .9);
+    width: 100%;
+}
+
+#topquote {
+    color: black;
+    font-size: 2em;
+    text-align: center;
+}
+
+h2 {
+    color: black;
+    text-shadow: -3px -3px 0 white, 3px -3px 0 white, -3px 3px 0 white, 3px 3px 0 white, 5px 5px 0 black;
+    padding-bottom: 10px;
+    border-bottom: 2px solid white;
+    line-height: 48px;
+    text-align: left;
+}
+
+.attractionheader {
+    text-align: left;
+}
+
+.attractions-container {
+    padding: 20px;
+    max-width: 100vw;
+    margin: auto;
+    height: 85vh; /* Adjust based on your navbar height */
+    overflow-y: auto; /* Allow vertical scrolling */
+    color: white;
+}
+
+.attractions-category {
+    margin-bottom: 40px; /* Space between categories */
+    color: white;
+}
+
+.attractions-list {
+    display: flex;
+    gap: 20px; /* Space between cards */
+}
+
+.attractions-card {
+    background-color: #f9f9f9; /* Card background color */
+    border: 1px solid #ddd; /* Card border */
+    border-radius: 8px; /* Rounded corners */
+    padding: 10px; /* Padding inside cards */
+    width: 100%; /* Adjust width based on how many cards you want in a row */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Shadow effect */
+    color: black;
+    text-align: left;
+    border-bottom: 2px solid black;
+    line-height: 40vm;
+}
+
+.attractions-card:hover {
+    transform: scale(1.02);
+}
+
+.attractions-card h3 {
+    margin-top: 0; /* Remove margin from the top of the card title */
+    color: black; /* Change card title color to black */
+}
+
+.attractions-card p {
+    color: black;
+}

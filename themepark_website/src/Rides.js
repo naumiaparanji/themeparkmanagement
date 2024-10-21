@@ -55,7 +55,8 @@ const Rides = () => {
       <div className="rides-container">
           <button className="back-button" onClick={() => navigate('/')}>
               Back to Home
-          </button>
+              </button>
+          <br></br>
           {categories.map(category => (
               <div className="ride-category" key={category}>
                   <h2>{category} Rides</h2>

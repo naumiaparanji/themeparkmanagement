@@ -62,7 +62,7 @@ const AboutUs = () => {
             Plan your visit with our detailed guides on tickets, accommodations, and special events. We're here to help you have an unforgettable experience.
           </p>
         </div>
-      </div>
+        </div>
     </div>
     </div>
   );
