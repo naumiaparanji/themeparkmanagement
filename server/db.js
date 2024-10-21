@@ -1,5 +1,6 @@
 // Themepark database code
 
+const auth = require("./auth");
 const db = require("knex")({
     client: "mysql2",
     connection: {
@@ -9,8 +10,9 @@ const db = require("knex")({
         database: process.env.MYSQL_DB,
     },
 });
-const auth = require("./auth");
 
+
+// Predefined queries
 async function getCustomers(){
     return await db("CUSTOMER");
 }
@@ -27,12 +29,6 @@ async function setEmployee(fields){
     .merge();
 }
 
-/**
- * Query the database for user authentication info and returns a password hash if the user exists
- * @param {String} userEmail 
- * @param {Boolean} isEmployee 
- * @returns {String | undefined}
- */
 async function getAuthInfo(userEmail , isEmployee =false) {
     var target = "CUSTOMER";
     if (isEmployee)
@@ -42,8 +38,9 @@ async function getAuthInfo(userEmail , isEmployee =false) {
     return dbObj;
 }
 
+
+// Middleware
 async function registerCustomer(req, res, next) {
-    // This will fail atm because all of the customer fields are NOT NULL
     await db("CUSTOMER")
     .insert({Email: req.body.username, Password: await auth.hashpw(req.body.password)})
     .onConflict('Email')
@@ -101,6 +98,7 @@ async function registerEmployee(req, res, next) {
 }
 
 module.exports = {
+    themeparkDB: db,
     getCustomers,
     setCustomer,
     setEmployee,

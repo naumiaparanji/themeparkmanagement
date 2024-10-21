@@ -15,6 +15,7 @@ let initialized = false;
 
 let algorithms = null;
 
+// All functions calling libsodium MUST call this at least once
 async function init() {
     if (!initialized) {
         await sodium.ready;
@@ -27,15 +28,6 @@ async function init() {
     }
 }
 
-/**
- * Hash password string. Defaults to minimum recommended settings on the OWASP cheat sheet.
- * https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
- * @param {String} password Password string to hash.
- * @param {String} algo Algorithm to use (argon2i, argon2id, default).
- * @param {Number} memlimitMB Memory limit of algorithm in megabytes.
- * @param {Number} iters Ops limit in hash algorithm.
- * @returns {Promise<String>} Formatted hash string.
- */
 async function hashpw(password, algo = 'argon2id', memlimitMB = 19, iters = 2) {
     await init();
     const a = algorithms[algo];
@@ -45,54 +37,24 @@ async function hashpw(password, algo = 'argon2id', memlimitMB = 19, iters = 2) {
     return `${a}$${iters}$${memlimitMB}$${sodium.to_base64(salt)}$${sodium.to_base64(hash)}`;
 }
 
-/**
- * Convenience function that uses moderate security parameters with hashpw.
- * @param {String} password Password string to hash.
- * @returns {Promise<String>} Formatted hash string.
- */
+// not used EVER but still here just in case ;)
 async function hashpwModerate(password) {
     await init();
     const memlimitMB = Math.floor(sodium.crypto_pwhash_MEMLIMIT_MODERATE / (1024 * 1024));
     return await hashpw(password, 'argon2id', memlimitMB, sodium.crypto_pwhash_OPSLIMIT_MODERATE);
 }
-
-/**
- * Convenience function that uses high/sensitive security parameters with hashpw.
- * @param {String} password Password string to hash.
- * @returns {Promise<String>} Formatted hash string.
- */
 async function hashpwSecure(password) {
     await init();
     const memlimitMB = Math.floor(sodium.crypto_pwhash_MEMLIMIT_SENSITIVE / (1024 * 1024));
     return await hashpw(password, 'argon2id', memlimitMB, sodium.crypto_pwhash_OPSLIMIT_SENSITIVE);
 }
 
-/**
- * Verify that a guessed password matches what is stored in the database.
- * @param {String} password Password to verify.
- * @param {String} hash Formatted hash string from database.
- * @returns {Promise<Boolean>} True if password matches hash.
- */
 async function checkpw(password, hash) {
     const hashObj = await splithash(hash); // Init is also called here to obtain base64 decoders from libsodium
     const newHash = sodium.crypto_pwhash(hashObj.hash.length, password, hashObj.salt, hashObj.iters, hashObj.memlimitMB * 1024 * 1024, hashObj.algID);
     return sodium.memcmp(hashObj.hash, newHash);
 }
 
-/**
- * Break hash string from hashpw into its components.
- * @example
- * // Splithash object formatting
- * {
-        algID: int,
-        iters: int,
-        memlimitMB: int,
-        salt: salt_bytes,
-        hash: hash_bytes
-    }
- * @param {String} hash Formatted hash string.
- * @returns {Promise<Object>} Object containing hash string components.
- */
 async function splithash(hash){
     await init();
     const hashElements = hash.split("$");
@@ -107,12 +69,8 @@ async function splithash(hash){
 
 // Functions for application
 
-/**
- * Update the secret store in the keystore database, filling the provided array with valid secrets.
- * @param {Array} secrets Destination array to place valid secrets from keystore.
- * @param {Number} renewAfter Number of days to keep latest secret in use.
- * @param {Number} discardAfter Number of days to wait before deleting a secret from the keystore.
- */
+// Secrets are random keys used to sign session ids. They are added periodically to the database.
+// This function is scheduled to run at predefined intervals in main.js
 async function updateSessionSecrets(secrets, renewAfter=7, discardAfter=30) {
     const curTime = new Date();
     const discardDate = new Date();
@@ -161,6 +119,8 @@ function authenticate(getPassFunc) {
     }
 }
 
+// Predef query used to delete excess sessions from the database.
+// maxSessions defines the limit. Oldest sessions get deleted first.
 async function pruneSessions(user, maxSessions, isEmployee=false) {
     await keystoreDB('SESSIONS').whereNotIn('session_id', function() {
         this.select('session_id')

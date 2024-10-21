@@ -103,6 +103,8 @@ setInterval(async () => {
     // API routes for server
     require('./customerRoutes')(app);
     require('./employeeRoutes')(app);
+    require('./eventsRoutes')(app);
+    require('./rideRoutes')(app);
 
     http.createServer(options, app).listen(port, () => {
         console.log(`Listening on port ${port}`);
