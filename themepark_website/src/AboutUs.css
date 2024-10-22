@@ -15,8 +15,9 @@
 .about-us-title {
     font-size: 46px;
     margin-bottom: 30px;
+    text-shadow: -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 2px 2px 0 white, 5px 5px 0 black;
     padding-top: 30px;
-    color: white; 
+    border-bottom: 2px solid white;
 }
 
 /* Cards container using Flexbox for horizontal alignment */
