@@ -10,7 +10,7 @@ export function LoginBox(props) {
     const [message, setMessage] = useState('');
 
     const loginSubmit = async () => {
-        let response = await apiPost('/customer/login',
+        const response = await apiPost(props.apiPath || '/customer/login',
             {
                 username: email,
                 password: password
@@ -37,7 +37,7 @@ export function LoginBox(props) {
             <div style={{
                 fontSize: "20px",
                 margin: "-18px 0px 14px 0px"
-            }}>Customer Portal</div>
+            }}>{props.title}</div>
             <hr style={{
                 color: "lightgrey",
                 margin:"0px 8px 16px 8px"
@@ -57,7 +57,7 @@ export function LoginBox(props) {
             />
             <FancyButton text='Login' action={loginSubmit} />
             <FancyButton text='Register' 
-                action={() => window.location.pathname = "/signup"} 
+                action={() => window.location.pathname = props.signUp} 
                 style={Object.assign({}, defaultButtonStyle, {
                     backgroundColor: "#55ACEE",
                 })}
@@ -75,11 +75,27 @@ export function LoginBox(props) {
     );
 }
 
-export function Login() {
+export function Login(props) {
     return (
     <div className='container'>
         <RandomBGImg />
-        <LoginBox redirect="/" />
+        <LoginBox 
+            title={props.title || 'Customer Portal'}
+            redirect={props.redirect || '/'} 
+            signUp={props.signUp || 'customer/signup'}
+            apiPath={props.apiPath}
+        /> { /* To be replaced with customer view path */}
     </div>
     );
 };
+
+export function EmployeeLogin(props) {
+    return (
+        <Login
+            title={props.title || 'Employee Portal'}
+            redirect={props.redirect || '/employee/access'} 
+            signUp={props.signUp || 'employee/signup'}
+            apiPath={props.apiPath || '/employee/login'}
+        />
+    );
+}

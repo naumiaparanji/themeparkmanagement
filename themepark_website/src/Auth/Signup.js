@@ -24,7 +24,7 @@ export function SignUpBox(props) {
             setMessage('Passwords do not match');
             return;
         }
-        const response = await apiPost('/customer/register', 
+        const response = await apiPost(props.apiPath || '/customer/register', 
             {
                 username: email,
                 password: password
@@ -53,7 +53,7 @@ export function SignUpBox(props) {
             <div style={{
                 fontSize: "20px",
                 margin: "-18px 0px 14px 0px"
-            }}>Customer Sign-Up</div>
+            }}>{props.title}</div>
             <hr style={{
                 color: "lightgrey",
                 margin:"0px 8px 16px 8px"
@@ -80,7 +80,7 @@ export function SignUpBox(props) {
             <FancyButton text='Sign Up' action={signUpSubmit} />
             <div><p>Already have an account?</p></div>
             <FancyButton text='Login' 
-                action={() => window.location.pathname = "/login"} 
+                action={() => window.location.pathname = props.login} 
                 style={Object.assign({}, defaultButtonStyle, {
                     backgroundColor: "#55ACEE",
                 })}
@@ -89,11 +89,29 @@ export function SignUpBox(props) {
     );
 }
 
-export function SignUp() {
+export function SignUp(props) {
     return (
     <div className='container'>
         <RandomBGImg />
-        <SignUpBox redirect="/login" />
+        <SignUpBox 
+            title={props.title || 'Customer Sign-Up'}
+            redirect={props.redirect || '/login'} 
+            login={props.login || '/login'}
+            apiPath={props.apiPath}
+        />
     </div>
     );
 };
+
+export function EmployeeSignup(props) {
+    // TEMPORARY UNTIL REGISTRATION VIEW FOR MANAGERS, ADMINS, ETC IS COMPLETE
+    // Also will fail bc there aren't enough fields
+    return (
+        <SignUp
+            title={props.title || 'Employee Sign-Up'}
+            redirect={props.redirect || '/employee/login'} 
+            login={props.login || '/employee/login'}
+            apiPath={props.apiPath || '/employee/register'}
+        />
+    );
+}
