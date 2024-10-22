@@ -80,7 +80,7 @@ const Events = () => {
             <Navbar />
             <div className="events-container">
                 <div className="banner-image">
-                    <h4>Events And Promotions</h4>
+                    <h2>Events And Promotions</h2>
                 </div>
                 <br></br>
                 <block id="topquote_one"><p><b>Check out our Daily Attractions and Promotions!</b></p></block>
