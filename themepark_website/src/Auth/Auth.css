@@ -34,6 +34,7 @@
     transform: translate(-50%, -50%);
     min-height: auto;
     max-width: 400px;
+    text-align: center;
 }
 
 html, body {

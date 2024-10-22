@@ -59,6 +59,7 @@ CREATE TABLE EMPLOYEE (
   PhoneNumber varchar(255) NOT NULL,
   Email varchar(255) NOT NULL,
   Password varchar(255) NOT NULL,
+  AccessLevel enum('EMP', 'MGR', 'ADM') NOT NULL DEFAULT 'EMP',
   StartDate date NOT NULL,
   EndDate date NOT NULL,
   Created date NOT NULL DEFAULT (CURRENT_DATE),

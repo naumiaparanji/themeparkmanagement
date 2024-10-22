@@ -4,7 +4,7 @@ const db = require("./db");
 
 // Auth check middleware
 const customerAuth = auth.authenticate(async (username) => {
-    return db.getAuthInfo(username);
+    return (await db.getUser(username)).Password;
 });
 
 // App routes
@@ -42,9 +42,20 @@ module.exports = (app) => {
         res.status(200).json({success: true, user: req.session.user});
     });
 
-    app.post("/customer/register", db.registerCustomer, async (req, res) => {
-        if(req.registrationError) {
-            res.json({success: false, error: req.registrationErrorInfo});
+    app.post("/customer/register", async (req, res) => {
+        if (!req.body.username || !req.body.password) {
+            res.status(400).json({success: false, error:"MissingParams"});
+            return;
+        }
+        const success = await db.setUser(req.body.username, 
+            {password: await auth.hashpw(req.body.password)}, false)
+        .catch((e) => {
+            console.log(e);
+            res.status(500).json({success: false, error: "SQLError"});
+            return;
+        });
+        if(!success) {
+            res.status(409).json({success: false, error: "UserExists"});
             return;
         }
         res.status(200).json({success: true});

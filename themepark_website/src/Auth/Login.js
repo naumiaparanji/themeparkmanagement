@@ -82,7 +82,7 @@ export function Login(props) {
         <LoginBox 
             title={props.title || 'Customer Portal'}
             redirect={props.redirect || '/'} 
-            signUp={props.signUp || 'customer/signup'}
+            signUp={props.signUp || '/signup'}
             apiPath={props.apiPath}
         /> { /* To be replaced with customer view path */}
     </div>

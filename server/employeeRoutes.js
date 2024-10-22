@@ -1,10 +1,11 @@
 // Themepark modules
 const auth = require("./auth");
 const db = require("./db");
+const reqChecks = require("./reqChecks");
 
 // Auth check middleware
 const employeeAuth = auth.authenticate(async (username) => {
-    return db.getAuthInfo(username, true);
+    return (await db.getUser(username, true)).Password;
 });
 
 // App routes
@@ -42,12 +43,57 @@ module.exports = (app) => {
         res.status(200).json({success: true, user: req.session.employeeUser});
     });
 
-    app.post("/employee/register", db.registerEmployee, async (req, res) => {
+    app.post("/employee/register", async (req, res) => {
         // Differs from customer registration in that the session needs to be authorized
         // Needs additional logic for checking registration permissions per employee
-        // Check registerEmployee in db.js
-        if(req.registrationError) {
-            res.json({success: false, error: req.registrationErrorInfo});
+        const requestingEmployee = await db.getUser(req.session.employeeUser, true);
+        const allowedLevels = ['MGR', 'ADM'];
+        if(!requestingEmployee || allowedLevels.indexOf(requestingEmployee.AccessLevel) === -1) {
+            res.status(401).json({success: false, error: "NotAuthorized"});
+            return;
+        }
+        requiredKeys = [
+            "firstName",
+            "lastName",
+            "dob",
+            "address",
+            "phoneNumber",
+            "username",
+            "password",
+            "startDate",
+            "endDate"
+        ];
+        if (!req.body || !reqChecks.matchKeys(req.body, requiredKeys)) {
+            res.status(400).json({success: false, error:"MissingParams"});
+            return;
+        }
+        let newEmplyee = {
+            FirstName: req.body.firstName,
+            LastName: req.body.lastName,
+            DOB: req.body.dob,
+            Address: req.body.address,
+            PhoneNumber: req.body.phoneNumber,
+            Password: await auth.hashpw(req.body.password),
+            StartDate: req.body.startDate,
+            EndDate: req.body.endDate
+        };
+        const allLevels = ['EMP', 'MGR', 'ADM'];
+        if (req.body.accessLevel) {
+            if (allLevels.indexOf(req.body.accessLevel) === -1) {
+                res.status(400).json({success: false, error:"BadParams"});
+                return;
+            }
+            newEmplyee.AccessLevel = req.body.accessLevel;
+        }
+        if (req.body.created != undefined) newEmplyee.Created = req.body.created;
+        const success = await db.setUser(req.body.username, newEmplyee, true, false)
+        .catch((e) => {
+            console.log(e);
+            res.status(500).json({success: false, error: "SQLError"});
+            return;
+        });
+        if(!success) {
+            res.status(409).json({success: false, error: "UserExists"});
             return;
         }
         res.status(200).json({success: true});

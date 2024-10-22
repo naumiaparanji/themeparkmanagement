@@ -58,25 +58,24 @@ setInterval(async () => {
     // Any awaits that needs to happen before the server starts should go here
 
     // Set admin account for customer and employee tables
-    await db.setCustomer({
+    await db.setUser(`${process.env.APP_ADMIN_USER}@themepark.net`, {
         FirstName: process.env.APP_ADMIN_USER,
         LastName: process.env.APP_ADMIN_USER,
         DOB: new Date(0),
         Address: 'SomeAddress',
-        Email: `${process.env.APP_ADMIN_USER}@themepark.net`,
         Password: await auth.hashpw(process.env.APP_ADMIN_PASS)
     });
-    await db.setEmployee({
+    await db.setUser(`${process.env.APP_ADMIN_USER}@themepark.net`, {
         FirstName: process.env.APP_ADMIN_USER,
         LastName: process.env.APP_ADMIN_USER,
         DOB: new Date(0),
         Address: 'SomeAddress',
         PhoneNumber: '555-555-5555',
-        Email: `${process.env.APP_ADMIN_USER}@themepark.net`,
         Password: await auth.hashpw(process.env.APP_ADMIN_PASS),
+        AccessLevel: "ADM",
         StartDate: new Date(0),
         EndDate: new Date(2147483647 * 1000)
-    });
+    }, true);
 
     // Update session secrets in database
     await auth.updateSessionSecrets(sessionSecrets);

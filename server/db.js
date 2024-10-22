@@ -13,96 +13,29 @@ const db = require("knex")({
 
 
 // Predefined queries
-async function getCustomers(){
-    return await db("CUSTOMER");
-}
-
-async function setCustomer(fields){
-    return await db("CUSTOMER").insert(fields)
-    .onConflict("Email")
-    .merge();
-}
-
-async function setEmployee(fields){
-    return await db("EMPLOYEE").insert(fields)
-    .onConflict("Email")
-    .merge();
-}
-
-async function getAuthInfo(userEmail , isEmployee =false) {
-    var target = "CUSTOMER";
+async function getUser(userEmail, isEmployee=false) {
+    if (!userEmail) return;
+    let target = "CUSTOMER";
     if (isEmployee)
         target = "EMPLOYEE";
-    const dbObj = await db(target).select("Password").where("Email", userEmail).first();
-    if (dbObj !== undefined) return dbObj.Password;
-    return dbObj;
+    return await db(target).where("Email", userEmail).first();
 }
 
-
-// Middleware
-async function registerCustomer(req, res, next) {
-    await db("CUSTOMER")
-    .insert({Email: req.body.username, Password: await auth.hashpw(req.body.password)})
-    .onConflict('Email')
-    .ignore()
-    .then((result) => {
-        req.registrationError = result[0] === 0;
-        if (req.registrationError) {
-            req.registrationErrorInfo = 'UserExists';
-            res.status(409);
-        }
-    })
-    .catch((error) => {
-        req.registrationError = true;
-        req.registrationErrorInfo = 'SQLError';
-        res.status(500);
-        console.error(error);
-    });
-    next();
-}
-
-async function registerEmployee(req, res, next) {
-    if (req.session.employeeUser === undefined) {
-        req.registrationError = true;
-        req.registrationErrorInfo = 'NotAuthorized';
-        res.status(401);
-        return next();
-    }
-    let newEmplyee = {
-        FirstName: req.body.firstName,
-        LastName: req.body.lastName,
-        DOB: req.body.dob,
-        Address: req.body.address,
-        PhoneNumber: req.body.phoneNumber,
-        Email: req.body.email,
-        Password: req.body.password,
-        StartDate: req.body.startDate,
-        EndDate: req.body.endDate
-    };
-    if (req.body.created != undefined) newEmplyee.Created = req.body.created; // Defaults to curdate() in the database
-    await db("EMPLOYEE").insert(newEmplyee)
-    .then((result) => {
-        req.registrationError = result.length === 0;
-        if (req.registrationError) {
-            req.registrationErrorInfo = 'UserExists';
-            res.status(409);
-        }
-    })
-    .catch((error) => {
-        req.registrationError = true;
-        req.registrationErrorInfo = 'SQLError';
-        res.status(500);
-        console.error(error);
-    });
-    next();
+async function setUser(userEmail, fields, isEmployee=false, merge=true) {
+    if (!userEmail) return false;
+    let target = "CUSTOMER";
+    if (isEmployee)
+        target = "EMPLOYEE";
+    fields.Email = userEmail;
+    let query = db(target).insert(fields).onConflict("Email");
+    if (merge) query = query.merge();
+    else query = query.ignore();
+    const result = await query;
+    return result[0] != 0; // Returned id should never be 0 unless there was a conflict
 }
 
 module.exports = {
     themeparkDB: db,
-    getCustomers,
-    setCustomer,
-    setEmployee,
-    getAuthInfo,
-    registerCustomer,
-    registerEmployee
+    getUser,
+    setUser,
 };
