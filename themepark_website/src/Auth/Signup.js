@@ -5,6 +5,11 @@ import { RandomBGImg, MessageBox, InputField, FancyButton, Validation, defaultBu
 import { apiPost } from '../CRUDApi';
 
 export function SignUpBox(props) {
+    // Added new states for the additional fields
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [dob, setDob] = useState('');
+    const [address, setAddress] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -24,8 +29,13 @@ export function SignUpBox(props) {
             setMessage('Passwords do not match');
             return;
         }
+        // Send the additional fields as part of the registration request
         const response = await apiPost(props.apiPath || '/customer/register', 
             {
+                firstName: firstName,
+                lastName: lastName,
+                dob: dob,
+                address: address,
                 username: email,
                 password: password
             }
@@ -59,21 +69,52 @@ export function SignUpBox(props) {
                 margin:"0px 8px 16px 8px"
             }} />
             <MessageBox message={message} />
+
+            {/* New Input Fields for First Name, Last Name, DOB, and Address */}
+            <InputField 
+                name="First Name" 
+                containerStyle={{margin: "12px 12px"}}  // Add margin between input fields
+                value={firstName} 
+                onChange={(e) => setFirstName(e.target.value)}
+            />
+            <InputField 
+                name="Last Name" 
+                containerStyle={{margin: "12px 12px"}}  // Add margin between input fields
+                value={lastName} 
+                onChange={(e) => setLastName(e.target.value)}
+            />
+            <InputField 
+                name="Date of Birth" 
+                type="date" 
+                containerStyle={{margin: "12px 12px"}}  // Add margin between input fields
+                value={dob} 
+                onChange={(e) => setDob(e.target.value)}
+            />
+            <InputField 
+                name="Address" 
+                containerStyle={{margin: "12px 12px"}}  // Add margin between input fields
+                value={address} 
+                onChange={(e) => setAddress(e.target.value)}
+            />
+
+            {/* Existing Input Fields for Email, Password, and Confirm Password */}
             <InputField 
                 name="Email" 
-                containerStyle={{margin: "0px 12px"}} 
+                containerStyle={{margin: "12px 12px"}}  // Add margin between input fields
                 value={email} 
                 onChange={(e) => setEmail(e.target.value)}
             />
             <InputField 
                 name="Password" 
                 type="password" 
+                containerStyle={{margin: "12px 12px"}}  // Add margin between input fields
                 value={password} 
                 onChange={(e) => setPassword(e.target.value)}
             />
             <InputField 
                 name="Confirm Password" 
                 type="password" 
+                containerStyle={{margin: "12px 12px"}}  // Add margin between input fields
                 value={confirmPassword} 
                 onChange={(e) => setConfirmPassword(e.target.value)}
             />
@@ -81,9 +122,7 @@ export function SignUpBox(props) {
             <div><p>Already have an account?</p></div>
             <FancyButton text='Login' 
                 action={() => window.location.pathname = props.login} 
-                style={Object.assign({}, defaultButtonStyle, {
-                    backgroundColor: "#55ACEE",
-                })}
+                style={{ ...defaultButtonStyle, backgroundColor: "#55ACEE" }}
             />
         </div>
     );
