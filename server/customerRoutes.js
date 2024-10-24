@@ -4,7 +4,9 @@ const db = require("./db");
 
 // Auth check middleware
 const customerAuth = auth.authenticate(async (username) => {
-    return (await db.getUser(username)).Password;
+    const user = await db.getUser(username);
+    if (!user) return undefined;
+    return user.Password;
 });
 
 // App routes

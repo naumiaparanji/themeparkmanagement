@@ -94,7 +94,7 @@ export function EmployeeLogin(props) {
         <Login
             title={props.title || 'Employee Portal'}
             redirect={props.redirect || '/employee/access'} 
-            signUp={props.signUp || 'employee/signup'}
+            signUp={props.signUp || '/employee/signup'}
             apiPath={props.apiPath || '/employee/login'}
         />
     );

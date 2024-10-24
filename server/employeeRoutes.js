@@ -5,7 +5,9 @@ const reqChecks = require("./reqChecks");
 
 // Auth check middleware
 const employeeAuth = auth.authenticate(async (username) => {
-    return (await db.getUser(username, true)).Password;
+    const user = await db.getUser(username, true);
+    if (!user) return undefined;
+    return user.Password;
 });
 
 // App routes
@@ -35,12 +37,52 @@ module.exports = (app) => {
         }
     });
 
+    // Session info, sensitive information withheld
     app.get("/employee/info", async (req, res) => {
         if (req.session.employeeUser === undefined) {
             res.status(401).json({success: false, error: 'NotAuthorized'});
             return;
         }
-        res.status(200).json({success: true, user: req.session.employeeUser});
+        const requestingEmployee = await db.getUser(req.session.employeeUser, true);
+        res.status(200).json({success: true, 
+            user: req.session.employeeUser,
+            firstName: requestingEmployee.FirstName,
+            lastName: requestingEmployee.LastName,
+            accessLevel: requestingEmployee.AccessLevel
+        });
+    });
+
+    // Get more info about employee. Basic access only allows user to request own data.
+    app.get("/employee/data/:user", async (req, res) => {
+        if (req.session.employeeUser === undefined) {
+            res.status(401).json({success: false, error: 'NotAuthorized'});
+            return;
+        }
+        const requestingEmployee = await db.getUser(req.session.employeeUser, true);
+        let requestedEmployee = requestingEmployee;
+        if (req.params.user != req.session.employeeUser) {
+            if (requestingEmployee.AccessLevel === 'EMP') {
+                res.status(403).json({success: false, error: 'Restricted'});
+                return;
+            }
+            requestedEmployee = await db.getUser(req.params.user, true);
+        }
+        if (!requestedEmployee) {
+            res.status(404).json({success: false, error: 'UserDoesNotExist'});
+            return;
+        }
+        res.status(200).json({success: true, 
+            firstName: requestedEmployee.FirstName,
+            lastName: requestedEmployee.LastName,
+            dob: requestedEmployee.DOB,
+            address: requestedEmployee.Address,
+            phoneNumber: requestedEmployee.PhoneNumber,
+            email: requestedEmployee.Email,
+            accessLevel: requestedEmployee.AccessLevel,
+            startDate: requestedEmployee.StartDate,
+            endDate: requestedEmployee.EndDate,
+            created: requestedEmployee.Created
+        });
     });
 
     app.post("/employee/register", async (req, res) => {

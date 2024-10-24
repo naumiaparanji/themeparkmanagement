@@ -8,6 +8,7 @@ import AboutUs from './AboutUs';
 import Rides from './Rides';
 import { EmployeeLogin, Login } from './Auth/Login';
 import { EmployeeSignup, SignUp } from './Auth/Signup';
+import EmployeeDashboard from './Views/EmployeeDashboard';
 
 export const apiUrl = 'http://localhost:8080';
 
@@ -25,6 +26,7 @@ function App() {
                 <Route exact path='/about' element={<AboutUs />} />
                 <Route exact path='/employee/login' element={<EmployeeLogin />} />
                 <Route exact path='/employee/signup' element={<EmployeeSignup />} />
+                <Route path='/employee/access/*' element={<EmployeeDashboard />} />
             </Routes>
         </div>
     );
