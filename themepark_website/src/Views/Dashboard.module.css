@@ -1,0 +1,50 @@
+.fullsize {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100vw !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.sidepanel {
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+    height: auto;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #d6d6d6;
+    background-color: #f6f6f6;
+    padding: 0px;
+}
+
+.darken {
+    backdrop-filter: brightness(90%) !important;
+}
+
+.hoverdark:hover {
+    backdrop-filter: brightness(95%);
+}
+
+.grow {
+    flex-grow: 1;
+}
+
+.shrink {
+    flex-shrink: 1;
+}
+
+.hide {
+    overflow: hidden;
+}
+
+.scrolly {
+    overflow-y: auto !important;
+}

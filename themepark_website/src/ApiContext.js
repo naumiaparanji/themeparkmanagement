@@ -3,7 +3,7 @@ import { apiGet } from "./CRUDApi";
 
 export const ApiContext = React.createContext();
 
-export function ApiContextProvider({apiPath, apiFailureAction, children}) {
+export function ApiContextProvider({apiPath, apiFailureAction, blockRendering, children}) {
     const [data, setData] = useState(null);
 
     useEffect(() => {
@@ -19,7 +19,7 @@ export function ApiContextProvider({apiPath, apiFailureAction, children}) {
 
     return (
         <ApiContext.Provider value={{data, setData}}>
-            {children}
+            {blockRendering && !data? null : children}
         </ApiContext.Provider>
     );
 };
