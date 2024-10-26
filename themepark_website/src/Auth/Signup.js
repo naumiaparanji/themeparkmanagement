@@ -70,51 +70,49 @@ export function SignUpBox(props) {
             }} />
             <MessageBox message={message} />
 
-            {/* New Input Fields for First Name, Last Name, DOB, and Address */}
             <InputField 
                 name="First Name" 
-                containerStyle={{margin: "12px 12px"}}  // Add margin between input fields
+                containerStyle={{margin: "12px 12px"}}
                 value={firstName} 
                 onChange={(e) => setFirstName(e.target.value)}
             />
             <InputField 
                 name="Last Name" 
-                containerStyle={{margin: "12px 12px"}}  // Add margin between input fields
+                containerStyle={{margin: "12px 12px"}}
                 value={lastName} 
                 onChange={(e) => setLastName(e.target.value)}
             />
             <InputField 
                 name="Date of Birth" 
                 type="date" 
-                containerStyle={{margin: "12px 12px"}}  // Add margin between input fields
+                containerStyle={{margin: "12px 12px"}}
                 value={dob} 
                 onChange={(e) => setDob(e.target.value)}
             />
             <InputField 
                 name="Address" 
-                containerStyle={{margin: "12px 12px"}}  // Add margin between input fields
+                containerStyle={{margin: "12px 12px"}}
                 value={address} 
                 onChange={(e) => setAddress(e.target.value)}
             />
 
-            {/* Existing Input Fields for Email, Password, and Confirm Password */}
             <InputField 
                 name="Email" 
-                containerStyle={{margin: "12px 12px"}}  // Add margin between input fields
+                containerStyle={{margin: "12px 12px"}}
                 value={email} 
                 onChange={(e) => setEmail(e.target.value)}
             />
             <InputField 
                 name="Password" 
                 type="password" 
-                containerStyle={{margin: "12px 12px"}}  // Add margin between input fields
+                containerStyle={{margin: "12px 12px"}}
                 value={password} 
                 onChange={(e) => setPassword(e.target.value)}
             />
             <InputField 
                 name="Confirm Password" 
                 type="password" 
-                containerStyle={{margin: "12px 12px"}}  // Add margin between input fields
+                containerStyle={{margin: "12px 12px"}}
                 value={confirmPassword} 
                 onChange={(e) => setConfirmPassword(e.target.value)}
             />

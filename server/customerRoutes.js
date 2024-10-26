@@ -20,6 +20,7 @@ module.exports = (app) => {
                     res.status(500).json({success: false, error: 'SessionUpdateFailed', errorDetails: err});
                     return;
                 }
+
                 req.session.user = req.body.username;
                 req.session.save((err) => {
                     if (err) {
@@ -50,12 +51,13 @@ module.exports = (app) => {
             return;
         }
         const success = await db.setUser(req.body.username, 
-            {password: await auth.hashpw(req.body.password)}, false)
+            {password: await auth.hashpw(req.body.password), FirstName: req.body.firstName, LastName: req.body.lastName, DOB: req.body.dob, Address: req.body.address}, false)
         .catch((e) => {
             console.log(e);
             res.status(500).json({success: false, error: "SQLError"});
             return;
         });
+        
         if(!success) {
             res.status(409).json({success: false, error: "UserExists"});
             return;
