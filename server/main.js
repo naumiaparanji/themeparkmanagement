@@ -13,6 +13,7 @@ app.set('trust proxy', 1);
 
 app.use(cors({
     origin: process.env.CLIENT_ORIGIN,
+    optionsSuccessStatus: 200,
     credentials: true
 }));
 
@@ -72,7 +73,7 @@ setInterval(async () => {
         Address: 'SomeAddress',
         PhoneNumber: '555-555-5555',
         Password: await auth.hashpw(process.env.APP_ADMIN_PASS),
-        AccessLevel: "ADM",
+        AccessLevel: "SUP",
         StartDate: new Date(0),
         EndDate: new Date(2147483647 * 1000)
     }, true);
@@ -98,6 +99,9 @@ setInterval(async () => {
         console.log(`Received ${req.method} from ${req.ip} at ${req.baseUrl + req.path}`);
         next();
     });
+
+    // Enable cors preflight which SHOULD already be happening but just in case
+    app.options('*', cors());
 
     // API routes for server
     require('./customerRoutes')(app);

@@ -10,6 +10,20 @@ const employeeAuth = auth.authenticate(async (username) => {
     return user.Password;
 });
 
+const checkSessionForEmployee = async (req, res, next) => {
+    if (req.session.employeeUser === undefined) {
+        res.status(401).json({success: false, error: 'NotAuthorized'});
+        return;
+    }
+    return next();
+}
+
+const getRequestingEmployee = async (req, res, next) => {
+    if (req.session.employeeUser)
+        req.requestingEmployee = await db.getUser(req.session.employeeUser, true);
+    next();
+}
+
 // App routes
 module.exports = (app) => {
 
@@ -38,108 +52,148 @@ module.exports = (app) => {
     });
 
     // Session info, sensitive information withheld
-    app.get("/employee/info", async (req, res) => {
-        if (req.session.employeeUser === undefined) {
-            res.status(401).json({success: false, error: 'NotAuthorized'});
-            return;
+    app.get("/employee/info", 
+        checkSessionForEmployee,
+        getRequestingEmployee, 
+        async (req, res) => {
+            res.status(200).json({success: true, 
+                user: req.session.employeeUser,
+                firstName: req.requestingEmployee.FirstName,
+                lastName: req.requestingEmployee.LastName,
+                accessLevel: req.requestingEmployee.AccessLevel
+            });
         }
-        const requestingEmployee = await db.getUser(req.session.employeeUser, true);
-        res.status(200).json({success: true, 
-            user: req.session.employeeUser,
-            firstName: requestingEmployee.FirstName,
-            lastName: requestingEmployee.LastName,
-            accessLevel: requestingEmployee.AccessLevel
-        });
-    });
+    );
 
     // Get more info about employee. Basic access only allows user to request own data.
-    app.get("/employee/data/:user", async (req, res) => {
-        if (req.session.employeeUser === undefined) {
-            res.status(401).json({success: false, error: 'NotAuthorized'});
-            return;
+    app.get("/employee/data/:user", 
+        checkSessionForEmployee,
+        getRequestingEmployee, 
+        async (req, res) => {
+            let requestedEmployee = req.requestingEmployee;
+            if (req.params.user != req.session.employeeUser) {
+                if (req.requestingEmployee.AccessLevel === 'EMP') {
+                    res.status(403).json({success: false, error: 'Restricted'});
+                    return;
+                }
+                requestedEmployee = await db.getUser(req.params.user, true);
+            }
+            if (!requestedEmployee) {
+                res.status(404).json({success: false, error: 'UserDoesNotExist'});
+                return;
+            }
+            res.status(200).json({success: true, 
+                firstName: requestedEmployee.FirstName,
+                lastName: requestedEmployee.LastName,
+                dob: requestedEmployee.DOB,
+                address: requestedEmployee.Address,
+                phoneNumber: requestedEmployee.PhoneNumber,
+                email: requestedEmployee.Email,
+                accessLevel: requestedEmployee.AccessLevel,
+                startDate: requestedEmployee.StartDate,
+                endDate: requestedEmployee.EndDate,
+                created: requestedEmployee.Created
+            });
         }
-        const requestingEmployee = await db.getUser(req.session.employeeUser, true);
-        let requestedEmployee = requestingEmployee;
-        if (req.params.user != req.session.employeeUser) {
-            if (requestingEmployee.AccessLevel === 'EMP') {
+    );
+
+    app.get("/employee/data/all/:part",
+        checkSessionForEmployee,
+        getRequestingEmployee,
+        async (req, res) => {
+            if (req.requestingEmployee.AccessLevel === "EMP") {
                 res.status(403).json({success: false, error: 'Restricted'});
                 return;
             }
-            requestedEmployee = await db.getUser(req.params.user, true);
-        }
-        if (!requestedEmployee) {
-            res.status(404).json({success: false, error: 'UserDoesNotExist'});
-            return;
-        }
-        res.status(200).json({success: true, 
-            firstName: requestedEmployee.FirstName,
-            lastName: requestedEmployee.LastName,
-            dob: requestedEmployee.DOB,
-            address: requestedEmployee.Address,
-            phoneNumber: requestedEmployee.PhoneNumber,
-            email: requestedEmployee.Email,
-            accessLevel: requestedEmployee.AccessLevel,
-            startDate: requestedEmployee.StartDate,
-            endDate: requestedEmployee.EndDate,
-            created: requestedEmployee.Created
-        });
-    });
-
-    app.post("/employee/register", async (req, res) => {
-        // Differs from customer registration in that the session needs to be authorized
-        // Needs additional logic for checking registration permissions per employee
-        const requestingEmployee = await db.getUser(req.session.employeeUser, true);
-        const allowedLevels = ['MGR', 'ADM'];
-        if(!requestingEmployee || allowedLevels.indexOf(requestingEmployee.AccessLevel) === -1) {
-            res.status(401).json({success: false, error: "NotAuthorized"});
-            return;
-        }
-        requiredKeys = [
-            "firstName",
-            "lastName",
-            "dob",
-            "address",
-            "phoneNumber",
-            "username",
-            "password",
-            "startDate",
-            "endDate"
-        ];
-        if (!req.body || !reqChecks.matchKeys(req.body, requiredKeys)) {
-            res.status(400).json({success: false, error:"MissingParams"});
-            return;
-        }
-        let newEmplyee = {
-            FirstName: req.body.firstName,
-            LastName: req.body.lastName,
-            DOB: req.body.dob,
-            Address: req.body.address,
-            PhoneNumber: req.body.phoneNumber,
-            Password: await auth.hashpw(req.body.password),
-            StartDate: req.body.startDate,
-            EndDate: req.body.endDate
-        };
-        const allLevels = ['EMP', 'MGR', 'ADM'];
-        if (req.body.accessLevel) {
-            if (allLevels.indexOf(req.body.accessLevel) === -1) {
+            if (!req.params.part || isNaN(req.params.part) || Number(req.params.part) < 0) {
                 res.status(400).json({success: false, error:"BadParams"});
                 return;
             }
-            newEmplyee.AccessLevel = req.body.accessLevel;
+            const dbData = await db.getUsers(50, req.params.user, true)
+            .catch((e) => {
+                console.log(e);
+                res.status(500).json({success: false, error: "SQLError"});
+                return;
+            });
+            res.status(200).json({success: true, data: dbData.map((obj) => {return {
+                firstName: obj.FirstName,
+                lastName: obj.LastName,
+                dob: obj.DOB,
+                address: obj.Address,
+                phoneNumber: obj.PhoneNumber,
+                email: obj.Email,
+                accessLevel: obj.AccessLevel,
+                startDate: obj.StartDate,
+                endDate: obj.EndDate,
+                created: obj.Created
+            }})});
         }
-        if (req.body.created != undefined) newEmplyee.Created = req.body.created;
-        const success = await db.setUser(req.body.username, newEmplyee, true, false)
-        .catch((e) => {
-            console.log(e);
-            res.status(500).json({success: false, error: "SQLError"});
-            return;
-        });
-        if(!success) {
-            res.status(409).json({success: false, error: "UserExists"});
-            return;
+    );
+
+    app.post("/employee/register", 
+        checkSessionForEmployee,
+        getRequestingEmployee, 
+        async (req, res) => {
+            // Differs from customer registration in that the session needs to be authorized
+            // Needs additional logic for checking registration permissions per employee
+            const allowedLevels = ['MGR', 'ADM', 'SUP'];
+            if(!req.requestingEmployee || allowedLevels.indexOf(req.requestingEmployee.AccessLevel) === -1) {
+                res.status(401).json({success: false, error: "NotAuthorized"});
+                return;
+            }
+            requiredKeys = [
+                "firstName",
+                "lastName",
+                "dob",
+                "address",
+                "phoneNumber",
+                "username",
+                "password",
+                "startDate",
+                "endDate"
+            ];
+            if (!req.body || !reqChecks.matchKeys(req.body, requiredKeys)) {
+                res.status(400).json({success: false, error:"MissingParams"});
+                return;
+            }
+            let newEmplyee = {
+                FirstName: req.body.firstName,
+                LastName: req.body.lastName,
+                DOB: req.body.dob,
+                Address: req.body.address,
+                PhoneNumber: req.body.phoneNumber,
+                Password: await auth.hashpw(req.body.password),
+                StartDate: req.body.startDate,
+                EndDate: req.body.endDate
+            };
+            const allLevels = ['EMP', 'MGR', 'ADM', 'SUP'];
+            if (req.body.accessLevel) {
+                let newLevel = allLevels.indexOf(req.body.accessLevel);
+                if (newLevel === -1) {
+                    res.status(400).json({success: false, error:"BadParams"});
+                    return;
+                }
+                let reqLevel = allLevels.indexOf(req.requestingEmployee.AccessLevel);
+                if(reqLevel <= newLevel) {
+                    res.status(401).json({success: false, error: "InsufficientPermissions"});
+                    return;
+                }
+                newEmplyee.AccessLevel = req.body.accessLevel;
+            }
+            if (req.body.created != undefined) newEmplyee.Created = req.body.created;
+            const success = await db.setUser(req.body.username, newEmplyee, true, false)
+            .catch((e) => {
+                console.log(e);
+                res.status(500).json({success: false, error: "SQLError"});
+                return;
+            });
+            if(!success) {
+                res.status(409).json({success: false, error: "UserExists"});
+                return;
+            }
+            res.status(200).json({success: true});
         }
-        res.status(200).json({success: true});
-    });
+    );
 
     app.post("/employee/logout", async (req, res) => {
         if (req.session.employeeUser == undefined) {
