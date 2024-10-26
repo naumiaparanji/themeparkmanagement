@@ -21,6 +21,19 @@ async function getUser(userEmail, isEmployee=false) {
     return await db(target).where("Email", userEmail).first();
 }
 
+async function getUsers(limit, offsetCount, isEmployee=false) {
+    let target = "CUSTOMER";
+    let order = "CustomerID";
+    if (isEmployee) {
+        target = "EMPLOYEE";
+        order = "EmployeeID";
+    }
+    return await db(target)
+    .orderBy(order)
+    .limit(limit)
+    .offset(limit * offsetCount);
+}
+
 async function setUser(userEmail, fields, isEmployee=false, merge=true) {
     if (!userEmail) return false;
     let target = "CUSTOMER";
@@ -38,4 +51,5 @@ module.exports = {
     themeparkDB: db,
     getUser,
     setUser,
+    getUsers
 };
