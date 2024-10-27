@@ -28,10 +28,12 @@ async function getUsers(limit, offsetCount, isEmployee=false) {
         target = "EMPLOYEE";
         order = "EmployeeID";
     }
-    return await db(target)
+    let query = db(target)
     .orderBy(order)
     .limit(limit)
-    .offset(limit * offsetCount);
+    const offset = limit * offsetCount;
+    if (offset > 0) query = query.offset(offset);
+    return await query;
 }
 
 async function setUser(userEmail, fields, isEmployee=false, merge=true) {

@@ -7,7 +7,7 @@ import * as Icon from 'react-bootstrap-icons';
 import { apiPost } from "../CRUDApi";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Navbar, Nav, Container, NavDropdown, ListGroup} from "react-bootstrap";
-import Home from "../Home";
+import { StaffView } from "./Staff";
 
 export function WhoAmI() {
     // This is a placeholder for testing
@@ -82,7 +82,8 @@ export function DashUI() {
                                 >{`${{
                                     "EMP": "Employee",
                                     "MGR": "Manager",
-                                    "ADM": "Administrator"
+                                    "ADM": "Administrator",
+                                    "SUP": "Superuser"
                                 }[data.accessLevel]}`}</p>
                             </NavDropdown.Header>
                             <NavDropdown.Divider/>
@@ -106,14 +107,17 @@ export function DashUI() {
                 <div className={`${styles.sidepanel}`}>
                     <ListGroup className={`list-group-flush ${styles.grow}`}>
                         <SideBarLink title="Home" path="" activeIcon="HouseFill" inactiveIcon="House" />
+                        <SideBarLink title="Events" path="events" activeIcon="CalendarEventFill" inactiveIcon="CalendarEvent" />
                         <SideBarLink title="Reports" path="reports" activeIcon="Clipboard2DataFill" inactiveIcon="Clipboard2Data" />
+                        <SideBarLink title="Staff" path="staff" activeIcon="PeopleFill" inactiveIcon="People" />
                         <SideBarLink className="mt-auto" title="Settings" path="settings" activeIcon="GearFill" inactiveIcon="Gear" />
                     </ListGroup>
                 </div>
                 <div className={`${styles.scrolly} w-100`}>
                     <Routes>
                         <Route path="" element={<WhoAmI/>} />
-                        <Route path="reports" element={<Home/>} />
+                        <Route path="staff" element={<StaffView/>} />
+                        { /* Etc... */ }
                     </Routes>
                 </div>
             </div>

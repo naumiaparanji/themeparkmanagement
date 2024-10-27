@@ -3,7 +3,7 @@ const auth = require("./auth");
 const db = require("./db");
 const reqChecks = require("./reqChecks");
 
-// Auth check middleware
+// Middleware
 const employeeAuth = auth.authenticate(async (username) => {
     const user = await db.getUser(username, true);
     if (!user) return undefined;
@@ -23,6 +23,17 @@ const getRequestingEmployee = async (req, res, next) => {
         req.requestingEmployee = await db.getUser(req.session.employeeUser, true);
     next();
 }
+
+// Constants
+const employeeRoles = {
+    "EMP": {name: "Employee", rank:0},
+    "MGR": {name: "Manager", rank:1},
+    "ADM": {name: "Admin", rank:2},
+    "SUP": {name: "Superuser", rank:3},
+}
+
+const employeeRanks = Object.fromEntries(Object.keys(employeeRoles).map(key => [employeeRoles[key].rank, key]));
+
 
 // App routes
 module.exports = (app) => {
@@ -109,7 +120,7 @@ module.exports = (app) => {
                 res.status(400).json({success: false, error:"BadParams"});
                 return;
             }
-            const dbData = await db.getUsers(50, req.params.user, true)
+            const dbData = await db.getUsers(50, Number(req.params.part), true)
             .catch((e) => {
                 console.log(e);
                 res.status(500).json({success: false, error: "SQLError"});
