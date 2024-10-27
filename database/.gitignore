@@ -5,3 +5,4 @@
 !names.json
 !keystore_db.sql
 !themepark_db.sql
+!MAINTENANCE_SUMMARY view creation query.sql
