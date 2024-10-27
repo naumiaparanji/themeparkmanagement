@@ -6,3 +6,4 @@
 !keystore_db.sql
 !themepark_db.sql
 !MAINTENANCE_SUMMARY view creation query.sql
+!MAINTENANCE_COUNT view creation query.sql
