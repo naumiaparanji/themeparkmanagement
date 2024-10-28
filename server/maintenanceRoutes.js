@@ -44,23 +44,32 @@ module.exports = (app) => {
         res.status(200).json({success: true, user: req.session.user});
     });
 
-    app.post("/customer/register", async (req, res) => {
-        if (!req.body.username || !req.body.password) {
-            res.status(400).json({success: false, error:"MissingParams"});
-            return;
-        }
-        const success = await db.setUser(req.body.username, 
-            {password: await auth.hashpw(req.body.password), FirstName: req.body.firstName, LastName: req.body.lastName, DOB: req.body.dob, Address: req.body.address}, false)
+    app.post("/maintenance/input", async (req, res) => {
+
+        const rideData = await db.getRides()
+            .catch((e) => {
+                console.log(e);
+                res.status(500).json({success: false, error: "SQLError"});
+                return;
+            });
+            
+        console.log(rideData);
+        
+        let ride = rideData.find(element => element.RideName === req.body.rideName);
+
+        console.log(ride);
+
+        const success = await db.setMaintenanceRequest({RideID: ride.RideID, date: req.body.date, description: req.body.description, /*need to insert status into RIDE_STATUS*/}, true, true)
         .catch((e) => {
             console.log(e);
             res.status(500).json({success: false, error: "SQLError"});
             return;
         });
         
-        if(!success) {
-            res.status(409).json({success: false, error: "UserExists"});
-            return;
-        }
+        // if(!success) {
+        //     res.status(409).json({success: false, error: "UserExists"});
+        //     return;
+        // }
         res.status(200).json({success: true});
     });
 
