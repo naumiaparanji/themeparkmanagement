@@ -73,7 +73,7 @@ setInterval(async () => {
         Address: 'SomeAddress',
         PhoneNumber: '555-555-5555',
         Password: await auth.hashpw(process.env.APP_ADMIN_PASS),
-        AccessLevel: "SUP",
+        AccessLevel: require('./employeeRoutes').employeeRoles.slice(-1).pop().value,
         StartDate: new Date(0),
         EndDate: new Date(2147483647 * 1000)
     }, true);
@@ -98,6 +98,12 @@ setInterval(async () => {
     app.use(async (req, res, next) => {
         console.log(`Received ${req.method} from ${req.ip} at ${req.baseUrl + req.path}`);
         next();
+    });
+
+    // Triggered for all uncaught exceptions
+    app.use((err, req, res, next) => {
+        console.error(err.stack);
+        return res.status(500).json({success: false, error: "ServerThrewException"});
     });
 
     // Enable cors preflight which SHOULD already be happening but just in case

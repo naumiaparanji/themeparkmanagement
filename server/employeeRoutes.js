@@ -3,6 +3,25 @@ const auth = require("./auth");
 const db = require("./db");
 const reqChecks = require("./reqChecks");
 
+// Constants
+const employeeRoles = [ // Order by least to most privileged, with superuser last.
+    {name: "Employee", value: "EMP"},
+    {name: "Manager", value: "MGR"},
+    {name: "Admin", value: "ADM"},
+    {name: "Superuser", value: "SUP"},
+];
+
+const SUPERUSER_ROLE = employeeRoles.slice(-1).pop().value;
+const DEFAULT_ROLE = employeeRoles[0].value;
+
+const employeeRanks = employeeRoles.reduce((obj, cur, i) => {
+    return {...obj, [cur.value]:i}
+}, {});
+
+const employeeNames = employeeRoles.reduce((obj, cur) => {
+    return {...obj, [cur.value]:cur.name}
+}, {});
+
 // Middleware
 const employeeAuth = auth.authenticate(async (username) => {
     const user = await db.getUser(username, true);
@@ -12,28 +31,82 @@ const employeeAuth = auth.authenticate(async (username) => {
 
 const checkSessionForEmployee = async (req, res, next) => {
     if (req.session.employeeUser === undefined) {
-        res.status(401).json({success: false, error: 'NotAuthorized'});
-        return;
+        return res.status(401).json({success: false, error: 'NotAuthorized'});
     }
     return next();
 }
 
 const getRequestingEmployee = async (req, res, next) => {
-    if (req.session.employeeUser)
-        req.requestingEmployee = await db.getUser(req.session.employeeUser, true);
-    next();
+    if (req.session.employeeUser) {
+        try {
+            req.requestingEmployee = await db.getUser(req.session.employeeUser, true)
+        } catch (e) {
+            console.error(e);
+            return res.status(500).json({success: false, error: "SQLError"});
+        }
+    }
+    if (!req.requestingEmployee) return res.status(500).json({success: false, error: 'UserNotFound'});
+    return next();
 }
 
-// Constants
-const employeeRoles = {
-    "EMP": {name: "Employee", rank:0},
-    "MGR": {name: "Manager", rank:1},
-    "ADM": {name: "Admin", rank:2},
-    "SUP": {name: "Superuser", rank:3},
+const compareAccessLevels = async (req, res, next) => {
+    const requesterLevel = employeeRanks[req.requestingEmployee.AccessLevel];
+    const requestedLevel = employeeRanks[req.requestedEmployee.AccessLevel];
+    if (req.requestingEmployee.AccessLevel !== SUPERUSER_ROLE && requesterLevel <= requestedLevel)
+        return res.status(403).json({success: false, error: 'Restricted'});
+    return next();
 }
 
-const employeeRanks = Object.fromEntries(Object.keys(employeeRoles).map(key => [employeeRoles[key].rank, key]));
+const getRequestedEmployee = async (req, res, next) => {
+    if (!req.requestingEmployee)
+        throw new Error("req.requestingEmployee does not exist");
+    if (!req.params.user)
+        throw new Error("getRequestedEmployee MUST be run from a route with the :user parameter");
+    if (req.requestingEmployee.AccessLevel === DEFAULT_ROLE)
+        return res.status(401).json({success: false, error: 'NotAuthorized'});
+    try {
+        req.requestedEmployee = await db.getUser(req.params.user, true);
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({success: false, error: "SQLError"});
+    }
+    if (!req.requestedEmployee)
+        return res.status(404).json({success: false, error: 'UserDoesNotExist'});
+    return next();
+}
 
+const returnEmployeeData = (req, res, next) => {
+    if (req.params.user && req.params.user != req.session.employeeUser) return next();
+    return res.status(200).json({success: true, 
+        firstName: req.requestingEmployee.FirstName,
+        lastName: req.requestingEmployee.LastName,
+        dob: req.requestingEmployee.DOB,
+        address: req.requestingEmployee.Address,
+        phoneNumber: req.requestingEmployee.PhoneNumber,
+        email: req.requestingEmployee.Email,
+        accessLevel: req.requestingEmployee.AccessLevel,
+        startDate: req.requestingEmployee.StartDate,
+        endDate: req.requestingEmployee.EndDate,
+        created: req.requestingEmployee.Created
+    });
+}
+
+const returnRequestedEmployee = (req, res, next) => {
+    if (!req.requestingEmployee)
+        throw new Error("req.requestedEmployee does not exist");
+    return res.status(200).json({success: true, 
+        firstName: req.requestedEmployee.FirstName,
+        lastName: req.requestedEmployee.LastName,
+        dob: req.requestedEmployee.DOB,
+        address: req.requestedEmployee.Address,
+        phoneNumber: req.requestedEmployee.PhoneNumber,
+        email: req.requestedEmployee.Email,
+        accessLevel: req.requestedEmployee.AccessLevel,
+        startDate: req.requestedEmployee.StartDate,
+        endDate: req.requestedEmployee.EndDate,
+        created: req.requestedEmployee.Created
+    });
+}
 
 // App routes
 module.exports = (app) => {
@@ -76,36 +149,21 @@ module.exports = (app) => {
         }
     );
 
+    // Get more info about employee.
+    app.get("/employee/data",
+        checkSessionForEmployee,
+        getRequestingEmployee,
+        returnEmployeeData
+    )
+
     // Get more info about employee. Basic access only allows user to request own data.
     app.get("/employee/data/:user", 
         checkSessionForEmployee,
         getRequestingEmployee, 
-        async (req, res) => {
-            let requestedEmployee = req.requestingEmployee;
-            if (req.params.user != req.session.employeeUser) {
-                if (req.requestingEmployee.AccessLevel === 'EMP') {
-                    res.status(403).json({success: false, error: 'Restricted'});
-                    return;
-                }
-                requestedEmployee = await db.getUser(req.params.user, true);
-            }
-            if (!requestedEmployee) {
-                res.status(404).json({success: false, error: 'UserDoesNotExist'});
-                return;
-            }
-            res.status(200).json({success: true, 
-                firstName: requestedEmployee.FirstName,
-                lastName: requestedEmployee.LastName,
-                dob: requestedEmployee.DOB,
-                address: requestedEmployee.Address,
-                phoneNumber: requestedEmployee.PhoneNumber,
-                email: requestedEmployee.Email,
-                accessLevel: requestedEmployee.AccessLevel,
-                startDate: requestedEmployee.StartDate,
-                endDate: requestedEmployee.EndDate,
-                created: requestedEmployee.Created
-            });
-        }
+        returnEmployeeData,
+        getRequestedEmployee,
+        compareAccessLevels,
+        returnRequestedEmployee
     );
 
     app.get("/employee/data/all/:part",
@@ -212,8 +270,6 @@ module.exports = (app) => {
             return;
         }
         if (req.body.employeeUser != req.session.employeeUser) {
-            // This check is to prevent unintended state changes to the session store. 
-            // The client must have clear intent when requesting a logout.
             res.status(400).json({error: 'UserDoesNotMatchSession'});
             return;
         }
@@ -234,3 +290,7 @@ module.exports = (app) => {
     });
 
 };
+
+module.exports.employeeRoles = employeeRoles;
+module.exports.employeeRanks = employeeRanks;
+module.exports.employeeNames = employeeNames;
