@@ -7,6 +7,7 @@ import * as Icon from 'react-bootstrap-icons';
 import { apiPost } from "../CRUDApi";
 import {Navbar, Nav, Container, NavDropdown, ListGroup} from "react-bootstrap";
 import Home from "../Home";
+import DataManage from "../DataEdit/DataManage";
 
 export function WhoAmI() {
     // This is a placeholder for testing
@@ -106,6 +107,7 @@ export function DashUI() {
                     <ListGroup className={`list-group-flush ${styles.grow}`}>
                         <SideBarLink title="Home" path="" activeIcon="HouseFill" inactiveIcon="House" />
                         <SideBarLink title="Reports" path="reports" activeIcon="Clipboard2DataFill" inactiveIcon="Clipboard2Data" />
+                        <SideBarLink title="Data Management" path="datamanage" activeIcon="DatabaseFillLock" inactiveIcon="DatabaseLock" />
                         <SideBarLink className="mt-auto" title="Settings" path="settings" activeIcon="GearFill" inactiveIcon="Gear" />
                     </ListGroup>
                 </div>
@@ -113,6 +115,7 @@ export function DashUI() {
                     <Routes>
                         <Route path="" element={<WhoAmI/>} />
                         <Route path="reports" element={<Home/>} />
+                        <Route path="datamanage" element={<DataManage/>} />
                     </Routes>
                 </div>
             </div>

@@ -78,7 +78,7 @@ const Events = () => {
             </div>
             <Navbar />
             <div className="events-container">
-                <div className="banner-image">
+                <div className="banner-image3">
                     <p className="h4">Events And Promotions</p>
                 </div>
                 <br></br>

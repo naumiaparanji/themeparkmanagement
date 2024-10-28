@@ -67,7 +67,7 @@ const Attractions = () => {
             </div>
             <Navbar />
             <div className="attractions-container">
-             <div className="banner-image">
+             <div className="banner-image2">
                 <p className="h4">Attractions</p>
                 </div>
                 <br></br>

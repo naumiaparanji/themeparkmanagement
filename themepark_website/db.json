@@ -1,9 +1,0 @@
-{
-    "users" : [{
-        "id": 1,
-        "firstname": "John",
-        "lastname": "Cena",
-        "email": "johncena0@gmail.com",
-        "phone": "832-110-2201"}
-]
-}

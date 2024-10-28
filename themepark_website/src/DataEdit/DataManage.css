@@ -1,9 +1,45 @@
+.h01 {
+    font-size: 180%;
+    padding-top: 3%;
+}
+
 .InformationTable {
-    width: 75%;
+    width: 90%;
     border-radius: 10px;
     background-color: white;
     box-shadow: 3px 3px rgb(155, 155, 155);
     text-align: center;
+    padding: 1%;
+}
+
+input {
+    margin: .5%;
+}
+
+.buttons-mod {
+    padding: 1%;
+    margin: 1%;
+    background-color: #04AA6D; /* Green */
+    border: none;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 5%;
+    width: 10%;
+}
+
+.buttons-mod-del {
+    padding: 1%;
+    margin: 1%;
+    background-color: #d6414e; /* Green */
+    border: none;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 5%;
+    width: 10%;
 }
 
 label {
