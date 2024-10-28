@@ -55,10 +55,17 @@ async function setMaintenanceRequest(fields, isEmployee, merge = true) {
   if (!isEmployee) return false;
 
   if(isEmployee) target = "MAINTENANCE";
-  let query = db(target).insert(fields);
-  // if (merge) query = query.merge();
-  // else query = query.ignore();
-  const result = await query;
+  let query = db(target).insert({RideID: fields.RideID, Date: fields.Date, Description: fields.Description});
+  let result = await query;
+  const maintenanceID = result;
+  target = "RIDE_STATUS";
+  query = db(target).insert({RideID: fields.RideID, Status: fields.Status, WeatherCondition: "CLEAR"});
+  result = await query;
+  const rideStatusID = result;
+  target = "M_STATUS";
+  query = db(target).insert({MaintenanceID: maintenanceID, RideStatusID: rideStatusID});
+  result = await query;
+
   return result[0] != 0;
 }
 
