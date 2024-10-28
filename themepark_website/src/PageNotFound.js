@@ -2,10 +2,10 @@ import './App.css';
 import Navbar from './Navbar';
 import './CustomerAccount';
 import CustomerAccount from './CustomerAccount';
-import "../Auth/Auth.css";
+import "./Auth/Auth.css";
 import {
     RandomBGImg
-} from "../Auth/AuthComponents";
+} from "./Auth/AuthComponents";
 
 function PageNotFound() {
 
