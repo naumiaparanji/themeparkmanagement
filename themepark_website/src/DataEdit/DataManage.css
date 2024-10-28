@@ -1,0 +1,11 @@
+.InformationTable {
+    width: 75%;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 3px 3px rgb(155, 155, 155);
+    text-align: center;
+}
+
+label {
+    margin: 2%;
+}
