@@ -59,7 +59,9 @@ const Rides = () => {
           <br></br>
           {categories.map(category => (
               <div className="ride-category" key={category}>
-                  <h2>{category} Rides</h2>
+                  <p className="h4">
+                    {category} Rides
+                  </p>
                   <div className="ride-list">
                       {ridesData.filter(ride => ride.category === category).map(ride => (
                           <div className="ride-card" key={ride.id}>

@@ -25,15 +25,6 @@ h4 {
     text-align: center;
 }
 
-h2 {
-    color: black;
-    text-shadow: -3px -3px 0 white, 3px -3px 0 white, -3px 3px 0 white, 3px 3px 0 white, 5px 5px 0 black;
-    padding-bottom: 10px;
-    border-bottom: 2px solid white;
-    line-height: 48px;
-    text-align: left;
-}
-
 .attractionheader {
     text-align: left;
 }
