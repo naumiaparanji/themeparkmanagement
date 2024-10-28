@@ -68,7 +68,7 @@ const Attractions = () => {
             <Navbar />
             <div className="attractions-container">
              <div className="banner-image">
-                <h2>Attractions</h2>
+                <p className="h4">Attractions</p>
                 </div>
                 <br></br>
                 <block id="topquote"><p><b>Take a look at our many attractions ranging from Restaurants, Gift Shops, and even Concession Stands!</b></p></block>

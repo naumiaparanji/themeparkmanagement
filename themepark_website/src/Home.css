@@ -17,12 +17,11 @@ h1 {
     font-size: 100%;
 }
 
-h4 {
+.head4 {
     font-size: 46px;
-    margin-bottom: 30px;
     text-shadow: -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 2px 2px 0 white, 5px 5px 0 black;
-    padding-top: 30px;
     border-bottom: 2px solid white;
+    padding-bottom: 2.5%;
 }
 
 .loginbutton {
@@ -59,28 +58,24 @@ h4 {
     font-size: 100%;
 }
 
-.bgVid {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    min-width: 100%;
-    min-height: 100%;
-    z-index: -1;
-}
-
 body {
     margin: auto;
-    overflow-x: hidden;
+}
+
+.banner-image {
+    width: 100vm;
+    background-image: url('./images/stock_footage_bg.mp4');
+    background-position: center;
+    background-size: cover;
 }
 
 .bg-Video {
     background-color: black;
-    width: 100%;
+    background-position: center;
+    width: 50vm;
     position: relative;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+    z-index: -1;
 }
 
 .navbar {
@@ -136,12 +131,4 @@ body {
 h2 {
     font-size: 3em;
     font-family: 'ITC Kabel Std', sans-serif;
-}
-
-.rides-container {
-    overflow-y: auto; /* Allow vertical scrolling */
-}
-
-.about-us-container {
-    overflow-y: auto; /* Allow vertical scrolling */
 }

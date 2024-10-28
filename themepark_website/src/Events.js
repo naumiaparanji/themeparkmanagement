@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import CustomerAccount from './CustomerAccount';
 import Navbar from './Navbar';
 import './Events.css';
@@ -80,11 +79,10 @@ const Events = () => {
             <Navbar />
             <div className="events-container">
                 <div className="banner-image">
-                    <h2>Events And Promotions</h2>
+                    <p className="h4">Events And Promotions</p>
                 </div>
                 <br></br>
                 <block id="topquote_one"><p><b>Check out our Daily Attractions and Promotions!</b></p></block>
-                <hr></hr>
                 {categories.map(category => (
                     <div className="events-category" key={category}>
                     <br></br>
