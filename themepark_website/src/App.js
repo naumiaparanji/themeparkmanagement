@@ -18,8 +18,8 @@ function App() {
         <div className="App">
             {/* Add your routes here */}
             <Routes>
-                <Route exact path='/rides' element={<Rides />} />
                 <Route exact path='/' element={<Home />} />
+                <Route exact path='/rides' element={<Rides />} />
                 <Route exact path='/login' element={<Login />} />
                 <Route exact path='/signup' element={<SignUp />} />
                 <Route exact path='/attractions' element={<Attractions />} />
@@ -29,6 +29,7 @@ function App() {
                 <Route exact path='/employee/login' element={<EmployeeLogin />} />
                 <Route exact path='/employee/signup' element={<EmployeeSignup />} />
                 <Route path='/employee/access/*' element={<EmployeeDashboard />} />
+                <Route path='*' element={<PageNotFound />} />
             </Routes>
         </div>
     );
