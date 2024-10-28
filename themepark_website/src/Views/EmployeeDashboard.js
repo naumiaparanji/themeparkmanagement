@@ -5,7 +5,6 @@ import { ApiContext, ApiContextProvider } from "../ApiContext";
 import MainLogo from '../images/flagslogo.png'; 
 import * as Icon from 'react-bootstrap-icons';
 import { apiPost } from "../CRUDApi";
-import 'bootstrap/dist/css/bootstrap.min.css';
 import {Navbar, Nav, Container, NavDropdown, ListGroup} from "react-bootstrap";
 import Home from "../Home";
 

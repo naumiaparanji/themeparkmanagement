@@ -54,7 +54,7 @@ export function MaintenanceInfoBox(props) {
       return;
     }
 
-    const response = await apiPost(props.apiPath || "/maintenance", {
+    const response = await apiPost(props.apiPath || "/maintenance/input", {
       rideName: rideName,
       date: date,
       description: description,
@@ -173,7 +173,7 @@ export function MaintenanceInfo(props) {
       <RandomBGImg />
       <MaintenanceInfoBox
         title={props.title || "Maintenance Info Submission"}
-        apiPath={props.apiPath || "/maintenance/register"}
+        apiPath={props.apiPath || "/maintenance/input"}
       />
     </div>
   );

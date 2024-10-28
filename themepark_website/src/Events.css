@@ -9,10 +9,13 @@
     background-size: cover;
 }
 
-h4 {
+.h4 {
     color: black;
+    font-size: 46px;
+    margin-bottom: 30px;
     text-shadow: -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 2px 2px 0 white, 5px 5px 0 black;
-    font-size: 5em;
+    padding-top: 30px;
+    border-bottom: 2px solid white;
     text-align: center;
 }
 

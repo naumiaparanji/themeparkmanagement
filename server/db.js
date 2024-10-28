@@ -44,14 +44,28 @@ async function setUser(userEmail, fields, isEmployee = false, merge = true) {
   return result[0] != 0; // Returned id should never be 0 unless there was a conflict
 }
 
+async function getRides(){
+    let target = "RIDES";
+    let order = "RideID";
+
+    return await db(target).orderBy(order);
+}
+
 async function setMaintenanceRequest(fields, isEmployee, merge = true) {
   if (!isEmployee) return false;
 
-  let target = "MAINTENANCE";
-  let query = db(target).insert(fields);
-  if (merge) query = query.merge();
-  else query = query.ignore();
-  const result = await query;
+  if(isEmployee) target = "MAINTENANCE";
+  let query = db(target).insert({RideID: fields.RideID, Date: fields.Date, Description: fields.Description});
+  let result = await query;
+  const maintenanceID = result;
+  target = "RIDE_STATUS";
+  query = db(target).insert({RideID: fields.RideID, Status: fields.Status, WeatherCondition: "CLEAR"});
+  result = await query;
+  const rideStatusID = result;
+  target = "M_STATUS";
+  query = db(target).insert({MaintenanceID: maintenanceID, RideStatusID: rideStatusID});
+  result = await query;
+
   return result[0] != 0;
 }
 
@@ -60,4 +74,6 @@ module.exports = {
   getUser,
   setUser,
   getUsers,
+  getRides,
+  setMaintenanceRequest,
 };

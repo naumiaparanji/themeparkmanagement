@@ -1,10 +1,10 @@
-import './App.css';
+import './Home.css';
 import BgVideo from './images/stock_footage_bg.mp4';
 import Navbar from './Navbar'; 
 import './CustomerAccount';
 import CustomerAccount from './CustomerAccount';
 
-function Home() {
+const Home = () => {
 
     return (
         <div>
@@ -19,16 +19,17 @@ function Home() {
             </div>
 
             <Navbar /> 
-
             <div className="mainText">
-                <video autoPlay loop muted id="bg-Video">
-                    <source src={BgVideo} type="video/mp4" />
-                </video>
-                <h2>A New Exhilarating Experience for that special day.</h2>
+                <div>
+                    <video width="400" height="400" autoplay loop muted class="bg-Video" >
+                        <source src={BgVideo} type="video/mp4" />
+                    </video>
+                </div>
+                <br></br>
+                <h4 className="head4">A New Exhilarating Experience for that special day.</h4>
                 <hr />
                 <p>Explore our Website and book your next family outing with us!</p>
             </div>
-            <br /><br /><br /><br /><br /><br /><br />
         </div>
     );
 }
