@@ -150,7 +150,7 @@ module.exports = (app) => {
                 accessLevel: req.requestingEmployee.AccessLevel,
                 role: roleName,
                 rank: roleRank,
-                canModify: [employeeRoles.slice(0, roleRank)]
+                canModify: employeeRoles.slice(0, roleRank)
             });
         }
     );

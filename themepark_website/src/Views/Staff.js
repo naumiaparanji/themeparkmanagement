@@ -1,5 +1,6 @@
 import React, {useState, useRef, useEffect, useMemo, useContext, createContext} from "react";
 import { Accordion, Button, Container, ListGroup, Offcanvas, Modal, Spinner, Form, FloatingLabel, InputGroup } from "react-bootstrap";
+import { ApiContext } from "../ApiContext";
 import { api } from "../App";
 
 export function StaffList() {
@@ -58,67 +59,68 @@ function StaffManagerContextProvider({children}) {
 }
 
 export function EmployeeForm() {
+    const {data} = useContext(ApiContext);
     const {setCanSubmit, setFormData} = useContext(StaffManagerContext);
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [dob, setDob] = useState("");
-    const [phone, setPhone] = useState("");
-    const [address, setAddress] = useState("");
-    const [startDate, setStartDate] = useState("");
-    const [endDate, setEndDate] = useState("");
+    const [formState, setFormState] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        dob: "",
+        phoneNumber: "",
+        address: "",
+        startDate: "",
+        endDate: "",
+        accessLevel: data.canModify? data.canModify[0].value : null,
+    });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormState((prevState) => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
 
     useEffect(() => {
-        if (firstName && lastName && email && password && dob && phone && address && startDate && endDate) {
-            setCanSubmit(true);
-            setFormData(
-                {
-                    firstName: firstName,
-                    lastName: lastName,
-                    username: email,
-                    password: password,
-                    dob: dob,
-                    phoneNumber: phone,
-                    address: address,
-                    startDate: startDate,
-                    endDate: endDate
-                }
-            );
-        }
-        else {
-            setCanSubmit(false);
-            setFormData(null);
-        }
-    }, [firstName, lastName, email, password, dob, phone, address, startDate, endDate])
+        const isFormComplete = Object.values(formState).every((field) => field);
+        setCanSubmit(isFormComplete);
+        setFormData(isFormComplete ? formState : null);
+    }, [formState, setCanSubmit, setFormData]);
 
     return (
         <Form>
             <Form.Text className="mx-1">Name</Form.Text>
             <InputGroup className="mb-1">
-                <Form.Control placeholder="First name" value={firstName} onChange={e => setFirstName(e.target.value)}/>
-                <Form.Control placeholder="Last name" value={lastName} onChange={e => setLastName(e.target.value)}/>
+                <Form.Control placeholder="First name" value={formState.firstName} name="firstName" onChange={handleChange}/>
+                <Form.Control placeholder="Last name" value={formState.lastName} name="lastName" onChange={handleChange}/>
             </InputGroup>
             <Form.Text className="mx-1">Email</Form.Text>
-            <Form.Control type="email" placeholder="Email address" className="mb-1" value={email} onChange={e => setEmail(e.target.value)}/>
+            <Form.Control type="email" placeholder="Email address" className="mb-1" value={formState.email} name="email" onChange={handleChange}/>
             <Form.Text className="mx-1">Password</Form.Text>
-            <Form.Control type="password" placeholder="Password" className="mb-1" value={password} onChange={e => setPassword(e.target.value)}/>
+            <Form.Control type="password" placeholder="Password" className="mb-1" value={formState.password} name="password" onChange={handleChange}/>
             <Form.Text className="mx-1">Date of birth</Form.Text>
-            <Form.Control type="date" className="mb-1" value={dob} onChange={e => setDob(e.target.value)}/>
+            <Form.Control type="date" className="mb-1" value={formState.dob} name="dob" onChange={handleChange}/>
             <Form.Text className="mx-1">Phone</Form.Text>
-            <Form.Control className="mb-1" placeholder="123-456-7890" value={phone} onChange={e => setPhone(e.target.value)}/>
+            <Form.Control className="mb-1" placeholder="123-456-7890" value={formState.phoneNumber} name="phoneNumber" onChange={handleChange}/>
             <Form.Text className="mx-1">Address</Form.Text>
-            <Form.Control className="mb-1" placeholder="Street, Apt#, City, State, Zip" value={address} onChange={e => setAddress(e.target.value)}/>
+            <Form.Control className="mb-1" placeholder="Street, Apt#, City, State, Zip" value={formState.address} name="address" onChange={handleChange}/>
             <Form.Text className="mx-1">Start date</Form.Text>
-            <Form.Control type="date" className="mb-1" value={startDate} onChange={e => setStartDate(e.target.value)}/>
+            <Form.Control type="date" className="mb-1" value={formState.startDate} name="startDate" onChange={handleChange}/>
             <Form.Text className="mx-1">End date</Form.Text>
-            <Form.Control type="date" className="mb-1" value={endDate} onChange={e => setEndDate(e.target.value)}/>
+            <Form.Control type="date" className="mb-1" value={formState.endDate} name="endDate" onChange={handleChange}/>
+            <Form.Text className="mx-1">Role</Form.Text>
+            <Form.Select aria-label="Employee Role" value={formState.accessLevel} name="accessLevel" onChange={handleChange}>
+                {data.canModify? data.canModify.map((entry, i) => (
+                    <option key={i} value={entry.value}>{entry.name}</option>
+                )) : null}
+            </Form.Select>
         </Form>
     );
 }
 
 function EmployeeModalFormContainer() {
-    const {canSubmit, formData, showForm, setShowForm} = useContext(StaffManagerContext);
+    const {canSubmit, formData, showForm, setShowForm, setFormData} = useContext(StaffManagerContext);
     const [inProgress, setInProgress] = useState(false);
     const [submitEnabled, setSubmitEnabled] = useState(true);
     const [failed, setFailed] = useState(false);
@@ -137,19 +139,18 @@ function EmployeeModalFormContainer() {
         });
     }
 
-    // Reset form state on close events
-    useEffect(() => {
-        if (showForm) {
-            setFailed(false);
-            setInProgress(false);
-            setSubmitEnabled(true);
-        }
-    }, [showForm])
+    const handleOnShow = () => {
+        setFormData(null);
+        setFailed(false);
+        setInProgress(false);
+        setSubmitEnabled(true);
+    }
 
     return (
         <Modal
             show={showForm}
             onHide={() => setShowForm(false)}
+            onShow={handleOnShow}
             backdrop="static"
             keyboard={false}
             fullscreen={false}
