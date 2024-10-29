@@ -1,5 +1,6 @@
 import React from 'react';
 import CustomerAccount from './CustomerAccount';
+import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import './Events.css';
 import './CustomerAccount'
@@ -64,6 +65,7 @@ const eventsData = [
 
 const Events = () => {
     const categories = [...new Set(eventsData.map(events => events.category))]; // Unique categories
+    const navigate = useNavigate(); // Initialize useNavigate hook
 
     return (
         <div>
@@ -77,15 +79,21 @@ const Events = () => {
                 </section>
             </div>
             <Navbar />
+            <button className="back-button" onClick={() => navigate('/')}>
+              Back to Home
+                </button> 
+                <br></br> 
+                <br></br>
             <div className="events-container">
                 <div className="banner-image3">
                     <p className="h4">Events And Promotions</p>
                 </div>
                 <br></br>
+              
                 <block id="topquote_one"><p><b>Check out our Daily Attractions and Promotions!</b></p></block>
                 {categories.map(category => (
                     <div className="events-category" key={category}>
-                    <br></br>
+                    
                         <h2>{category}</h2>
                         <div className="events-list">
                             {eventsData.filter(events => events.category === category).map(events => (

@@ -53,6 +53,8 @@ const attractionsData = [
 
 const Attractions = () => {
     const categories = [...new Set(attractionsData.map(attraction => attraction.category))]; // Unique categories
+    const navigate = useNavigate(); // Initialize useNavigate hook
+
 
     return (
         <div>
@@ -66,15 +68,20 @@ const Attractions = () => {
                 </section>
             </div>
             <Navbar />
+            <button className="back-button" onClick={() => navigate('/')}>
+              Back to Home
+                </button> 
+                <br></br> 
+                <br></br>
             <div className="attractions-container">
              <div className="banner-image2">
                 <p className="h4">Attractions</p>
                 </div>
                 <br></br>
-                <block id="topquote"><p><b>Take a look at our many attractions ranging from Restaurants, Gift Shops, and even Concession Stands!</b></p></block>
+                <block id="topquote_one"><p><b>Take a look at our many attractions ranging from Restaurants, Gift Shops, and even Concession Stands!</b></p></block>
                 {categories.map(category => (
                     <div className="attractions-category" key={category}>
-                    <br></br><hr></hr>
+                    <hr></hr>
                         <h2 className='attractionheader'>{category}</h2>
                         <div className="attractions-list">
                             {attractionsData.filter(attractions => attractions.category === category).map(attractions => (

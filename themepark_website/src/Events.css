@@ -2,6 +2,19 @@
     background-color: gray; /* Darker shade on hover */
 }
 
+.back-button {
+    float: left;
+    margin-bottom: 0px; /* Space below the button */
+    padding: 10px 20px; /* Padding around the button */
+    background-color: white; /* Button background color */
+    color: black; /* Button text color */
+    text-decoration: underline;
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Font size */
+}
+
 .banner-image3 {
     align-items: center;
     flex-direction: column;

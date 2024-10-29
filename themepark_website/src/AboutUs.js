@@ -22,7 +22,7 @@ const AboutUs = () => {
               
               <Navbar />
     <div className="about-us-container">
-      {/* Title Section */}
+      {/* Title Section  */}
       <button className="back-button" onClick={() => navigate('/')}>
               Back to Home
           </button>  
