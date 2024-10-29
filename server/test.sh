@@ -1,8 +1,9 @@
 #!/bin/bash
 
-SRC_DIR="$(dirname $0)"
+SRC_DIR="$(dirname "$0")"
 
-cd $SRC_DIR
+# shellcheck disable=SC2164
+cd "$SRC_DIR"
 
 export MYSQL_ADDR=172.16.0.2
 export MYSQL_DB=themepark_db
