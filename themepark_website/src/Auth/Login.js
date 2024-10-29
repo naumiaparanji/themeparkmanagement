@@ -13,10 +13,12 @@ export function LoginBox(props) {
         api.post(props.apiPath || '/customer/login', {username: email, password: password})
         .then(() => window.location.pathname = props.redirect)
         .catch((e) => {
-            if (e.request) setMessage('Failed to connect to server');
-            else if (e.response.status === 500) setMessage('Server error');
-            else if (!e.response.data) setMessage('Unknown error');
-            else setMessage('Invalid email/password');
+            if (e.response) {
+                if (e.response.status === 500) setMessage('Server error');
+                else if (!e.response.data) setMessage('Unknown error');
+                else setMessage('Invalid email/password');
+            }
+            else if (e.request) setMessage('Failed to connect to server');
         });
     }
 

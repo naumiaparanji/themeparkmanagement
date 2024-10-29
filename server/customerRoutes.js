@@ -51,7 +51,15 @@ module.exports = (app) => {
             return;
         }
         const success = await db.setUser(req.body.username, 
-            {password: await auth.hashpw(req.body.password), FirstName: req.body.firstName, LastName: req.body.lastName, DOB: req.body.dob, Address: req.body.address}, false)
+            {
+                password: await auth.hashpw(req.body.password), 
+                FirstName: req.body.firstName, 
+                LastName: req.body.lastName, 
+                DOB: req.body.dob, 
+                Address: req.body.address}, 
+                false,
+                false
+            )
         .catch((e) => {
             console.log(e);
             res.status(500).json({success: false, error: "SQLError"});
