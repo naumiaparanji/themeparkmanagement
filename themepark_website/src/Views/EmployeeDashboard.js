@@ -1,6 +1,6 @@
 import styles from "./Dashboard.module.css";
 import React, { useContext, useEffect, useState } from "react";
-import { Routes, Route, useNavigate, useLocation, useResolvedPath } from 'react-router-dom';
+import { useNavigate, useLocation, useResolvedPath, Outlet } from 'react-router-dom';
 import { ApiContext, ApiContextProvider } from "../ApiContext";
 import MainLogo from '../images/flagslogo.png'; 
 import * as Icon from 'react-bootstrap-icons';
@@ -8,8 +8,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {Navbar, Nav, Container, NavDropdown, ListGroup} from "react-bootstrap";
 import { StaffManagerContextProvider } from "./Staff";
 import { api } from "../App";
-import Home from "../Home";
-import DataManage from "../DataEdit/DataManage";
 
 export function WhoAmI() {
     // This is a placeholder for testing
@@ -106,11 +104,7 @@ export function DashUI() {
                     </ListGroup>
                 </div>
                 <div className={`${styles.scrolly} w-100`}>
-                    <Routes>
-                        <Route path="" element={<WhoAmI/>} />
-                        <Route path="reports" element={<Home/>} />
-                        <Route path="datamanage" element={<DataManage/>} />
-                    </Routes>
+                    <Outlet />
                 </div>
             </div>
         </Container>

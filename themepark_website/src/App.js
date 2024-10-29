@@ -9,7 +9,7 @@ import Rides from './Rides';
 import { EmployeeLogin, Login } from './Auth/Login';
 import { EmployeeSignup, SignUp } from './Auth/Signup';
 import DataManage from './DataEdit/DataManage';
-import EmployeeDashboard from './Views/EmployeeDashboard';
+import EmployeeDashboard, { WhoAmI } from './Views/EmployeeDashboard';
 import { MaintenanceInfo } from './Maintenance/Maintenance';
 import PageNotFound from "./PageNotFound";
 import axios from "axios";
@@ -37,7 +37,13 @@ function App() {
                 <Route exact path='/about' element={<AboutUs />} />
                 <Route exact path='/employee/login' element={<EmployeeLogin />} />
                 <Route exact path='/employee/signup' element={<EmployeeSignup />} />
-                <Route path='/employee/access/*' element={<EmployeeDashboard />} />
+                <Route path='/employee/access/*' element={<EmployeeDashboard />}>
+                    <Route path="" element={<WhoAmI/>} />
+                    <Route path="events" element={<WhoAmI/>} />
+                    <Route path="reports" element={<WhoAmI/>} />
+                    <Route path="datamanage" element={<DataManage/>} />
+                    <Route path='*' element={<PageNotFound />} />
+                </Route>
                 <Route path='*' element={<PageNotFound />} />
             </Routes>
         </div>
