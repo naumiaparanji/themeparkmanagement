@@ -21,7 +21,7 @@ const Home = () => {
             <Navbar /> 
             <div className="mainText">
                 <div>
-                    <video width="400" height="400" autoplay loop muted class="bg-Video" >
+                    <video width="400" height="400" autoPlay loop muted className="bg-Video" >
                         <source src={BgVideo} type="video/mp4" />
                     </video>
                 </div>
