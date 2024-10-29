@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { apiGet } from "./CRUDApi";
+import { api } from "./App";
 
 export const ApiContext = React.createContext();
 
@@ -7,14 +7,12 @@ export function ApiContextProvider({apiPath, apiFailureAction, blockRendering, c
     const [data, setData] = useState(null);
 
     useEffect(() => {
-        const getInfo = async () => {
-            const response = await apiGet(apiPath)
-            .catch((e) => console.log(e));
-            if ((!response || response.code !== 200) && apiFailureAction) {
-                apiFailureAction();
-            } else setData(response.body);
-        }
-        getInfo().catch((e) => console.log(e)); // should not happen afaik
+        api.get(apiPath)
+        .then((res) => setData(res.data))
+        .catch((e) => {
+            console.error(e);
+            apiFailureAction();
+        });
     }, [apiPath, apiFailureAction]);
 
     return (

@@ -1,18 +1,24 @@
 import React, {useState, useRef, useEffect, useMemo, useContext, createContext} from "react";
 import { Accordion, Button, Container, ListGroup, Offcanvas, Modal, Spinner, Form, FloatingLabel, InputGroup } from "react-bootstrap";
-import { apiGet, apiPost } from "../CRUDApi";
+import { api } from "../App";
 
 export function StaffList() {
     const [entries, setEntries] = useState([]);
 
-    const getEmployees = async () => {
-        const response = await apiGet("/employee/data/all/0")
-        .catch((e) => console.log(e));
-        if (response.code === 200) setEntries(response.body.data);
-    }
-
     useEffect(() => {
+        /*
+        const getEmployees = async () => {
+            const response = await apiGet("/employee/data/all/0")
+            .catch((e) => console.log(e));
+            if (response.code === 200) setEntries(response.body.data);
+        }
         getEmployees().catch((e) => console.log(e));
+        axios.get("/employee/data/all/0")
+        .catch(error => {
+
+        }).then(res => {
+            setEntries(res.data.data);
+        }); */
     }, [])
 
     return (
@@ -118,17 +124,17 @@ function EmployeeModalFormContainer() {
     const [failed, setFailed] = useState(false);
 
     const handleSubmit = () => {
-        const submitData = async () => {
-            const response = await apiPost("/employee/register", formData)
-            .catch((e) => console.log(e));
-            if (!response || response.code !== 200) {
-                setFailed(true);
-                setSubmitEnabled(false);
-                setInProgress(false);
-            } else setShowForm(false);
-        }
         setInProgress(true);
-        submitData().catch((e) => console.log(e));
+        api.post("/employee/register", formData)
+        .then(() => {
+            setShowForm(false);
+        })
+        .catch((e) => {
+            console.error(e);
+            setFailed(true);
+            setSubmitEnabled(false);
+            setInProgress(false);
+        });
     }
 
     // Reset form state on close events

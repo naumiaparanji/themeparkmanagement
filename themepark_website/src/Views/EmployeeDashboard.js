@@ -4,10 +4,10 @@ import { Routes, Route, useNavigate, useLocation, useResolvedPath } from 'react-
 import { ApiContext, ApiContextProvider } from "../ApiContext";
 import MainLogo from '../images/flagslogo.png'; 
 import * as Icon from 'react-bootstrap-icons';
-import { apiPost } from "../CRUDApi";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Navbar, Nav, Container, NavDropdown, ListGroup} from "react-bootstrap";
 import { StaffView } from "./Staff";
+import { api } from "../App";
 
 export function WhoAmI() {
     // This is a placeholder for testing
@@ -79,23 +79,13 @@ export function DashUI() {
                                 >{`${data.user}`}</p>
                                 <p className="fs-7 text-center"
                                 style={{marginTop:8, marginBottom:-8}}
-                                >{`${{
-                                    "EMP": "Employee",
-                                    "MGR": "Manager",
-                                    "ADM": "Administrator",
-                                    "SUP": "Superuser"
-                                }[data.accessLevel]}`}</p>
+                                >{data.role}</p>
                             </NavDropdown.Header>
                             <NavDropdown.Divider/>
                             <NavDropdown.Item onClick={() => {
-                                const getInfo = async () => {
-                                    const response = await apiPost("/employee/logout", {
-                                        employeeUser: data.user
-                                    })
-                                    .catch((e) => console.log(e));
-                                    if (response.code === 200) navigate("/employee/login");
-                                }
-                                getInfo().catch((e) => console.log(e));
+                                api.post("/employee/logout", {employeeUser: data.user})
+                                .then(() => navigate("/employee/login"))
+                                .catch((e) => console.error(e));
                             }} className="text-center">
                                 Logout
                             </NavDropdown.Item>

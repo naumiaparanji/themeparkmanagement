@@ -9,8 +9,14 @@ import Rides from './Rides';
 import { EmployeeLogin, Login } from './Auth/Login';
 import { EmployeeSignup, SignUp } from './Auth/Signup';
 import EmployeeDashboard from './Views/EmployeeDashboard';
+import axios from "axios";
 
 export const apiUrl = 'http://localhost:8080';
+
+export const api = axios.create({
+    withCredentials: true,
+    baseURL: apiUrl
+});
 
 function App() {
     return (

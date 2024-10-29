@@ -2,7 +2,7 @@ import './Auth.css'
 import React, { useState } from 'react';
 import MainLogo from '../images/flagslogo.png';
 import { RandomBGImg, MessageBox, InputField, FancyButton, Validation, defaultButtonStyle } from './AuthComponents';
-import { apiPost } from '../CRUDApi';
+import { api } from '../App';
 
 export function SignUpBox(props) {
     // Added new states for the additional fields
@@ -30,7 +30,7 @@ export function SignUpBox(props) {
             return;
         }
         // Send the additional fields as part of the registration request
-        const response = await apiPost(props.apiPath || '/customer/register', 
+        api.post(props.apiPath || '/customer/register', 
             {
                 firstName: firstName,
                 lastName: lastName,
@@ -39,20 +39,15 @@ export function SignUpBox(props) {
                 username: email,
                 password: password
             }
-        ).catch((error) => console.log(error));
-        if (!response) {
-            setMessage('Failed to connect to server');
-        } else if (response.code === 500) {
-            setMessage('Server error');
-        } else if (response.code === 409) {
-            setMessage('An account with this email already exists');
-        } else if (!response.body) {
-            setMessage('Unknown error');
-        } else if (!response.body.success) {
-            setMessage('Sign-up failed');
-        } else {
-            window.location.pathname = props.redirect;
-        }
+        )
+        .then(() => window.location.pathname = props.redirect)
+        .catch((e) => {
+            if (e.request) setMessage('Failed to connect to server');
+            else if (e.response.status === 500) setMessage('Server error');
+            else if (e.response.status === 409) setMessage('An account with this email already exists');
+            else if (!e.response.data) setMessage('Unknown error');
+            else setMessage('Sign-up failed');
+        });
     }
 
     return (

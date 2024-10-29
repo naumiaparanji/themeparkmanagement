@@ -76,7 +76,8 @@ const getRequestedEmployee = async (req, res, next) => {
 }
 
 const returnEmployeeData = (req, res, next) => {
-    if (req.params.user && req.params.user != req.session.employeeUser) return next();
+    if (!req.requestingEmployee)
+        throw new Error("req.requestingEmployee does not exist");
     return res.status(200).json({success: true, 
         firstName: req.requestingEmployee.FirstName,
         lastName: req.requestingEmployee.LastName,
@@ -92,7 +93,7 @@ const returnEmployeeData = (req, res, next) => {
 }
 
 const returnRequestedEmployee = (req, res, next) => {
-    if (!req.requestingEmployee)
+    if (!req.requestedEmployee)
         throw new Error("req.requestedEmployee does not exist");
     return res.status(200).json({success: true, 
         firstName: req.requestedEmployee.FirstName,
@@ -140,27 +141,31 @@ module.exports = (app) => {
         checkSessionForEmployee,
         getRequestingEmployee, 
         async (req, res) => {
+            const roleRank = employeeRanks[req.requestingEmployee.AccessLevel];
+            const roleName = employeeNames[req.requestingEmployee.AccessLevel];
             res.status(200).json({success: true, 
                 user: req.session.employeeUser,
                 firstName: req.requestingEmployee.FirstName,
                 lastName: req.requestingEmployee.LastName,
-                accessLevel: req.requestingEmployee.AccessLevel
+                accessLevel: req.requestingEmployee.AccessLevel,
+                role: roleName,
+                rank: roleRank,
+                canModify: [employeeRoles.slice(0, roleRank)]
             });
         }
     );
 
-    // Get more info about employee.
+    // Get more info about this employee
     app.get("/employee/data",
         checkSessionForEmployee,
         getRequestingEmployee,
         returnEmployeeData
     )
 
-    // Get more info about employee. Basic access only allows user to request own data.
+    // Get info about other employees
     app.get("/employee/data/:user", 
         checkSessionForEmployee,
         getRequestingEmployee, 
-        returnEmployeeData,
         getRequestedEmployee,
         compareAccessLevels,
         returnRequestedEmployee
@@ -216,7 +221,7 @@ module.exports = (app) => {
                 "dob",
                 "address",
                 "phoneNumber",
-                "username",
+                "email",
                 "password",
                 "startDate",
                 "endDate"
@@ -250,7 +255,7 @@ module.exports = (app) => {
                 newEmplyee.AccessLevel = req.body.accessLevel;
             }
             if (req.body.created != undefined) newEmplyee.Created = req.body.created;
-            const success = await db.setUser(req.body.username, newEmplyee, true, false)
+            const success = await db.setUser(req.body.email, newEmplyee, true, false)
             .catch((e) => {
                 console.log(e);
                 res.status(500).json({success: false, error: "SQLError"});
