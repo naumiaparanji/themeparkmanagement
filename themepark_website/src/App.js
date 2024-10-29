@@ -12,9 +12,14 @@ import DataManage from './DataEdit/DataManage';
 import EmployeeDashboard from './Views/EmployeeDashboard';
 import { MaintenanceInfo } from './Maintenance/Maintenance';
 import PageNotFound from "./PageNotFound";
-
+import axios from "axios";
 
 export const apiUrl = 'http://localhost:8080';
+
+export const api = axios.create({
+    withCredentials: true,
+    baseURL: apiUrl
+});
 
 function App() {
     return (

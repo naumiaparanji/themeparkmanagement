@@ -2,7 +2,7 @@ import './Auth.css'
 import React, { useState } from 'react';
 import MainLogo from '../images/flagslogo.png';
 import { RandomBGImg, MessageBox, InputField, FancyButton, defaultButtonStyle } from './AuthComponents';
-import { apiPost } from '../CRUDApi';
+import { api } from '../App';
 
 export function LoginBox(props) {
     const [email, setEmail] = useState('');
@@ -10,23 +10,14 @@ export function LoginBox(props) {
     const [message, setMessage] = useState('');
 
     const loginSubmit = async () => {
-        const response = await apiPost(props.apiPath || '/customer/login',
-            {
-                username: email,
-                password: password
-            }
-        ).catch((error) => console.log(error));
-        if (!response) {
-            setMessage('Failed to connect to server');
-        } else if (response.code === 500) {
-            setMessage('Server error');
-        } else if (!response.body) {
-            setMessage('Unknown error');
-        } else if (!response.body.success) {
-            setMessage('Invalid email/password');
-        } else {
-            window.location.pathname = props.redirect;
-        }
+        api.post(props.apiPath || '/customer/login', {username: email, password: password})
+        .then(() => window.location.pathname = props.redirect)
+        .catch((e) => {
+            if (e.request) setMessage('Failed to connect to server');
+            else if (e.response.status === 500) setMessage('Server error');
+            else if (!e.response.data) setMessage('Unknown error');
+            else setMessage('Invalid email/password');
+        });
     }
 
     return (

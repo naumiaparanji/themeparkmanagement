@@ -19,17 +19,19 @@ async function getUser(userEmail, isEmployee = false) {
   return await db(target).where("Email", userEmail).first();
 }
 
-async function getUsers(limit, offsetCount, isEmployee = false) {
-  let target = "CUSTOMER";
-  let order = "CustomerID";
-  if (isEmployee) {
-    target = "EMPLOYEE";
-    order = "EmployeeID";
-  }
-  return await db(target)
+async function getUsers(limit, offsetCount, isEmployee=false) {
+    let target = "CUSTOMER";
+    let order = "CustomerID";
+    if (isEmployee) {
+        target = "EMPLOYEE";
+        order = "EmployeeID";
+    }
+    let query = db(target)
     .orderBy(order)
     .limit(limit)
-    .offset(limit * offsetCount);
+    const offset = limit * offsetCount;
+    if (offset > 0) query = query.offset(offset);
+    return await query;
 }
 
 async function setUser(userEmail, fields, isEmployee = false, merge = true) {

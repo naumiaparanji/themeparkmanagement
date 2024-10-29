@@ -4,8 +4,10 @@ import { Routes, Route, useNavigate, useLocation, useResolvedPath } from 'react-
 import { ApiContext, ApiContextProvider } from "../ApiContext";
 import MainLogo from '../images/flagslogo.png'; 
 import * as Icon from 'react-bootstrap-icons';
-import { apiPost } from "../CRUDApi";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import {Navbar, Nav, Container, NavDropdown, ListGroup} from "react-bootstrap";
+import { StaffManagerContextProvider } from "./Staff";
+import { api } from "../App";
 import Home from "../Home";
 import DataManage from "../DataEdit/DataManage";
 
@@ -79,22 +81,13 @@ export function DashUI() {
                                 >{`${data.user}`}</p>
                                 <p className="fs-7 text-center"
                                 style={{marginTop:8, marginBottom:-8}}
-                                >{`${{
-                                    "EMP": "Employee",
-                                    "MGR": "Manager",
-                                    "ADM": "Administrator"
-                                }[data.accessLevel]}`}</p>
+                                >{data.role}</p>
                             </NavDropdown.Header>
                             <NavDropdown.Divider/>
                             <NavDropdown.Item onClick={() => {
-                                const getInfo = async () => {
-                                    const response = await apiPost("/employee/logout", {
-                                        employeeUser: data.user
-                                    })
-                                    .catch((e) => console.log(e));
-                                    if (response.code === 200) navigate("/employee/login");
-                                }
-                                getInfo().catch((e) => console.log(e));
+                                api.post("/employee/logout", {employeeUser: data.user})
+                                .then(() => navigate("/employee/login"))
+                                .catch((e) => console.error(e));
                             }} className="text-center">
                                 Logout
                             </NavDropdown.Item>
@@ -106,6 +99,7 @@ export function DashUI() {
                 <div className={`${styles.sidepanel}`}>
                     <ListGroup className={`list-group-flush ${styles.grow}`}>
                         <SideBarLink title="Home" path="" activeIcon="HouseFill" inactiveIcon="House" />
+                        <SideBarLink title="Events" path="events" activeIcon="CalendarEventFill" inactiveIcon="CalendarEvent" />
                         <SideBarLink title="Reports" path="reports" activeIcon="Clipboard2DataFill" inactiveIcon="Clipboard2Data" />
                         <SideBarLink title="Data Management" path="datamanage" activeIcon="DatabaseFillLock" inactiveIcon="DatabaseLock" />
                         <SideBarLink className="mt-auto" title="Settings" path="settings" activeIcon="GearFill" inactiveIcon="Gear" />
@@ -131,7 +125,9 @@ export default function EmployeeDashboard(props) {
             apiFailureAction={() => window.location.pathname = "/employee/login"}
             blockRendering={true}
         >
-            <DashUI />
+            <StaffManagerContextProvider>
+                <DashUI />
+            </StaffManagerContextProvider>
         </ApiContextProvider>
     );
 }

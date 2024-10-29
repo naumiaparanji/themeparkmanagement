@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from 'axios';
 import './DataManage.css';
 import 'bootstrap/dist/css/bootstrap.min.css'
+import { EmployeeModalFormContainer, StaffManagerContext } from "../Views/Staff";
+// ^^^ This will be reworked to no longer need StaffManagerContext
 
 function DataManage() {
 // Supposed to grab Data from the Database
+    const {setShowForm} = useContext(StaffManagerContext);
     const [returnedData, setReturnedData] = useState(['hello']); 
     const [employee, SetEmployee] = useState({EmployeeID: 0, FirstName: '', LastName: '', Age: 0, Gender: ''})
     
@@ -52,7 +55,7 @@ function DataManage() {
         </form>
         <p>
             <button className="buttons-mod" onClick={() => fetchData()}>Modify</button>
-            <button className="buttons-mod" onClick={() => fetchData()}>Create</button>
+            <button className="buttons-mod" onClick={() => setShowForm(true)}>Create</button>
             <button className="buttons-mod-del" onClick={() => fetchData()}>Delete</button>
         </p>
         <p>EmployeeID: {returnedData.EmployeeID}</p>
@@ -62,6 +65,7 @@ function DataManage() {
         <p>Email: {returnedData.Email}</p>
         {returnedData}
     </div>
+    <EmployeeModalFormContainer/> 
     </div>
   )
 }

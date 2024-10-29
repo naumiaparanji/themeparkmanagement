@@ -8,7 +8,7 @@ import {
   FancyButton,
   defaultButtonStyle,
 } from "../Auth/AuthComponents";
-import { apiPost } from "../CRUDApi";
+import { api } from "../App";
 
 export function MaintenanceInfoBox(props) {
   const [rideName, setRideName] = useState("");
@@ -53,25 +53,18 @@ export function MaintenanceInfoBox(props) {
       setMessage("All fields are required");
       return;
     }
-
-    const response = await apiPost(props.apiPath || "/maintenance/input", {
+    api.post(props.apiPath || "/maintenance/input", {
       rideName: rideName,
       date: date,
       description: description,
       status: status,
-    }).catch((error) => console.log(error));
-
-    if (!response) {
-      setMessage("Failed to connect to server");
-    } else if (response.code === 500) {
-      setMessage("Server error");
-    } else if (!response.body) {
-      setMessage("Unknown error");
-    } else if (!response.body.success) {
-      setMessage("Submission failed");
-    } else {
-      setMessage("Maintenance info submitted successfully");
-    }
+    }).then(() => setMessage("Maintenance info submitted successfully"))
+    .catch((e) => {
+      if (e.response) setMessage("Failed to connect to server");
+      else if (e.response.status === 500) setMessage("Server error");
+      else if (e.response.data && !e.response.data.success) setMessage("Submission failed");
+      else setMessage("Unknown error");
+    });
   };
 
   return (
