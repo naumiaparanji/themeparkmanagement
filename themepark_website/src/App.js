@@ -14,7 +14,7 @@ import { MaintenanceInfo } from './Maintenance/Maintenance';
 import PageNotFound from "./PageNotFound";
 import axios from "axios";
 
-export const apiUrl = process.env.API_URL || 'http://localhost:8080';
+export const apiUrl = 'http://localhost:8080';
 
 export const api = axios.create({
     withCredentials: true,
