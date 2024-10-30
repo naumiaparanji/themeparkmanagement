@@ -1,4 +1,4 @@
-import "../Auth/Auth.css";
+import "./Maintenance.css";
 import React, { useState } from "react";
 import MainLogo from "../images/flagslogo.png";
 import {

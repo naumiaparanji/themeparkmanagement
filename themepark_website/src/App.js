@@ -41,6 +41,7 @@ function App() {
                     <Route path="" element={<WhoAmI/>} />
                     <Route path="events" element={<WhoAmI/>} />
                     <Route path="reports" element={<WhoAmI/>} />
+                    <Route path="maintenance" element={<MaintenanceInfo/>} />
                     <Route path="datamanage" element={<DataManage/>} />
                     <Route path='*' element={<PageNotFound />} />
                 </Route>
