@@ -104,7 +104,7 @@ const Events = () => {
                                     
                                     {/* Add the registration button for the event */}
                                     {events.id === 2 && (
-                                        <EventRegistration eventId={2} customerId={1} />
+                                        <EventRegistration eventId={14} customerId={1} />
                                     )}
                                 </div>
                             ))}
