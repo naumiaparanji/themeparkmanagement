@@ -64,6 +64,16 @@ export function LoginBox(props) {
                     width: "auto"
                 })}
             />
+            <FancyButton text="Employee Login" 
+                action={() => window.location.pathname = "/employee/login"} 
+                style={Object.assign({}, defaultButtonStyle, {
+                    color: "blue",
+                    backgroundColor: "white",
+                    padding: "0px 0px",
+                    width: "auto"
+                })}
+            />
+
         </div>
     );
 }
