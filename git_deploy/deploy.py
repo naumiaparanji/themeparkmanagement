@@ -66,15 +66,6 @@ def parse_pattern_list(plist, base_path):
         with open(path, 'w') as f:
             f.writelines(lines)
 
-def run_commands(command_list):
-    for command in command_list:
-        print(f'Executing "{command}"')
-        ret = os.system(command)
-        ret >>= 8
-        if ret != 0:
-            print(f'"{command}" returned non-zero exit status. Aborting...')
-            exit()
-
 def run_command_in_dir(command, dir):
     cwd = os.getcwd()
     os.chdir(dir)
@@ -85,7 +76,7 @@ def run_command_in_dir(command, dir):
         print(f'"{command}" returned non-zero exit status. Aborting...')
         exit()
 
-def run_commands_in_dir(command_list, dir):
+def run_commands(command_list, dir):
     for command in command_list:
         print(f'Executing "{command}"')
         run_command_in_dir(command, dir)
@@ -97,7 +88,7 @@ def process_stage(stage, target_path):
     patterns = stage.get("patterns")
     parse_yaml_list(ylist, target_path)
     parse_pattern_list(patterns, target_path)
-    run_commands(stage.get("commands", []))
+    run_commands(stage.get("commands", []), target_path)
 
 def process_deploy(deploy_cfg, target_path):
     for actions in deploy_cfg:
@@ -106,7 +97,7 @@ def process_deploy(deploy_cfg, target_path):
         if not (working_dir and commands):
             return
         working_dir = os.path.abspath(os.path.join(target_path, working_dir))
-        run_commands_in_dir(commands, working_dir)
+        run_commands(commands, working_dir)
         print(os.getcwd())
 
 def main():
@@ -119,7 +110,7 @@ def main():
     print("Running pre-pull actions...")
     process_stage(pre_pull, target_path)
     print("Pulling...")
-    os.system(settings.get("pull_cmd", "git pull"))
+    run_commands([settings.get("pull_cmd", "git pull")])
     print("Running post-pull actions...")
     process_stage(post_pull, target_path)
     print("Deploying...")
