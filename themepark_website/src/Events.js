@@ -1,6 +1,7 @@
 import React from 'react';
 import CustomerAccount from './CustomerAccount';
 import { useNavigate } from 'react-router-dom';
+import EventRegistration from './EventRegistration';  // Import the registration component
 import Navbar from './Navbar';
 import './Events.css';
 import './CustomerAccount'
@@ -70,30 +71,26 @@ const Events = () => {
     return (
         <div>
             <div className="notificationbar">
-                {/* Edit Notification Text */}
                 <h1 className="notificationtext">**WINTER SEASON PASSES AVAILABLE! LOGIN OR CREATE AN ACCOUNT FOR MORE INFORMATION.</h1>
                 <section className="loginbutton">
                     <a href="login" id="logintext">
-                        <CustomerAccount text="Log In" /> {/* Looks ugly but works */}
+                        <CustomerAccount text="Log In" />
                     </a>
                 </section>
             </div>
             <Navbar />
             <button className="back-button" onClick={() => navigate('/')}>
-              Back to Home
-                </button> 
-                <br></br> 
-                <br></br>
+                Back to Home
+            </button>
+            <br/><br/>
             <div className="events-container">
                 <div className="banner-image3">
                     <p className="h4">Events And Promotions</p>
                 </div>
-                <br></br>
-              
+                <br/>
                 <block id="topquote_one"><p><b>Check out our Daily Attractions and Promotions!</b></p></block>
                 {categories.map(category => (
                     <div className="events-category" key={category}>
-                    
                         <h2>{category}</h2>
                         <div className="events-list">
                             {eventsData.filter(events => events.category === category).map(events => (
@@ -104,6 +101,11 @@ const Events = () => {
                                     <p><strong>Time:</strong> {events.time}</p>
                                     <p><strong>Age Limit:</strong> {events.ageLimit}+</p>
                                     <p><strong>Restrictions:</strong> {events.restrictions}</p>
+                                    
+                                    {/* Add the registration button for the event */}
+                                    {events.id === 2 && (
+                                        <EventRegistration eventId={2} customerId={1} />
+                                    )}
                                 </div>
                             ))}
                         </div>
