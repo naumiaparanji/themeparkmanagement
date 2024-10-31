@@ -1,6 +1,8 @@
 import json
 import yaml
 import os
+import re
+import subprocess
 
 with open('deploySettings.json') as f:
     settings = json.load(f)
@@ -69,12 +71,16 @@ def parse_pattern_list(plist, base_path):
 def run_command_in_dir(command, dir):
     cwd = os.getcwd()
     os.chdir(dir)
-    ret = os.system(command)
+    proc = subprocess.Popen(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = proc.communicate()
+    ret = proc.returncode
     os.chdir(cwd)
-    ret >>= 8
     if ret != 0:
+        print(stdout.decode('utf-8'))
+        print(stderr.decode('utf-8'))
         print(f'"{command}" returned non-zero exit status. Aborting...')
         exit()
+    return stdout
 
 def run_commands(command_list, dir):
     for command in command_list:
@@ -104,13 +110,20 @@ def main():
     target_path = os.path.abspath(settings['target'])
     if not os.path.isdir(target_path):
         raise RuntimeError(f"Target does not exist: {target_path}")
+    out = run_command_in_dir("git ls-remote", target_path)
+    out2 = run_command_in_dir("git rev-parse HEAD", target_path)
+    sha = re.split(r'\t+', out.decode('ascii'))[0].strip()
+    sha2 = re.split(r'\t+', out2.decode('ascii'))[0].strip()
+    if sha == sha2:
+        print("No new changes on remote repository. Aborting...")
+        exit()
     pre_pull = settings.get("pre_pull")
     post_pull = settings.get("post_pull")
     deploy = settings.get("deploy")
     print("Running pre-pull actions...")
     process_stage(pre_pull, target_path)
     print("Pulling...")
-    run_commands([settings.get("pull_cmd", "git pull")])
+    run_command_in_dir(settings.get("pull_cmd", "git pull"), target_path)
     print("Running post-pull actions...")
     process_stage(post_pull, target_path)
     print("Deploying...")
