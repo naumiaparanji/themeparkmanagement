@@ -3,6 +3,7 @@ import yaml
 import os
 import re
 import subprocess
+import sys
 
 with open('deploySettings.json') as f:
     settings = json.load(f)
@@ -69,12 +70,9 @@ def parse_pattern_list(plist, base_path):
             f.writelines(lines)
 
 def run_command_in_dir(command, dir):
-    cwd = os.getcwd()
-    os.chdir(dir)
-    proc = subprocess.Popen(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=dir, shell=True)
     stdout, stderr = proc.communicate()
     ret = proc.returncode
-    os.chdir(cwd)
     if ret != 0:
         print(stdout.decode('utf-8'))
         print(stderr.decode('utf-8'))
@@ -107,16 +105,18 @@ def process_deploy(deploy_cfg, target_path):
         print(os.getcwd())
 
 def main():
+    args = set(sys.argv)
     target_path = os.path.abspath(settings['target'])
     if not os.path.isdir(target_path):
         raise RuntimeError(f"Target does not exist: {target_path}")
-    out = run_command_in_dir("git ls-remote", target_path)
-    out2 = run_command_in_dir("git rev-parse HEAD", target_path)
-    sha = re.split(r'\t+', out.decode('ascii'))[0].strip()
-    sha2 = re.split(r'\t+', out2.decode('ascii'))[0].strip()
-    if sha == sha2:
-        print("No new changes on remote repository. Aborting...")
-        exit()
+    if '-skip-check' not in args:
+        out = run_command_in_dir("git ls-remote", target_path)
+        out2 = run_command_in_dir("git rev-parse HEAD", target_path)
+        sha = re.split(r'\t+', out.decode('ascii'))[0].strip()
+        sha2 = re.split(r'\t+', out2.decode('ascii'))[0].strip()
+        if sha == sha2:
+            print("No new changes on remote repository. Aborting...")
+            exit()
     pre_pull = settings.get("pre_pull")
     post_pull = settings.get("post_pull")
     deploy = settings.get("deploy")

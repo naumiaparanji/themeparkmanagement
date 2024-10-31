@@ -35,7 +35,7 @@
             "commands": [
                 "mkdir -p server_root",
                 "cp *.js server-cert.pem server-key.pem server_root",
-                "docker compose up -d"
+                "docker compose up -d --force-recreate"
             ]
         },
         {
@@ -44,7 +44,7 @@
                 "mkdir -p build",
                 "npm install",
                 "npm run build",
-                "docker compose up -d"
+                "docker compose up -d --force-recreate"
             ]
         }
     ]
