@@ -90,4 +90,5 @@ module.exports = {
   getUsers,
   getRides,
   setMaintenanceRequest,
+  registerForEvent
 };

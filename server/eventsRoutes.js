@@ -17,24 +17,13 @@ module.exports = (app) => {
     and add query functions to your own js file.
     */
 
-    // Example route
-    app.get("/events/status", async (req, res) => {
-        if (!req.session.user) {
-            res.status(401).json({success: false, error: 'NotAuthorized'});
-            return;
-        }
-        res.status(200).json({success: true, status: "ok"});
-    });
-
     // Event registration route
-    const { registerForEvent } = require('./db');
-
-    app.post('/register', async (req, res) => {
+    app.post('/events/register', async (req, res) => {
         const { eventId, customerId } = req.body;
     
         try {
             // Call the new function to insert a new event ticket
-            await registerForEvent(eventId, customerId);
+            await db.registerForEvent(eventId, customerId);
             res.status(200).json({ success: true, message: 'Registration successful!' });
         } catch (error) {
             console.error('Error in registration:', error);
