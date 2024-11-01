@@ -53,6 +53,10 @@ async function getRides(){
     return await db(target).orderBy(order);
 }
 
+async function getEvents() {
+  return await db("EVENTS").orderBy("EventID");
+}
+
 async function setMaintenanceRequest(fields, isEmployee, merge = true) {
   if (!isEmployee) return false;
 
@@ -89,6 +93,7 @@ module.exports = {
   setUser,
   getUsers,
   getRides,
+  getEvents,
   setMaintenanceRequest,
   registerForEvent
 };

@@ -18,6 +18,17 @@ module.exports = (app) => {
     */
 
     // Event registration route
+    app.get('/events', (req, res) => {
+        db.getEvents()
+        .then((events) => {
+            res.status(200).json({success: true, events: events});
+        })
+        .catch((e) => {
+            console.error(e);
+            res.status(500).json({success: false, error: "SQLError"});
+        })
+    });
+
     app.post('/events/register', async (req, res) => {
         const { eventId, customerId } = req.body;
     
