@@ -47,10 +47,7 @@ async function setUser(userEmail, fields, isEmployee = false, merge = true) {
 }
 
 async function getRides(){
-    let target = "RIDES";
-    let order = "RideID";
-
-    return await db(target).orderBy(order);
+    return await db("RIDES").orderBy("RideID");
 }
 
 async function getEvents() {

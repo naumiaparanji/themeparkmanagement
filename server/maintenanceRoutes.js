@@ -43,14 +43,6 @@ module.exports = (app) => {
     }
   );
 
-  app.get("/customer/info", async (req, res) => {
-    if (req.session.user == undefined) {
-      res.status(401).json({ success: false, error: "NotAuthorized" });
-      return;
-    }
-    res.status(200).json({ success: true, user: req.session.user });
-  });
-
   app.post("/maintenance/input", async (req, res) => {
     const rideData = await db.getRides().catch((e) => {
       console.log(e);
@@ -91,43 +83,5 @@ module.exports = (app) => {
     // }
     res.status(201).json({ success: true });
   });
-
-  app.post("/customer/logout", async (req, res) => {
-    if (req.session.user == undefined) {
-      res.status(401).json({ error: "NotAuthorized" });
-      return;
-    }
-    if (req.body.user != req.session.user) {
-      // This check is to prevent unintended state changes to the session store.
-      // The client must have clear intent when requesting a logout.
-      res.status(400).json({ error: "UserDoesNotMatchSession" });
-      return;
-    }
-    req.session.user = null;
-    req.session.save((err) => {
-      if (err) {
-        res
-          .status(500)
-          .json({
-            success: false,
-            error: "SessionUpdateFailed",
-            errorDetails: err,
-          });
-        return;
-      }
-      req.session.regenerate((err) => {
-        if (err) {
-          res
-            .status(500)
-            .json({
-              success: false,
-              error: "SessionUpdateFailed",
-              errorDetails: err,
-            });
-          return;
-        }
-      });
-    });
-    res.status(200).json({ success: true });
-  });
+  
 };

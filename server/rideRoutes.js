@@ -17,13 +17,15 @@ module.exports = (app) => {
     and add query functions to your own js file.
     */
 
-    // JUST AN EXAMPLE
-    app.get("/ride/status", async (req, res) => {
-        if (!req.session.user) {
-            res.status(401).json({success: false, error: 'NotAuthorized'});
-            return;
-        }
-        res.status(200).json({success: true, status:"ok"});
+    app.get("/rides", (req, res) => {
+        db.getRides()
+        .then((rides) => {
+            res.status(200).json({success: true, rides: rides});
+        })
+        .catch((e) => {
+            console.error(e);
+            res.status(500).json({success: false, error: "SQLError"});
+        })
     });
 
 }
