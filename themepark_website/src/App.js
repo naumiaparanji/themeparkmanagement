@@ -13,6 +13,7 @@ import EmployeeDashboard, { WhoAmI } from './Views/EmployeeDashboard';
 import { MaintenanceInfo } from './Maintenance/Maintenance';
 import PageNotFound from "./PageNotFound";
 import axios from "axios";
+import { MaintenanceData } from './Maintenance/MaintenanceEdit';
 
 export const apiUrl = 'http://localhost:8080';
 
@@ -42,6 +43,7 @@ function App() {
                     <Route path="events" element={<WhoAmI/>} />
                     <Route path="reports" element={<WhoAmI/>} />
                     <Route path="maintenance" element={<MaintenanceInfo/>} />
+                    <Route path="maintenance/data" element={<MaintenanceData/>} />
                     <Route path="datamanage" element={<DataManage/>} />
                     <Route path='*' element={<PageNotFound />} />
                 </Route>

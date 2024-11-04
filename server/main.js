@@ -115,6 +115,7 @@ setInterval(async () => {
     require('./eventsRoutes')(app);
     require('./rideRoutes')(app);
     require('./maintenanceRoutes')(app);
+    
 
     http.createServer(options, app).listen(port, () => {
         console.log(`Listening on port ${port}`);

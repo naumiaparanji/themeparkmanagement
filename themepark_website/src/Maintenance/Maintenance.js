@@ -17,7 +17,6 @@ export function MaintenanceInfoBox(props) {
   const [status, setStatus] = useState("");
   const [message, setMessage] = useState("");
 
-  // Change when Rides table is setup
   const rideOptions = [
     "Adventure River",
     "Alien Invasion",
@@ -54,40 +53,37 @@ export function MaintenanceInfoBox(props) {
       return;
     }
     api.post(props.apiPath || "/maintenance/input", {
-      rideName: rideName,
-      date: date,
-      description: description,
-      status: status,
-    }).then(() => setMessage("Maintenance info submitted successfully"))
+      rideName,
+      date,
+      description,
+      status,
+    })
+    .then(() => setMessage("Maintenance info submitted successfully"))
     .catch((e) => {
       if (e.response) {
         if (e.response.status === 500) setMessage("Server error");
         else if (e.response.data && !e.response.data.success) setMessage("Submission failed");
         else setMessage("Unknown error");
-      }
-      else if (e.request) setMessage("Failed to connect to server");
+      } else if (e.request) setMessage("Failed to connect to server");
     });
   };
 
   return (
-    <div className="loginbox">
+    <div className="loginbox" style={{
+      width: "60%", 
+      padding: "20px", 
+      maxWidth: "800px", 
+      margin: "0 auto", 
+      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)", 
+      borderRadius: "10px", 
+    }}>
       <a href="/">
         <img src={MainLogo} alt="Main Logo" />
       </a>
-      <div
-        style={{
-          fontSize: "20px",
-          margin: "-18px 0px 14px 0px",
-        }}
-      >
+      <div style={{ fontSize: "20px", margin: "-18px 0px 14px 0px" }}>
         {props.title}
       </div>
-      <hr
-        style={{
-          color: "lightgrey",
-          margin: "0px 8px 16px 8px",
-        }}
-      />
+      <hr style={{ color: "lightgrey", margin: "0px 8px 16px 8px" }} />
       <MessageBox message={message} />
 
       <div style={{ margin: "12px 12px" }}>
@@ -129,31 +125,34 @@ export function MaintenanceInfoBox(props) {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "20px",
             marginTop: "8px",
+            gap: "20px",
+            flexWrap: "wrap",
           }}
         >
-          <label>Status</label>
-          <label>
-            <input
-              type="radio"
-              value="Operational"
-              checked={status === "Operational"}
-              onChange={(e) => setStatus(e.target.value)}
-              style={{ marginRight: "8px" }}
-            />
-            Operational
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="Out of Order"
-              checked={status === "Out of Order"}
-              onChange={(e) => setStatus(e.target.value)}
-              style={{ marginRight: "8px" }} 
-            />
-            Out of Order
-          </label>
+          <label style={{ minWidth: "80px" }}>Status:</label>
+          <div style={{ display: "flex", gap: "20px", flex: 1 }}>
+            <label style={{ minWidth: "120px" }}>
+              <input
+                type="radio"
+                value="Operational"
+                checked={status === "Operational"}
+                onChange={(e) => setStatus(e.target.value)}
+                style={{ marginRight: "8px" }}
+              />
+              Operational
+            </label>
+            <label style={{ minWidth: "120px" }}> 
+              <input
+                type="radio"
+                value="Out of Order"
+                checked={status === "Out of Order"}
+                onChange={(e) => setStatus(e.target.value)}
+                style={{ marginRight: "8px" }}
+              />
+              Out of Order
+            </label>
+          </div>
         </div>
       </div>
 
