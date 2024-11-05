@@ -1,5 +1,6 @@
 // Themepark modules
 const auth = require("./auth");
+const employee = require("./employeeRoutes");
 const db = require("./db");
 
 // App routes
@@ -45,5 +46,57 @@ module.exports = (app) => {
             }
         }
     });
+
+    app.get('/events/categories', (req, res) => {
+        db.getEventCategories()
+        .then((items) => {
+            res.status(200).json({success: true, categories: items});
+        })
+        .catch((e) => {
+            console.error(e);
+            res.status(500).json({success: false, error: "SQLError"});
+        });
+    })
     
+    app.put('/events/:id',
+        employee.checkSessionForEmployee,
+        employee.getRequestingEmployee,
+        (req, res) => {
+            req.body.EventDateTime = new Date(req.body.EventDateTime);
+            db.themeparkDB("EVENTS").update(req.body).where('EventID', req.params.id)
+            .then(() => res.status(200).json({success: true}))
+            .catch((e) => {
+                console.error(e);
+                res.status(500).json({success: false, error: "SQLError"});
+            });
+        }
+    )
+
+    app.delete('/events/:id',
+        employee.checkSessionForEmployee,
+        employee.getRequestingEmployee,
+        (req, res) => {
+            req.body.EventDateTime = new Date(req.body.EventDateTime);
+            db.themeparkDB("EVENTS").update("Deleted", 1).where('EventID', req.params.id)
+            .then(() => res.status(200).json({success: true}))
+            .catch((e) => {
+                console.error(e);
+                res.status(500).json({success: false, error: "SQLError"});
+            });
+        }
+    )
+
+    app.post('/events',
+        employee.checkSessionForEmployee,
+        employee.getRequestingEmployee,
+        (req, res) => {
+            db.themeparkDB("EVENTS").insert((req.body))
+            .then(() => res.status(200).json({success: true}))
+            .catch((e) => {
+                console.error(e);
+                res.status(500).json({success: false, error: "SQLError"});
+            });
+        }
+    )
+
 };

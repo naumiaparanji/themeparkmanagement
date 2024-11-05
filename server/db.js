@@ -16,7 +16,7 @@ async function getUser(userEmail, isEmployee = false) {
   if (!userEmail) return;
   let target = "CUSTOMER";
   if (isEmployee) target = "EMPLOYEE";
-  return await db(target).where("Email", userEmail).first();
+  return await db(target).where("Deleted", 0).where("Email", userEmail).first();
 }
 
 async function getUsers(limit, offsetCount, isEmployee=false) {
@@ -26,7 +26,7 @@ async function getUsers(limit, offsetCount, isEmployee=false) {
         target = "EMPLOYEE";
         order = "EmployeeID";
     }
-    let query = db(target)
+    let query = db(target).where("Deleted", 0)
     .orderBy(order)
     .limit(limit)
     const offset = limit * offsetCount;
@@ -47,11 +47,15 @@ async function setUser(userEmail, fields, isEmployee = false, merge = true) {
 }
 
 async function getRides(){
-    return await db("RIDES").orderBy("RideID");
+    return await db("RIDES").where("Deleted", 0).orderBy("RideID");
 }
 
 async function getEvents() {
-  return await db("EVENTS").orderBy("EventID");
+  return await db("EVENTS").where("Deleted", 0).orderBy("EventID");
+}
+
+async function getEventCategories() {
+  return await db("EVENTS").select("EventType").where("Deleted", 0).distinct().orderBy("EventType");
 }
 
 async function setMaintenanceRequest(fields, isEmployee, merge = true) {
@@ -91,6 +95,7 @@ module.exports = {
   getUsers,
   getRides,
   getEvents,
+  getEventCategories,
   setMaintenanceRequest,
   registerForEvent
 };

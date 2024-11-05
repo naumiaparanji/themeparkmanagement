@@ -7,6 +7,20 @@ import Navbar from './Navbar';
 import './Events.css';
 import './CustomerAccount'
 
+function displayEventDate(startDate, duration) {
+    const startDateTime = new Date(startDate);
+    const endDateTime = new Date(startDateTime.getTime() + duration * 60 * 1000);
+    const options = {
+        timeZone: "America/Chicago",
+        hour: "numeric",
+        minute: "numeric"
+    };
+    const formatter = new Intl.DateTimeFormat([], options);
+    const fromTime = formatter.format(startDateTime).toLowerCase().replace(/\s+/g, '');
+    const toTime = formatter.format(endDateTime).toLowerCase().replace(/\s+/g, '');
+    return `${fromTime} - ${toTime} CST`;
+}
+
 const Events = () => {
     const navigate = useNavigate(); // Initialize useNavigate hook
     const [eventsData, setEventsData] = useState([]);
@@ -57,7 +71,7 @@ const Events = () => {
                                     <h3>{events.EventName}</h3>
                                     <p><strong><u>Description:</u></strong> {events.EventDesc}</p>
                                     <p><strong>Location:</strong> {events.Location}</p>
-                                    <p><strong>Time:</strong> {events.EventDateTime}</p>
+                                    <p><strong>Time:</strong> {displayEventDate(events.EventDateTime, events.EventDuration)}</p>
                                     <p><strong>Age Limit:</strong> {events.EventAgeLimit}+</p>
                                     <p><strong>Restrictions:</strong> {events.EventRestrictions}</p>
                                     

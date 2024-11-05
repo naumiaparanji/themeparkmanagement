@@ -299,3 +299,5 @@ module.exports = (app) => {
 module.exports.employeeRoles = employeeRoles;
 module.exports.employeeRanks = employeeRanks;
 module.exports.employeeNames = employeeNames;
+module.exports.checkSessionForEmployee = checkSessionForEmployee;
+module.exports.getRequestingEmployee = getRequestingEmployee;

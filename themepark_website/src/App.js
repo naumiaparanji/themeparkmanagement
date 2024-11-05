@@ -15,6 +15,7 @@ import PageNotFound from "./PageNotFound";
 import axios from "axios";
 import { MaintenanceData } from './Maintenance/MaintenanceEdit';
 import { RidesInfo, RidesInfoBox } from './Rides/Rides';
+import { EventsEditView } from './Views/EventsEdit';
 
 export const apiUrl = 'http://localhost:8080';
 
@@ -41,7 +42,7 @@ function App() {
                 <Route exact path='/employee/signup' element={<EmployeeSignup />} />
                 <Route path='/employee/access/*' element={<EmployeeDashboard />}>
                     <Route path="" element={<WhoAmI/>} />
-                    <Route path="events" element={<WhoAmI/>} />
+                    <Route path="events" element={<EventsEditView/>} />
                     <Route path="reports" element={<WhoAmI/>} />
                     <Route path="rides" element={<RidesInfo/>} />
                     <Route path="maintenance" element={<MaintenanceInfo/>} />
