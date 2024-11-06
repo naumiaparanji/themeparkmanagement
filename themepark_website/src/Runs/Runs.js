@@ -62,13 +62,18 @@ export function RunsInfoBox(props) {
             .catch((e) => {
                 if (e.response) {
                     if (e.response.status === 500)
-                        setMessage("Server error");
+                        setMessage("Database error");
+                    else if (e.response.status === 501)
+                        setMessage("Ride name does not exist in database");
+                    else if (e.response.status === 502)
+                        setMessage("Number of riders exceeds specified ride's capacity of " + e.response.data.capacity);
                     else if (e.response.data && !e.response.data.success)
-                        setMessage("Submission failed. Error Code: " + e.response.status + ", " + e.response.data);
+                        setMessage("Submission failed. Error Code: " + e.response.status);
                     else
                         setMessage("Unknown error");
-                } else if
-                    (e.request) setMessage("Failed to connect to server");
+                }
+                else if (e.request)
+                    setMessage("Failed to connect to server");
             });
     };
 

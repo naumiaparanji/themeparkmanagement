@@ -26,6 +26,17 @@ module.exports = (app) => {
         const ride = rideData.find(
             (element) => element.RideName === req.body.rideName
         );
+        if (ride === undefined) {
+            res.status(501).json({success: false, error: "BadRide"});
+            return;
+        }
+
+        // ensuring that the number of riders is not in excess of the ride's capacity
+        let rideCap = parseInt(ride.Capacity, 10);
+        if (rideCap < parseInt(req.body.numRiders, 10)) {
+            res.status(502).json({success: false, error: "OverCapacity", capacity: rideCap});
+            return;
+        }
 
         const empID = req.requestingEmployee.EmployeeID;
 
