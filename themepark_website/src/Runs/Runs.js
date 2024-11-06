@@ -11,7 +11,6 @@ import { api } from "../App";
 
 export function RunsInfoBox(props) {
     const [rideName, setRideName] = useState("");
-    const [rideTime, setRideTime] = useState("");   // todo: get date from system
     const [numRiders, setNumRiders] = useState("");
     const [message, setMessage] = useState("");
 
@@ -47,16 +46,19 @@ export function RunsInfoBox(props) {
     ];
 
     const runsSubmit = async () => {
-        if (!rideName || !rideTime || !numRiders) {
+        if (!rideName || !numRiders) {
             setMessage("All fields are required");
             return;
         }
         api.post(props.apiPath || "/runs/input", {
             rideName,
-            rideTime,
             numRiders,
         })
-            .then(() => setMessage("Run submitted successfully"))
+            .then(() => {
+                setMessage("Run submitted successfully");
+                setRideName("");
+                setNumRiders("");
+            })
             .catch((e) => {
                 if (e.response) {
                     if (e.response.status === 500)
@@ -109,14 +111,7 @@ export function RunsInfoBox(props) {
             </div>
 
             <InputField
-                name="Date"
-                type="date"
-                containerStyle={{ margin: "12px 12px" }}
-                value={rideTime}
-                onChange={(e) => setRideTime(e.target.value)}
-            />
-            <InputField
-                name="NumRiders"
+                name="Number of Riders"
                 type="number"
                 containerStyle={{ margin: "12px 12px" }}
                 value={numRiders}
