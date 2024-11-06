@@ -22,6 +22,16 @@ export function LoginBox(props) {
         });
     }
 
+    let otherLoginPath, otherLoginText;
+    if (props.isEmp === true) {
+        otherLoginText = "Customer Login";
+        otherLoginPath = "/login";
+    }
+    else {
+        otherLoginText = "Employee Login";
+        otherLoginPath = "/employee/login";
+    }
+
     return (
         <div className='loginbox'>
             <a href="/">
@@ -64,8 +74,8 @@ export function LoginBox(props) {
                     width: "auto"
                 })}
             />
-            <FancyButton text="Employee Login" 
-                action={() => window.location.pathname = "/employee/login"} 
+            <FancyButton text={otherLoginText}
+                action={() => window.location.pathname = otherLoginPath}
                 style={Object.assign({}, defaultButtonStyle, {
                     color: "blue",
                     backgroundColor: "white",
@@ -87,10 +97,11 @@ export function Login(props) {
             redirect={props.redirect || '/'} 
             signUp={props.signUp || '/signup'}
             apiPath={props.apiPath}
+            isEmp={props.isEmp || false}
         /> { /* To be replaced with customer view path */}
     </div>
     );
-};
+}
 
 export function EmployeeLogin(props) {
     return (
@@ -99,6 +110,7 @@ export function EmployeeLogin(props) {
             redirect={props.redirect || '/employee/access'} 
             signUp={props.signUp || '/employee/signup'}
             apiPath={props.apiPath || '/employee/login'}
+            isEmp={true}
         />
     );
 }
