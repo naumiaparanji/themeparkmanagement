@@ -6,6 +6,7 @@ import Attractions from './Attractions';
 import Events from './Events';
 import AboutUs from './AboutUs';
 import Rides from './Rides';
+import Runs from './Runs/Runs';
 import { EmployeeLogin, Login } from './Auth/Login';
 import { EmployeeSignup, SignUp } from './Auth/Signup';
 import DataManage from './DataEdit/DataManage';
@@ -46,6 +47,7 @@ function App() {
                     <Route path="reports" element={<WhoAmI/>} />
                     <Route path="rides" element={<RidesInfo/>} />
                     <Route path="maintenance" element={<MaintenanceInfo/>} />
+                    <Route path="runs" element={<Runs/>} />
                     <Route path="maintenance/data" element={<MaintenanceData/>} />
                     <Route path="datamanage" element={<DataManage/>} />
                     <Route path='*' element={<PageNotFound />} />
