@@ -80,7 +80,7 @@ async function setRuns(fields, isEmployee, merge = true) {
     if (!isEmployee) return false;
 
     let target = "RUNS";
-    let query = db(target).insert({EmployeeID: fields.EmployeeID, RideID: fields.RideID, RideTime: fields.RideTime, NumofRiders: fields.NumofRiders});
+    let query = db(target).insert(fields);
     let result = await query;
 
     return result[0] != 0;

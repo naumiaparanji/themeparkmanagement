@@ -59,10 +59,14 @@ export function RunsInfoBox(props) {
             .then(() => setMessage("Run submitted successfully"))
             .catch((e) => {
                 if (e.response) {
-                    if (e.response.status === 500) setMessage("Server error");
-                    else if (e.response.data && !e.response.data.success) setMessage("Submission failed");
-                    else setMessage("Unknown error");
-                } else if (e.request) setMessage("Failed to connect to server");
+                    if (e.response.status === 500)
+                        setMessage("Server error");
+                    else if (e.response.data && !e.response.data.success)
+                        setMessage("Submission failed. Error Code: " + e.response.status + ", " + e.response.data);
+                    else
+                        setMessage("Unknown error");
+                } else if
+                    (e.request) setMessage("Failed to connect to server");
             });
     };
 
