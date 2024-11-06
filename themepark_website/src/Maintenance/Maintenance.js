@@ -6,7 +6,6 @@ import {
   MessageBox,
   InputField,
   FancyButton,
-  defaultButtonStyle,
 } from "../Auth/AuthComponents";
 import { api } from "../App";
 

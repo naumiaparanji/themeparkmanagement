@@ -54,7 +54,7 @@ module.exports = (app) => {
       (element) => element.RideName === req.body.rideName
     );
 
-    const statusValue = (req.body.status == "Operational"? 1:0);
+    const statusValue = (req.body.status === "Operational" ? 1 : 0);
 
     const maintenance = await db
     .setMaintenanceRequest(

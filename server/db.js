@@ -61,12 +61,12 @@ async function getEventCategories() {
 async function setMaintenanceRequest(fields, isEmployee, merge = true) {
   if (!isEmployee) return false;
 
-  if(isEmployee) target = "MAINTENANCE";
+  let target = "MAINTENANCE";
   let query = db(target).insert({RideID: fields.RideID, Date: fields.Date, Description: fields.Description});
   let result = await query;
   const maintenanceID = result;
   target = "RIDE_STATUS";
-  query = db(target).insert({RideID: fields.RideID, Status: fields.Status, WeatherCondition: "CLEAR"});
+  query = db(target).insert({RideID: fields.RideID, Status: fields.Status, WeatherCondition: "CLEAR"}); // todo: allow weather condition to vary
   result = await query;
   const rideStatusID = result;
   target = "M_STATUS";
@@ -74,6 +74,16 @@ async function setMaintenanceRequest(fields, isEmployee, merge = true) {
   result = await query;
 
   return result[0] != 0;
+}
+
+async function setRuns(fields, isEmployee, merge = true) {
+    if (!isEmployee) return false;
+
+    let target = "RUNS";
+    let query = db(target).insert({EmployeeID: fields.EmployeeID, RideID: fields.RideID, RideTime: fields.RideTime, NumofRiders: fields.NumofRiders});
+    let result = await query;
+
+    return result[0] != 0;
 }
 
 async function registerForEvent(eventId, customerId) {
@@ -97,5 +107,6 @@ module.exports = {
   getEvents,
   getEventCategories,
   setMaintenanceRequest,
+  setRuns,
   registerForEvent
 };

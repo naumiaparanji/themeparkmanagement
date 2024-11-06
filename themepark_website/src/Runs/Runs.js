@@ -6,17 +6,16 @@ import {
     MessageBox,
     InputField,
     FancyButton,
-    defaultButtonStyle,
 } from "../Auth/AuthComponents";
 import { api } from "../App";
 
 export function RunsInfoBox(props) {
     const [rideName, setRideName] = useState("");
-    const [date, setDate] = useState("");
-    const [description, setDescription] = useState("");
-    const [status, setStatus] = useState("");
+    const [rideTime, setRideTime] = useState("");   // todo: get date from system
+    const [numRiders, setNumRiders] = useState("");
     const [message, setMessage] = useState("");
 
+    // todo: potentially get ride names from db
     const rideOptions = [
         "Adventure River",
         "Alien Invasion",
@@ -47,18 +46,17 @@ export function RunsInfoBox(props) {
         "Zipline Adventure",
     ];
 
-    const maintenanceSubmit = async () => {
-        if (!rideName || !date || !description || !status) {
+    const runsSubmit = async () => {
+        if (!rideName || !rideTime || !numRiders) {
             setMessage("All fields are required");
             return;
         }
-        api.post(props.apiPath || "/maintenance/input", {
+        api.post(props.apiPath || "/runs/input", {
             rideName,
-            date,
-            description,
-            status,
+            rideTime,
+            numRiders,
         })
-            .then(() => setMessage("Maintenance info submitted successfully"))
+            .then(() => setMessage("Run submitted successfully"))
             .catch((e) => {
                 if (e.response) {
                     if (e.response.status === 500) setMessage("Server error");
@@ -110,53 +108,18 @@ export function RunsInfoBox(props) {
                 name="Date"
                 type="date"
                 containerStyle={{ margin: "12px 12px" }}
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
+                value={rideTime}
+                onChange={(e) => setRideTime(e.target.value)}
             />
             <InputField
-                name="Description"
+                name="NumRiders"
+                type="number"
                 containerStyle={{ margin: "12px 12px" }}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                value={numRiders}
+                onChange={(e) => setNumRiders(e.target.value)}
             />
 
-            <div style={{ margin: "12px 12px" }}>
-                <div
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        marginTop: "8px",
-                        gap: "20px",
-                        flexWrap: "wrap",
-                    }}
-                >
-                    <label style={{ minWidth: "80px" }}>Status:</label>
-                    <div style={{ display: "flex", gap: "20px", flex: 1 }}>
-                        <label style={{ minWidth: "120px" }}>
-                            <input
-                                type="radio"
-                                value="Operational"
-                                checked={status === "Operational"}
-                                onChange={(e) => setStatus(e.target.value)}
-                                style={{ marginRight: "8px" }}
-                            />
-                            Operational
-                        </label>
-                        <label style={{ minWidth: "120px" }}>
-                            <input
-                                type="radio"
-                                value="Out of Order"
-                                checked={status === "Out of Order"}
-                                onChange={(e) => setStatus(e.target.value)}
-                                style={{ marginRight: "8px" }}
-                            />
-                            Out of Order
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <FancyButton text="Submit" action={maintenanceSubmit} />
+            <FancyButton text="Submit" action={runsSubmit} />
         </div>
     );
 }
