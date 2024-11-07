@@ -67,6 +67,8 @@ export function RunsInfoBox(props) {
                         setMessage("Ride name does not exist in database");
                     else if (e.response.status === 502)
                         setMessage("Number of riders exceeds specified ride's capacity of " + e.response.data.capacity);
+                    else if (e.response.status === 503)
+                        setMessage("Number of riders must be a non-negative whole number (ex. 1, 2, 3...)");
                     else if (e.response.data && !e.response.data.success)
                         setMessage("Submission failed. Error Code: " + e.response.status);
                     else

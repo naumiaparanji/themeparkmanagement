@@ -58,7 +58,7 @@ async function getEventCategories() {
   return await db("EVENTS").select("EventType").where("Deleted", 0).distinct().orderBy("EventType");
 }
 
-async function setMaintenanceRequest(fields, isEmployee, merge = true) {
+async function setMaintenanceRequest(fields, isEmployee) {
   if (!isEmployee) return false;
 
   let target = "MAINTENANCE";
@@ -76,7 +76,7 @@ async function setMaintenanceRequest(fields, isEmployee, merge = true) {
   return result[0] != 0;
 }
 
-async function setRuns(fields, isEmployee, merge = true) {
+async function setRuns(fields, isEmployee) {
     if (!isEmployee) return false;
 
     let target = "RUNS";

@@ -23,17 +23,20 @@ module.exports = (app) => {
             res.status(500).json({ success: false, error: "SQLError" });
         });
 
-        const ride = rideData.find(
-            (element) => element.RideName === req.body.rideName
-        );
+        const ride = rideData.find((element) => element.RideName === req.body.rideName);
         if (ride === undefined) {
             res.status(501).json({success: false, error: "BadRide"});
             return;
         }
 
-        // ensuring that the number of riders is not in excess of the ride's capacity
+        // ensuring that the number of riders is not in excess of the ride's capacity and a valid count
         let rideCap = parseInt(ride.Capacity, 10);
-        if (rideCap < parseInt(req.body.numRiders, 10)) {
+        let numericRiders = parseInt(req.body.numRiders, 10);
+        if (isNaN(numericRiders) || numericRiders < 0) {
+            res.status(503).json({success: false, error: "InvalidRiderCount"});
+            return;
+        }
+        else if (rideCap < numericRiders) {
             res.status(502).json({success: false, error: "OverCapacity", capacity: rideCap});
             return;
         }
@@ -50,7 +53,6 @@ module.exports = (app) => {
                     RideTime: rideTime,
                     NumofRiders: req.body.numRiders,
                 },
-                true,
                 true
             )
             .catch((e) => {
