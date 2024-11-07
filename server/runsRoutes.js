@@ -1,19 +1,6 @@
 const db = require("./db");
 const getCurrentTime = require("./currentTime");
-
-const checkSessionForEmployee = async (req, res, next) => {
-    if (req.session.employeeUser === undefined) {
-        res.status(401).json({ success: false, error: "NotAuthorized" });
-        return;
-    }
-    next();
-};
-
-const getRequestingEmployee = async (req, res, next) => {
-    if (req.session.employeeUser)
-        req.requestingEmployee = await db.getUser(req.session.employeeUser, true);
-    next();
-};
+const {checkSessionForEmployee, getRequestingEmployee} = require("./employeeRoutes");
 
 // App routes
 module.exports = (app) => {

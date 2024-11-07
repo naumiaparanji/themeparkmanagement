@@ -1,6 +1,7 @@
 // Themepark modules
 const auth = require("./auth");
 const db = require("./db");
+const {checkSessionForEmployee, getRequestingEmployee} = require("./employeeRoutes");
 
 // Auth check middleware
 
@@ -9,20 +10,6 @@ const db = require("./db");
 //     if (!user) return undefined;
 //     return user.Password;
 // });
-
-const checkSessionForEmployee = async (req, res, next) => {
-  if (req.session.employeeUser === undefined) {
-    res.status(401).json({ success: false, error: "NotAuthorized" });
-    return;
-  }
-  return next();
-};
-
-const getRequestingEmployee = async (req, res, next) => {
-  if (req.session.employeeUser)
-    req.requestingEmployee = await db.getUser(req.session.employeeUser, true);
-  next();
-};
 
 // App routes
 module.exports = (app) => {
