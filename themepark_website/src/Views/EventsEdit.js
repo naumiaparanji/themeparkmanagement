@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { api } from "../App";
-import { Accordion, Button, Form, Container, InputGroup } from "react-bootstrap";
-import * as Icon from 'react-bootstrap-icons';
+import { Accordion, AccordionContext, Button, Form, Container, InputGroup, Modal, FloatingLabel } from "react-bootstrap";
 
 function formatEventTime24H(startDate, duration) {
     const startDateTime = new Date(startDate);
@@ -37,12 +36,42 @@ function generateEventStartAndDuration(startTime, endTime) {
     return { startDate, duration };
 }
 
-export function EventEditForm({event, path}) {
+function ConfirmModal({show, title, body, confirmText, cancelText, confirmCallback, onClose, confirmVariant, cancelVariant}) {
+    return (
+        <Modal show={show} animation={false} onHide={onClose}>
+            <Modal.Header closeButton>
+                {title}
+            </Modal.Header>
+            <Modal.Body>{body}</Modal.Body>
+            <Modal.Footer>
+                <Button variant={cancelVariant || "secondary"} onClick={onClose}>{cancelText}</Button>
+                <Button variant={confirmVariant || "primary"} onClick={() => {confirmCallback(); onClose();}}>{confirmText}</Button>
+            </Modal.Footer>
+        </Modal>
+    );
+}
+
+export function EventEditForm({event, eventKey, refreshCallback}) {
     const [formState, setFormState] = useState({
         ...event,
         ...formatEventTime24H(event.EventDateTime, event.EventDuration)
     });
     const [canSubmit, setCanSubmit] = useState(Object.entries(formState).every(([k, v]) => k === "Deleted"? true : Boolean(v)));
+    const [confirmDelete, setConfirmDelete] = useState(false);
+    const { activeEventKey } = useContext(AccordionContext);
+
+    const isCurrentEventKey = activeEventKey === eventKey;
+
+    const resetContent = () => {
+        setFormState({
+            ...event,
+            ...formatEventTime24H(event.EventDateTime, event.EventDuration)
+        });
+    }
+
+    useEffect(() => {
+        if (isCurrentEventKey) resetContent();
+    }, [isCurrentEventKey]);
 
     const handleChange = (e) => {
         let { name, value } = e.target;
@@ -63,17 +92,19 @@ export function EventEditForm({event, path}) {
         delete payload.endTime;
         api.put(`/events/${event.EventID}`, payload)
         .then((response) => {
-
+            refreshCallback();
         })
         .catch((e) => {
             console.log(e);
         })
     }
 
+    
+
     const handleDelete = () => {
         api.delete(`/events/${event.EventID}`)
         .then((response) => {
-
+            refreshCallback();
         })
         .catch((e) => {
             console.log(e);
@@ -108,15 +139,23 @@ export function EventEditForm({event, path}) {
                 <Button disabled={!canSubmit} onClick={handleSubmit}>
                     Save
                 </Button>
-                <Button variant="danger" className="mx-3" onClick={handleDelete}>
+                <Button variant="danger" className="mx-3" onClick={() => setConfirmDelete(true)}>
                     Delete
                 </Button>
             </div>
+            <ConfirmModal show={confirmDelete} onClose={() => setConfirmDelete(false)} 
+                title="Confirm Delete"
+                body={`You are about to delete "${event.EventName}". This action cannot be undone.`}
+                confirmText="Delete"
+                cancelText="Cancel"
+                confirmVariant="danger"
+                confirmCallback={handleDelete}
+            />
         </div>
     );
 }
 
-export function EventEditComponent({event, eventKey}) {
+export function EventEditComponent({event, eventKey, refreshCallback}) {
     return (
         <Accordion.Item eventKey={eventKey}>
             <Accordion.Header className="py-0">
@@ -124,28 +163,26 @@ export function EventEditComponent({event, eventKey}) {
                     <center>
                         {event.EventName}
                     </center>
-                    
                 </div>
             </Accordion.Header>
             <Accordion.Body>
-                <EventEditForm event={event} />
+                <EventEditForm event={event} eventKey={eventKey} refreshCallback={refreshCallback}/>
             </Accordion.Body>
         </Accordion.Item>
     );
 }
 
-export function EventsEditList({eventsList}) {
+export function EventsEditList({eventsList, refreshCallback}) {
+
     return (
         <div>
         {
             eventsList? (
-                <Container>
                 <Accordion defaultActiveKey={-1} className="accordion-flush">
                     {eventsList.map((event, i) => (
-                        <EventEditComponent eventKey={i} key={i} event={event}/>
+                        <EventEditComponent eventKey={i} key={i} event={event} refreshCallback={refreshCallback}/>
                     ))}
                 </Accordion>
-                </Container>
              ) : (
                 "Loading..."
              )
@@ -157,15 +194,25 @@ export function EventsEditList({eventsList}) {
 export function EventsEditView() {
     const [events, setEvents] = useState([]);
 
-    useEffect(() => {
+    const refreshContent = () => {
         api.get("/events")
         .then((response) => {
             setEvents(response.data.events);
         })
         .catch((e) => console.log(e));
+    }
+
+    useEffect(() => {
+        refreshContent();
     }, []);
     
     return (
-        <EventsEditList eventsList={events} />
+        <div className="d-flex flex-row">
+        <Container className="d-flex flex-column">
+            <div className="overflow-scroll h-100">
+                <EventsEditList eventsList={events} refreshCallback={refreshContent}/>
+            </div>
+        </Container>
+        </div>
     );
 }
