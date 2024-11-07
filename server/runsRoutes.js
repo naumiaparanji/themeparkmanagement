@@ -30,9 +30,9 @@ module.exports = (app) => {
         }
 
         // ensuring that the number of riders is not in excess of the ride's capacity and a valid count
-        let rideCap = parseInt(ride.Capacity, 10);
-        let numericRiders = parseInt(req.body.numRiders, 10);
-        if (isNaN(numericRiders) || numericRiders < 0) {
+        let rideCap = Number(ride.Capacity);
+        let numericRiders = Number(req.body.numRiders);
+        if (!Number.isInteger(numericRiders) || numericRiders < 0) {
             res.status(503).json({success: false, error: "InvalidRiderCount"});
             return;
         }
@@ -51,7 +51,7 @@ module.exports = (app) => {
                     EmployeeID: empID,
                     RideID: ride.RideID,
                     RideTime: rideTime,
-                    NumofRiders: req.body.numRiders,
+                    NumofRiders: numericRiders,
                 },
                 true
             )
