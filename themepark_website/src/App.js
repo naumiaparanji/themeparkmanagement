@@ -2,6 +2,7 @@ import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from './Home';
+import Tickets from './Tickets/Tickets';
 import Attractions from './Attractions';
 import Events from './Events';
 import AboutUs from './AboutUs';
@@ -39,6 +40,7 @@ function App() {
                 <Route exact path='/employee/datamanage' element={<DataManage />} />
                 <Route exact path='/maintenance' element={<MaintenanceInfo />} />
                 <Route exact path='/about' element={<AboutUs />} />
+                <Route exact path='/Tickets/Tickets' element={<Tickets />} />
                 <Route exact path='/employee/login' element={<EmployeeLogin />} />
                 <Route exact path='/employee/signup' element={<EmployeeSignup />} />
                 <Route path='/employee/access/*' element={<EmployeeDashboard />}>

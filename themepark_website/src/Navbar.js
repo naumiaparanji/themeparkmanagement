@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import MainLogo from './images/flagslogo.png'; 
+import BuyTickets from './images/BuyTickets.png'; 
 
 const Navbar = () => {
     // Common style for navbar links
@@ -17,7 +18,7 @@ const Navbar = () => {
         <div className="navbar">
             <section className="navbar-links" id="navbar-logo">
                 <Link to="/">
-                    <img src={MainLogo} alt="logo" style={{ width: '180px', height: 'auto' }} />
+                    <img src={MainLogo} alt="logo" style={{ width: '180px', height: 'auto', marginRight: '200px' }} />
                 </Link>
             </section>
             <section className="navbar-links">
@@ -34,6 +35,11 @@ const Navbar = () => {
             </section>
             <section className="navbar-links">
                 <Link to="/about" style={linkStyle}>About Us</Link>
+            </section>
+            <section className="navbar-links">
+                <Link to="/Tickets/Tickets" style={linkStyle}>
+                <img src={BuyTickets} alt="logo" style={{ width: '120px', height: 'auto', paddingRight: '15px', position: 'relative' }} />
+                </Link>
             </section>
         </div>
     );
