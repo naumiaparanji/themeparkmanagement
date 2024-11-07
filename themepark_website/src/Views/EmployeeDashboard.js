@@ -97,6 +97,7 @@ export function DashUI() {
                 <div className={`${styles.sidepanel}`}>
                     <ListGroup className={`list-group-flush ${styles.grow}`}>
                         <SideBarLink title="Home" path="" activeIcon="HouseFill" inactiveIcon="House" />
+                        <SideBarLink title="Attractions" path="attractions" activeIcon="MapFill" inactiveIcon="Map" />
                         <SideBarLink title="Events" path="events" activeIcon="CalendarEventFill" inactiveIcon="CalendarEvent" />
                         <SideBarLink title="Reports" path="reports" activeIcon="Clipboard2DataFill" inactiveIcon="Clipboard2Data" />
                         <SideBarLink title="Maintenance Report" path="maintenance" activeIcon="Hammer" inactiveIcon="Hammer" />

@@ -18,6 +18,7 @@ import axios from "axios";
 import { MaintenanceData } from './Maintenance/MaintenanceEdit';
 import { RidesInfo, RidesInfoBox } from './Rides/Rides';
 import { EventsEditView } from './Views/EventsEdit';
+import { AttractionsEditView } from './Views/AttractionsEdit';
 
 export const apiUrl = 'http://localhost:8080';
 
@@ -46,6 +47,7 @@ function App() {
                 <Route path='/employee/access/*' element={<EmployeeDashboard />}>
                     <Route path="" element={<WhoAmI/>} />
                     <Route path="events" element={<EventsEditView/>} />
+                    <Route path="attractions" element={<AttractionsEditView/>} />
                     <Route path="reports" element={<WhoAmI/>} />
                     <Route path="rides" element={<RidesInfo/>} />
                     <Route path="maintenance" element={<MaintenanceInfo/>} />
