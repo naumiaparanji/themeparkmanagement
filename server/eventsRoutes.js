@@ -36,11 +36,11 @@ module.exports = (app) => {
         try {
             // Call the new function to insert a new event ticket
             await db.registerForEvent(eventId, customerId);
-            res.status(200).json({ success: true, message: 'Registration successful!' });
+            res.status(200).json({ success: true, message: 'Registration successful! The event should now be added to your account.' });
         } catch (error) {
             console.error('Error in registration:', error);
             if (error.sqlState === '45000') {  // Trigger error indicating full capacity
-                res.status(400).json({ success: false, message: 'Sorry, slots filled' });
+                res.status(400).json({ success: false, message: 'Sorry, we are currently at maximum capacity for the event. Please check back at a later time!' });
             } else {
                 res.status(500).json({ success: false, message: 'An error occurred, please try again later.' });
             }
