@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { api } from "../App";
-import { Accordion, AccordionContext, Button, Form, Container, InputGroup, Modal, FloatingLabel } from "react-bootstrap";
+import { Accordion, AccordionContext, Button, Form, Container, InputGroup, Modal } from "react-bootstrap";
 
 function formatEventTime24H(startDate, duration) {
     const startDateTime = new Date(startDate);
@@ -62,16 +62,14 @@ export function EventEditForm({event, eventKey, refreshCallback}) {
 
     const isCurrentEventKey = activeEventKey === eventKey;
 
-    const resetContent = () => {
-        setFormState({
-            ...event,
-            ...formatEventTime24H(event.EventDateTime, event.EventDuration)
-        });
-    }
-
     useEffect(() => {
-        if (isCurrentEventKey) resetContent();
-    }, [isCurrentEventKey]);
+        if (isCurrentEventKey) {
+            setFormState({
+                ...event,
+                ...formatEventTime24H(event.EventDateTime, event.EventDuration)
+            });
+        }
+    }, [isCurrentEventKey, event]);
 
     const handleChange = (e) => {
         let { name, value } = e.target;
@@ -206,7 +204,7 @@ export function EventsTopBar({events, displayEvents, setDisplayEvents}) {
     useEffect(() => {
         refreshCategories();
         setDisplayEvents(events);
-    }, [events]);
+    }, [events, setDisplayEvents]);
 
     useEffect(() => {
         if (activeCategory < 0)
@@ -214,7 +212,7 @@ export function EventsTopBar({events, displayEvents, setDisplayEvents}) {
         else {
             setDisplayEvents(events.filter((event) => event.EventType === categories[activeCategory].EventType));
         }
-    }, [activeCategory])
+    }, [activeCategory, categories, events, setDisplayEvents])
 
     return (
         <div>
