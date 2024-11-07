@@ -191,8 +191,50 @@ export function EventsEditList({eventsList, refreshCallback}) {
     );
 }
 
+export function EventsTopBar({events, displayEvents, setDisplayEvents}) {
+    const [categories, setCategories] = useState([]);
+    const [activeCategory, setActiveCategory] = useState(-1);
+
+    const refreshCategories = () => {
+        api.get("/events/categories")
+        .then((response) => {
+            setCategories(response.data.categories);
+        })
+        .catch((e) => console.log(e));
+    }
+
+    useEffect(() => {
+        refreshCategories();
+        setDisplayEvents(events);
+    }, [events]);
+
+    useEffect(() => {
+        if (activeCategory < 0)
+            setDisplayEvents(events);
+        else {
+            setDisplayEvents(events.filter((event) => event.EventType === categories[activeCategory].EventType));
+        }
+    }, [activeCategory])
+
+    return (
+        <div>
+        <Form className="d-flex flex-row mt-4">
+            <Form.Control placeholder="Search" className="h-100"/>
+            <Form.Select className="w-10" onChange={(event) => setActiveCategory(Number(event.target.value))}>
+                <option value={-1} key={-1}>All</option>
+                {categories.map((category, i) => (
+                    <option value={i} key={i}>{category.EventType}</option>
+                ))}
+            </Form.Select>
+        </Form>
+        <hr/>
+        </div>
+    );
+}
+
 export function EventsEditView() {
     const [events, setEvents] = useState([]);
+    const [displayEvents, setDisplayEvents] = useState([]);
 
     const refreshContent = () => {
         api.get("/events")
@@ -209,8 +251,9 @@ export function EventsEditView() {
     return (
         <div className="d-flex flex-row">
         <Container className="d-flex flex-column">
+            <EventsTopBar events={events} displayEvents={displayEvents} setDisplayEvents={setDisplayEvents}/>
             <div className="overflow-scroll h-100">
-                <EventsEditList eventsList={events} refreshCallback={refreshContent}/>
+                <EventsEditList eventsList={displayEvents} refreshCallback={refreshContent}/>
             </div>
         </Container>
         </div>
