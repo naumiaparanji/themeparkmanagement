@@ -56,7 +56,14 @@
     position: relative;
 }
 
-button {
+
+
+.price {
+    bottom: 10%;
+    position: absolute;
+}
+
+.button {
     background-color: #04AA6D; /* Green */
     border: none;
     color: white;
@@ -73,15 +80,9 @@ button {
     position: absolute;
 }
 
-button:hover {
+.button:hover {
     transform: scale(1.05);
 }
-
-.price {
-    bottom: 10%;
-    position: absolute;
-}
-
 
 .ticket-card h3 {
     margin-top: 0; /* Remove margin from the top of the card title */

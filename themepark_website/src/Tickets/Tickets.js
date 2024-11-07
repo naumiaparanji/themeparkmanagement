@@ -55,7 +55,7 @@ const Tickets = () => {
                               <p><strong>{ticket.subName}</strong></p>
                               <p><strong>Description: </strong> <p>{ticket.Description}</p></p>
                               <p className="price"><strong>Price: </strong>{ticket.price}</p>
-                              <button>Purchase</button>
+                              <button className="button">Purchase</button>
                           </div>
                       ))}
                   </div>
