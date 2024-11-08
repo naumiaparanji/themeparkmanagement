@@ -6,6 +6,9 @@ import CustomerAccount from '../CustomerAccount';
 import Navbar from '../Navbar';
 import { api } from "../App";
 import axios from "axios";
+import goldpass from '../images/goldpass.png'; 
+import prestige from '../images/prestigeadvent.png'; 
+import newcomer from '../images/newcomer.png'; 
 
 function TicketInfo() {
     // Supposed to grab Data from the Database
@@ -20,9 +23,9 @@ function TicketInfo() {
 
 const ticketData = [
     // Testing tickets
-    { id: 1, name: 'Gold Pass', subName: 'VIP Experience with Exclusive Benefits', Description: 'Enjoy Preferred Parking, Monthly Pass Holder Rewards, Discounts, 2 Bring-a-Friend FREE tickets* and more with your 2025 Prestige Pass including UNLIMITED visits the rest of this year and the entire 2025 season at Seven Flags.', price: "$129.99" },
-    { id: 2, name: 'Prestiged Adventurer', subName: 'Never-Ending VIP Experience with Exclusive Benefits!', Description: 'Enjoy Preferred Parking, Monthly Pass Holder Rewards, Discounts 2 Bring-a-Friend FREE tickets* and more with your Prestige Membership including UNLIMITED visits with no blockout dates at Six Flags Over Texas and Hurricane Harbor Arlington.', price: "$169.99" },
-    { id: 3, name: 'A Newcomer Ticket', subName: 'Good for a one-day visit!', Description: 'Gain general access to the park and all of the rides for one day! Parking is not included and extra activities will need to be paid for if you are interested in participating in them.', price: "$39.99" }
+    { id: 1, name: 'Gold Pass', image: <img src={goldpass} alt="logo" style={{ width: '100%', height: 'auto', paddingRight: '15px', position: 'relative' }} />, subName: 'VIP Experience with Exclusive Benefits', Description: 'Enjoy Preferred Parking, Monthly Pass Holder Rewards, Discounts, 2 Bring-a-Friend FREE tickets* and more with your 2025 Prestige Pass including UNLIMITED visits the rest of this year and the entire 2025 season at Seven Flags.', price: "$129.99" },
+    { id: 2, name: 'Prestiged Adventurer', image: <img src={prestige} alt="logo" style={{ width: '100%', height: 'auto', paddingRight: '15px', position: 'relative' }} />, subName: 'Never-Ending VIP Experience with Exclusive Benefits!', Description: 'Enjoy Preferred Parking, Monthly Pass Holder Rewards, Discounts 2 Bring-a-Friend FREE tickets* and more with your Prestige Membership including UNLIMITED visits with no blockout dates at Six Flags Over Texas and Hurricane Harbor Arlington.', price: "$169.99" },
+    { id: 3, name: 'A Newcomer Ticket', image: <img src={newcomer} alt="logo" style={{ width: '100%', height: 'auto', paddingRight: '15px', position: 'relative' }} />, subName: 'Good for a one-day visit!', Description: 'Gain general access to the park and all of the rides for one day! Parking is not included and extra activities will need to be paid for if you are interested in participating in them.', price: "$39.99" }
 ];
 
 const Tickets = () => {
@@ -52,6 +55,7 @@ const Tickets = () => {
                       {ticketData.filter(ticket => ticket.category === category).map(ticket => (
                           <div className="ticket-card" key={ticket.id}>
                               <h3>{ticket.name}</h3>
+                              <p>{ticket.image}</p>
                               <p><strong>{ticket.subName}</strong></p>
                               <p><strong>Description: </strong> <p>{ticket.Description}</p></p>
                               <p className="price"><strong>Price: </strong>{ticket.price}</p>

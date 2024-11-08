@@ -51,7 +51,7 @@
     width: calc(25% - 40px); /* Adjust width based on how many cards you want in a row */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Shadow effect */
     color: black; /* Change text color to black */
-    height: 500px;
+    height: 40em;
     margin: 4%;
     position: relative;
 }
