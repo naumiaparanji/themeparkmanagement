@@ -2,6 +2,7 @@ import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from './Home';
+import Tickets from './Tickets/Tickets';
 import Attractions from './Attractions';
 import Events from './Events';
 import AboutUs from './AboutUs';
@@ -17,6 +18,7 @@ import axios from "axios";
 import { MaintenanceData } from './Maintenance/MaintenanceEdit';
 import { RidesInfo, RidesInfoBox } from './Rides/Rides';
 import { EventsEditView } from './Views/EventsEdit';
+import { AttractionsEditView } from './Views/AttractionsEdit';
 
 export const apiUrl = 'http://localhost:8080';
 
@@ -39,11 +41,13 @@ function App() {
                 <Route exact path='/employee/datamanage' element={<DataManage />} />
                 <Route exact path='/maintenance' element={<MaintenanceInfo />} />
                 <Route exact path='/about' element={<AboutUs />} />
+                <Route exact path='/Tickets/Tickets' element={<Tickets />} />
                 <Route exact path='/employee/login' element={<EmployeeLogin />} />
                 <Route exact path='/employee/signup' element={<EmployeeSignup />} />
                 <Route path='/employee/access/*' element={<EmployeeDashboard />}>
                     <Route path="" element={<WhoAmI/>} />
                     <Route path="events" element={<EventsEditView/>} />
+                    <Route path="attractions" element={<AttractionsEditView/>} />
                     <Route path="reports" element={<WhoAmI/>} />
                     <Route path="rides" element={<RidesInfo/>} />
                     <Route path="maintenance" element={<MaintenanceInfo/>} />

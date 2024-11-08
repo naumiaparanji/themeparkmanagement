@@ -116,6 +116,8 @@ setInterval(async () => {
     require('./rideRoutes')(app);
     require('./maintenanceRoutes')(app);
     require('./runsRoutes')(app);
+    require('./restaurantRoutes')(app);
+    require('./concessionRoutes')(app);
     
 
     http.createServer(options, app).listen(port, () => {
