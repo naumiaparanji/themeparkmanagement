@@ -1,5 +1,5 @@
 import "./Maintenance.css";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import MainLogo from "../images/flagslogo.png";
 import {
     RandomBGImg,
@@ -15,36 +15,26 @@ export function MaintenanceInfoBox(props) {
     const [description, setDescription] = useState("");
     const [status, setStatus] = useState("");
     const [message, setMessage] = useState("");
+    const [rideOptions, setRideOptions] = useState([]);
 
-    const rideOptions = [
-        "Adventure River",
-        "Alien Invasion",
-        "Bumper Cars",
-        "Dino Safari",
-        "Dragon Coaster",
-        "Dragon Roller Coaster",
-        "Flight Simulator",
-        "Haunted Mansion",
-        "Kiddie Carousel",
-        "Kiddie Coaster",
-        "Lazy River",
-        "Mini Bumper Cars",
-        "Pirate's Adventure",
-        "Race Car Challenge",
-        "River Rapids",
-        "Rock Climbing Wall",
-        "Scenic Train Ride",
-        "Sky Dive",
-        "Sky Drop",
-        "Splash Water Ride",
-        "Super Splash",
-        "Thunder Mountain",
-        "Tiny Teacups",
-        "Tornado Twister",
-        "Virtual Space Mission",
-        "Wave Pool",
-        "Zipline Adventure",
-    ];
+    useEffect(() => {
+        api.get("/rides/names")
+            .then((res) => setRideOptions(res.data.rideNames) )
+            .catch((e) => {
+                if (e.response) {
+                    if (e.response.status === 500)
+                        setMessage("Database error");
+                    else if (e.response.status === 501)
+                        setMessage("No rides in database");
+                    else if (e.response.data && !e.response.data.success)
+                        setMessage("Submission failed. Error Code: " + e.response.status);
+                    else
+                        setMessage("Unknown error");
+                }
+                else if (e.request)
+                    setMessage("Failed to connect to server");
+            });
+    }, []);
 
     const maintenanceSubmit = async () => {
         if (!rideName || !date || !description || !status) {
@@ -67,6 +57,7 @@ export function MaintenanceInfoBox(props) {
             .catch((e) => {
                 if (e.response) {
                     if (e.response.status === 500) setMessage("Server error");
+                    else if (e.response.status === 503) setMessage("Ride not found in database");
                     else if (e.response.data && !e.response.data.success) setMessage("Submission failed");
                     else setMessage("Unknown error");
                 } else if (e.request) setMessage("Failed to connect to server");

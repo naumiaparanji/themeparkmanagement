@@ -37,9 +37,11 @@ module.exports = (app) => {
       return;
     });
 
-    const ride = rideData.find(
-      (element) => element.RideName === req.body.rideName
-    );
+    const ride = rideData.find((element) => element.RideName === req.body.rideName );
+    if (ride === undefined) {
+        res.status(503).json({success: false, error: "BadRide"});
+        return;
+    }
 
     const statusValue = (req.body.status === "Operational" ? 1 : 0);
 
@@ -51,7 +53,6 @@ module.exports = (app) => {
         Description: req.body.description,
         Status: statusValue,
         },
-        true,
         true
     )
     .catch((e) => {
@@ -68,7 +69,7 @@ module.exports = (app) => {
     //     res.status(409).json({success: false, error: "UserExists"});
     //     return;
     // }
-    res.status(201).json({ success: true });
+    res.status(201).json({ success: maintenance });
   });
   
 };
