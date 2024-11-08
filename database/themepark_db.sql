@@ -16,15 +16,17 @@ DROP TABLE IF EXISTS RESTAURANT_TRANSACTIONS;
 DROP TABLE IF EXISTS CONCESSION_STALL;
 DROP TABLE IF EXISTS CONCESSION_TRANSACTIONS;
 
+-- Create tables
 CREATE TABLE CUSTOMER (
   CustomerID bigint unsigned NOT NULL AUTO_INCREMENT,
-  FirstName varchar(255),
-  LastName varchar(255),
-  DOB date,
-  Address varchar(255),
+  FirstName varchar(255) NOT NULL,
+  LastName varchar(255) NOT NULL,
+  DOB date NOT NULL,
+  Address varchar(255) NOT NULL,
   Email varchar(255) NOT NULL,
   Password varchar(255) NOT NULL,
   Created date NOT NULL DEFAULT (CURRENT_DATE),
+  Deleted tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (CustomerID),
   UNIQUE (Email)
 );
@@ -36,6 +38,7 @@ CREATE TABLE TICKET (
   ExpirationDate date NOT NULL,
   Scanned date DEFAULT NULL,
   Bought date NOT NULL DEFAULT (CURRENT_DATE),
+  Deleted tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (TicketID),
   FOREIGN KEY (CustomerID) REFERENCES CUSTOMER (CustomerID) ON DELETE RESTRICT ON UPDATE CASCADE
 );
@@ -46,6 +49,7 @@ CREATE TABLE MEMBERSHIP (
   ExpiryDate date NOT NULL,
   PurchaseDate date NOT NULL DEFAULT (CURRENT_DATE),
   CustomerID bigint unsigned NOT NULL,
+  Deleted tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (MembershipID),
   FOREIGN KEY (CustomerID) REFERENCES CUSTOMER (CustomerID) ON DELETE RESTRICT ON UPDATE CASCADE
 );
@@ -59,10 +63,11 @@ CREATE TABLE EMPLOYEE (
   PhoneNumber varchar(255) NOT NULL,
   Email varchar(255) NOT NULL,
   Password varchar(255) NOT NULL,
-  AccessLevel enum('EMP', 'MGR', 'ADM') NOT NULL DEFAULT 'EMP',
-  StartDate date NOT NULL,
+  AccessLevel varchar(3) NOT NULL DEFAULT 'EMP',
+  StartDate date NOT NULL DEFAULT (CURRENT_DATE),
   EndDate date NOT NULL,
   Created date NOT NULL DEFAULT (CURRENT_DATE),
+  Deleted tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (EmployeeID),
   UNIQUE (Email)
 );
@@ -73,16 +78,18 @@ CREATE TABLE RIDES (
   Category varchar(255) NOT NULL,
   MaintainDate date NOT NULL,
   RideAgeLimit bigint NOT NULL,
-  RideHours time(6) NOT NULL,
+  RideHours time NOT NULL,
   Capacity bigint NOT NULL,
+  Deleted tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (RideID)
 );
 
 CREATE TABLE MAINTENANCE (
   MaintenanceID bigint unsigned NOT NULL AUTO_INCREMENT,
   RideID bigint unsigned NOT NULL,
-  Date datetime(3) NOT NULL DEFAULT (CURRENT_TIMESTAMP),
-  Description varchar(255) NOT NULL,
+  Date datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  Description varchar(1020) NOT NULL,
+  Deleted tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (MaintenanceID),
   FOREIGN KEY (RideID) REFERENCES RIDES (RideID) ON DELETE RESTRICT ON UPDATE CASCADE
 );
@@ -90,9 +97,10 @@ CREATE TABLE MAINTENANCE (
 CREATE TABLE RIDE_STATUS (
   RideStatusID bigint unsigned NOT NULL AUTO_INCREMENT,
   RideID bigint unsigned NOT NULL,
-  WeatherCondition varchar(255) NOT NULL,
+  WeatherCondition enum('CLEAR', 'DRIZZLE', 'DOWNPOUR', 'WIND', 'TSTORM', 'HURRICANE') NOT NULL DEFAULT 'CLEAR',
   Status tinyint unsigned NOT NULL,
-  Created datetime(3) NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  Created datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  Deleted tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (RideStatusID),
   UNIQUE (RideID, Created),
   FOREIGN KEY (RideID) REFERENCES RIDES (RideID) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -101,6 +109,8 @@ CREATE TABLE RIDE_STATUS (
 CREATE TABLE M_STATUS (
   RideStatusID bigint unsigned NOT NULL,
   MaintenanceID bigint unsigned NOT NULL,
+  Deleted tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (RideStatusID, MaintenanceID),
   FOREIGN KEY (RideStatusID) REFERENCES RIDE_STATUS (RideStatusID) ON DELETE RESTRICT ON UPDATE CASCADE,
   FOREIGN KEY (MaintenanceID) REFERENCES MAINTENANCE (MaintenanceID) ON DELETE RESTRICT ON UPDATE CASCADE
 );
@@ -109,8 +119,9 @@ CREATE TABLE RUNS (
   RunID bigint unsigned NOT NULL AUTO_INCREMENT,
   EmployeeID bigint unsigned NOT NULL,
   RideID bigint unsigned NOT NULL,
-  RideTime date NOT NULL,
+  RideTime datetime NOT NULL,
   NumofRiders bigint NOT NULL,
+  Deleted tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (RunID),
   FOREIGN KEY (EmployeeID) REFERENCES EMPLOYEE (EmployeeID) ON DELETE RESTRICT ON UPDATE CASCADE,
   FOREIGN KEY (RideID) REFERENCES RIDES (RideID) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -118,10 +129,16 @@ CREATE TABLE RUNS (
 
 CREATE TABLE EVENTS (
   EventID bigint unsigned NOT NULL AUTO_INCREMENT,
-  EventType bigint unsigned NOT NULL,
-  EventDateTime datetime(3) NOT NULL,
+  EventName varchar(100) NOT NULL,
+  EventType varchar(100) NOT NULL,
+  EventDateTime datetime NOT NULL,
+  EventDuration smallint unsigned NOT NULL,
+  EventDesc varchar(500) NOT NULL,
+  EventRestrictions varchar(500) NOT NULL,
+  EventAgeLimit tinyint unsigned NOT NULL,
   Location varchar(255) NOT NULL,
   Capacity bigint unsigned NOT NULL,
+  Deleted tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (EventID)
 );
 
@@ -129,21 +146,27 @@ CREATE TABLE EVENT_TICKET (
   EventTicketID bigint unsigned NOT NULL AUTO_INCREMENT,
   CustomerID bigint unsigned NOT NULL,
   EventID bigint unsigned NOT NULL,
-  Bought datetime(3) NOT NULL DEFAULT (CURRENT_TIMESTAMP),
-  ExpirationDate datetime(3) NOT NULL,
-  Scanned date,
+  Bought datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  ExpirationDate datetime NOT NULL,
+  Scanned date DEFAULT NULL,
+  Deleted tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (EventTicketID),
+  UNIQUE (CustomerID, EventID),
   FOREIGN KEY (CustomerID) REFERENCES CUSTOMER (CustomerID) ON DELETE RESTRICT ON UPDATE CASCADE,
-  FOREIGN KEY (EventID) REFERENCES EVENTS (EventID) ON DELETE RESTRICT ON UPDATE CASCADE,
-  UNIQUE (CustomerID, EventID)
+  FOREIGN KEY (EventID) REFERENCES EVENTS (EventID) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 CREATE TABLE RESTAURANT (
   RestaurantID bigint unsigned NOT NULL AUTO_INCREMENT,
   SeatingCapacity bigint unsigned NOT NULL,
   OpensAt time NOT NULL,
-  OpenDuration time NOT NULL,
+  OpenDuration smallint unsigned NOT NULL,
   Location varchar(255) NOT NULL,
+  Deleted tinyint(1) NOT NULL DEFAULT '0',
+  RName varchar(100) NOT NULL,
+  RDesc varchar(500) NOT NULL,
+  RPriceMin smallint unsigned NOT NULL,
+  RPriceMax smallint unsigned NOT NULL,
   PRIMARY KEY (RestaurantID)
 );
 
@@ -153,6 +176,7 @@ CREATE TABLE RESTAURANT_TRANSACTIONS (
   Date date NOT NULL DEFAULT (CURRENT_DATE),
   CustomerID bigint unsigned NOT NULL,
   Subtotal double NOT NULL,
+  Deleted tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (RTransactionID),
   FOREIGN KEY (RestaurantID) REFERENCES RESTAURANT (RestaurantID) ON DELETE RESTRICT ON UPDATE CASCADE,
   FOREIGN KEY (CustomerID) REFERENCES CUSTOMER (CustomerID) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -161,8 +185,13 @@ CREATE TABLE RESTAURANT_TRANSACTIONS (
 CREATE TABLE CONCESSION_STALL (
   ConcessionID bigint unsigned NOT NULL AUTO_INCREMENT,
   OpensAt time NOT NULL,
-  OpenDuration time NOT NULL,
+  OpenDuration smallint unsigned NOT NULL,
   Location varchar(255) NOT NULL,
+  Deleted tinyint(1) NOT NULL DEFAULT '0',
+  CName varchar(100) NOT NULL,
+  CDesc varchar(500) NOT NULL,
+  CPriceMin smallint unsigned NOT NULL,
+  CPriceMax smallint unsigned NOT NULL,
   PRIMARY KEY (ConcessionID)
 );
 
@@ -172,6 +201,7 @@ CREATE TABLE CONCESSION_TRANSACTIONS (
   Date date NOT NULL DEFAULT (CURRENT_DATE),
   CustomerID bigint unsigned NOT NULL,
   Subtotal double NOT NULL,
+  Deleted tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (CTransactionID),
   FOREIGN KEY (ConcessionID) REFERENCES CONCESSION_STALL (ConcessionID) ON DELETE RESTRICT ON UPDATE CASCADE,
   FOREIGN KEY (CustomerID) REFERENCES CUSTOMER (CustomerID) ON DELETE RESTRICT ON UPDATE CASCADE
