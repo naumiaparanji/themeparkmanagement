@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { api } from "../App";
-import { Accordion, AccordionContext, Button, Form, Container, InputGroup, Modal } from "react-bootstrap";
+import { Accordion, AccordionContext, Button, Form, Container, InputGroup, Modal, Row, Col, Navbar } from "react-bootstrap";
 
 function formatEventTime24H(startDate, duration) {
     const startDateTime = new Date(startDate);
@@ -189,9 +189,10 @@ export function EventsEditList({eventsList, refreshCallback}) {
     );
 }
 
-export function EventsTopBar({events, displayEvents, setDisplayEvents}) {
+export function EventsTopBar({events, setDisplayEvents}) {
     const [categories, setCategories] = useState([]);
     const [activeCategory, setActiveCategory] = useState(-1);
+    const [search, setSearch] = useState("");
 
     const refreshCategories = () => {
         api.get("/events/categories")
@@ -207,26 +208,36 @@ export function EventsTopBar({events, displayEvents, setDisplayEvents}) {
     }, [events, setDisplayEvents]);
 
     useEffect(() => {
-        if (activeCategory < 0)
-            setDisplayEvents(events);
-        else {
-            setDisplayEvents(events.filter((event) => event.EventType === categories[activeCategory].EventType));
+        let newEvents = events;
+        if (activeCategory >= 0) {
+            newEvents = events.filter((event) => event.EventType === categories[activeCategory].EventType);
         }
-    }, [activeCategory, categories, events, setDisplayEvents])
+        if (search) {
+            newEvents = newEvents.filter((event) => event.EventName.toLowerCase().indexOf(search.toLowerCase()) !== -1);
+        }
+        setDisplayEvents(newEvents);
+    }, [activeCategory, categories, search, events, setDisplayEvents])
 
     return (
-        <div>
-        <Form className="d-flex flex-row mt-4">
-            <Form.Control placeholder="Search" className="h-100"/>
-            <Form.Select className="w-10" onChange={(event) => setActiveCategory(Number(event.target.value))}>
-                <option value={-1} key={-1}>All</option>
-                {categories.map((category, i) => (
-                    <option value={i} key={i}>{category.EventType}</option>
-                ))}
-            </Form.Select>
-        </Form>
+        <>
+        <Navbar fixed="top">
+            <Container fluid>
+                <Form className="w-100">
+                    <InputGroup className="d-flex">
+                        <Form.Control placeholder="Search" className="m-0" value={search} onChange={(event) => setSearch(event.target.value)}/>
+                        <Form.Select style={{ minWidth: 'fit-content', maxWidth: 'fit-content'}} onChange={(event) => setActiveCategory(Number(event.target.value))}>
+                            <option value={-1} key={-1}>All</option>
+                            {categories.map((category, i) => (
+                                <option value={i} key={i}>{category.EventType}</option>
+                            ))}
+                        </Form.Select>
+                        <Button>Add new event</Button>
+                    </InputGroup>
+                </Form>
+            </Container>
+        </Navbar>
         <hr/>
-        </div>
+        </>
     );
 }
 
@@ -247,13 +258,17 @@ export function EventsEditView() {
     }, []);
     
     return (
-        <div className="d-flex flex-row">
-        <Container className="d-flex flex-column">
-            <EventsTopBar events={events} displayEvents={displayEvents} setDisplayEvents={setDisplayEvents}/>
-            <div className="overflow-scroll h-100">
-                <EventsEditList eventsList={displayEvents} refreshCallback={refreshContent}/>
-            </div>
+        <Container fluid>
+            <Col>
+                <Row>
+                    <EventsTopBar events={events} setDisplayEvents={setDisplayEvents}/>
+                </Row>
+                <Row className="h-100 overflow-auto">
+                    <Container>
+                        <EventsEditList eventsList={displayEvents} refreshCallback={refreshContent}/>    
+                    </Container>
+                </Row>
+            </Col>
         </Container>
-        </div>
     );
 }
