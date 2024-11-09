@@ -10,17 +10,22 @@ export function LoginBox(props) {
     const [message, setMessage] = useState('');
 
     const loginSubmit = async () => {
-        api.post(props.apiPath || '/customer/login', {username: email, password: password})
-        .then(() => window.location.pathname = props.redirect)
-        .catch((e) => {
-            if (e.response) {
-                if (e.response.status === 500) setMessage('Server error');
-                else if (!e.response.data) setMessage('Unknown error');
-                else setMessage('Invalid email/password');
-            }
-            else if (e.request) setMessage('Failed to connect to server');
-        });
+        api.post(props.apiPath || '/customer/login', { username: email, password: password })
+            .then((response) => {
+                // Save token to localStorage
+                localStorage.setItem('authToken', response.data.token);  // Assuming your API returns a token
+                window.location.pathname = props.redirect;
+            })
+            .catch((e) => {
+                if (e.response) {
+                    if (e.response.status === 500) setMessage('Server error');
+                    else if (!e.response.data) setMessage('Unknown error');
+                    else setMessage('Invalid email/password');
+                }
+                else if (e.request) setMessage('Failed to connect to server');
+            });
     }
+    
 
     let otherLoginPath, otherLoginText;
     if (props.isEmp === true) {

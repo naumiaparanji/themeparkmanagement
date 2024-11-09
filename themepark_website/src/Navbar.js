@@ -13,6 +13,8 @@ const Navbar = () => {
         color: '#333',
         margin: '0 10px',
     };
+    const isLoggedIn = !!localStorage.getItem('authToken'); // If token exists, user is logged in
+
 
     return (
         <div className="navbar">
@@ -36,6 +38,11 @@ const Navbar = () => {
             <section className="navbar-links">
                 <Link to="/about" style={linkStyle}>About Us</Link>
             </section>
+            <section className="navbar-links">
+                {isLoggedIn && 
+                    (<Link to="/your-profile" style={linkStyle}>Your Profile</Link>)
+                }
+                  </section>
             <section className="navbar-links">
                 <Link to="/Tickets/Tickets" style={linkStyle}>
                 <img src={BuyTickets} alt="logo" style={{ width: '120px', height: 'auto', paddingRight: '15px', position: 'relative' }} />

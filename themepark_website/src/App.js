@@ -19,6 +19,8 @@ import { MaintenanceData } from './Maintenance/MaintenanceEdit';
 import { RidesInfo, RidesInfoBox } from './Rides/Rides';
 import { EventsEditView } from './Views/EventsEdit';
 import { AttractionsEditView } from './Views/AttractionsEdit';
+import ProfilePage from './ProfilePage'; 
+
 
 export const apiUrl = 'http://localhost:8080';
 
@@ -42,19 +44,20 @@ function App() {
                 <Route exact path='/maintenance' element={<MaintenanceInfo />} />
                 <Route exact path='/about' element={<AboutUs />} />
                 <Route exact path='/Tickets/Tickets' element={<Tickets />} />
+                <Route exact path="/your-profile" element={<ProfilePage />} /> 
                 <Route exact path='/employee/login' element={<EmployeeLogin />} />
                 <Route exact path='/employee/signup' element={<EmployeeSignup />} />
                 <Route path='/employee/access/*' element={<EmployeeDashboard />}>
-                    <Route path="" element={<WhoAmI/>} />
-                    <Route path="events" element={<EventsEditView/>} />
-                    <Route path="attractions" element={<AttractionsEditView/>} />
-                    <Route path="reports" element={<WhoAmI/>} />
-                    <Route path="rides" element={<RidesInfo/>} />
-                    <Route path="maintenance" element={<MaintenanceInfo/>} />
-                    <Route path="runs" element={<Runs/>} />
-                    <Route path="maintenance/data" element={<MaintenanceData/>} />
-                    <Route path="datamanage" element={<DataManage/>} />
-                    <Route path='*' element={<PageNotFound />} />
+                <Route path="" element={<WhoAmI/>} />
+                <Route path="events" element={<EventsEditView/>} />
+                <Route path="attractions" element={<AttractionsEditView/>} />
+                <Route path="reports" element={<WhoAmI/>} />
+                <Route path="rides" element={<RidesInfo/>} />
+                <Route path="maintenance" element={<MaintenanceInfo/>} />
+                <Route path="runs" element={<Runs/>} />
+                <Route path="maintenance/data" element={<MaintenanceData/>} />
+                <Route path="datamanage" element={<DataManage/>} />
+                <Route path='*' element={<PageNotFound />} />
                 </Route>
                 <Route path='*' element={<PageNotFound />} />
             </Routes>

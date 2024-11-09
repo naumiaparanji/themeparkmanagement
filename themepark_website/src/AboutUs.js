@@ -26,6 +26,7 @@ const AboutUs = () => {
       <button className="back-button" onClick={() => navigate('/')}>
               Back to Home
           </button>  
+      <br></br>
       <h1 className="about-us-title">About Our Theme Park</h1>
       
       {/* Cards Section */}
