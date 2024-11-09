@@ -46,7 +46,7 @@
     border: 1px solid #ddd; /* Card border */
     border-radius: 8px; /* Rounded corners */
     padding: 10px; /* Padding inside cards */
-    width: calc(25% - 40px); /* Adjust width based on how many cards you want in a row */
+    width: 360px; /* Adjust width based on how many cards you want in a row */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Shadow effect */
     color: black; /* Change text color to black */
     height: 40em;
