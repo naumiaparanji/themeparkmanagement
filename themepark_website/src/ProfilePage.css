@@ -1,0 +1,14 @@
+/* Add this to your CSS */
+.profile-container {
+    padding: 20px;
+    max-width: 210vh;
+    margin: auto;
+    height: calc(100vh); /* Adjust based on your navbar height */
+    overflow-y: auto; /* Allow vertical scrolling */
+    background-image: url('./images/login-b.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+  }
+  

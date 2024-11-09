@@ -19,6 +19,8 @@ import { MaintenanceData } from './Maintenance/MaintenanceEdit';
 import { RidesInfo, RidesInfoBox } from './Rides/Rides';
 import { EventsEditView } from './Views/EventsEdit';
 import { AttractionsEditView } from './Views/AttractionsEdit';
+import ProfilePage from './ProfilePage'; // Import the profile page component
+
 
 export const apiUrl = 'http://localhost:8080';
 
@@ -42,6 +44,7 @@ function App() {
                 <Route exact path='/maintenance' element={<MaintenanceInfo />} />
                 <Route exact path='/about' element={<AboutUs />} />
                 <Route exact path='/Tickets/Tickets' element={<Tickets />} />
+                <Route exact path="/your-profile" component={ProfilePage} /> {/* Add the route */}
                 <Route exact path='/employee/login' element={<EmployeeLogin />} />
                 <Route exact path='/employee/signup' element={<EmployeeSignup />} />
                 <Route path='/employee/access/*' element={<EmployeeDashboard />}>
