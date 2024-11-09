@@ -20,15 +20,13 @@
 }
 
 .h4-ticket {
+    color: black;
     font-size: 46px;
     margin-bottom: 30px;
-    color: black;
     text-shadow: -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 2px 2px 0 white, 5px 5px 0 black;
+    padding-top: 30px;
     border-bottom: 2px solid white;
     text-align: center;
-    background-color: white;
-    align-items: center;
-    padding: 1%;
 }
 
 .ticket-category {
