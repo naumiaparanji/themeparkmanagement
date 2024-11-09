@@ -1,7 +1,7 @@
 // ProfilePage.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';  // Import useNavigate instead of useHistory
-
+//needs work
 const ProfilePage = () => {
   const [customerData, setCustomerData] = useState(null);
   const navigate = useNavigate();  // Access navigate function for redirection
