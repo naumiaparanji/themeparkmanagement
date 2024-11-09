@@ -59,7 +59,7 @@ export function DashUI() {
 
     return (
         <Container fluid className={`${styles.fullsize} d-flex flex-column`}>
-            <Navbar bg="light" expand={true}>
+            <Navbar bg="light" expand={true} style={{zIndex: 100}}>
                 <Container fluid>
                     <Navbar.Brand onClick={() => navigate("")} className="py-0">
                         <img
