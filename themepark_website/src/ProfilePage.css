@@ -1,14 +1,57 @@
-/* Add this to your CSS */
+  /* Add to your existing CSS */
 .profile-container {
     padding: 20px;
-    max-width: 210vh;
+    max-width: 800px;
     margin: auto;
-    height: calc(100vh); /* Adjust based on your navbar height */
-    overflow-y: auto; /* Allow vertical scrolling */
-    background-image: url('./images/login-b.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    color: white;
+    background: #f8f8f8;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   }
+  
+  .profile-info {
+    margin-bottom: 20px;
+  }
+  
+  .profile-info h3 {
+    font-size: 24px;
+    margin-bottom: 5px;
+  }
+  
+  .profile-info p {
+    font-size: 16px;
+  }
+  
+  .profile-tickets {
+    margin-top: 20px;
+  }
+  
+  .profile-tickets h4 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .profile-tickets ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  .profile-tickets li {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .profile-tickets li strong {
+    display: block;
+    font-size: 18px;
+  }
+  
+  .profile-tickets li div {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #555;
+  }
+  
   

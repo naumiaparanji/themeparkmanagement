@@ -1,60 +1,83 @@
-// ProfilePage.js
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';  // Import useNavigate instead of useHistory
-//needs work
+import { useNavigate } from 'react-router-dom';
+
 const ProfilePage = () => {
   const [customerData, setCustomerData] = useState(null);
-  const navigate = useNavigate();  // Access navigate function for redirection
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if the user is logged in
-    if (!localStorage.getItem('authToken')) {
-      // Redirect to login page if not authenticated
+    const authToken = localStorage.getItem('authToken');
+    if (!authToken) {
       navigate('/login');
+      return;
     }
 
-    // Fetch customer data if authenticated
     fetch('/api/customer/profile', {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+        'Authorization': `Bearer ${authToken}`,
       },
     })
-      .then((response) => response.json())
-      .then((data) => setCustomerData(data))
-      .catch((error) => console.error('Error fetching profile data:', error));
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch profile data');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('Fetched customer data:', data); // Check if you get data here
+        if (data && data.name) {
+          setCustomerData(data);
+        } else {
+          setError('No profile data found.');
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching profile data:', error);
+        setError('Error fetching profile data.');
+      })
+      .finally(() => setLoading(false));  // Set loading to false after request
   }, [navigate]);
 
-  const handleUpdateProfile = (updatedData) => {
-    // Make a PUT request to update customer data
-    fetch('/api/customer/profile', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-      },
-      body: JSON.stringify(updatedData),
-    })
-      .then((response) => response.json())
-      .then((data) => setCustomerData(data))
-      .catch((error) => console.error('Error updating profile data:', error));
+  if (loading) return <p>Loading profile...</p>;
+  if (error) return <p>{error}</p>;
+
+  // Default data structure in case it's empty
+  const profileData = customerData || {
+    name: 'Guest',
+    email: 'No email provided',
+    tickets: [],
   };
 
   return (
     <div className="profile-container">
       <h1>Your Profile</h1>
-      {customerData ? (
-        <div>
-          <h3>{customerData.name}</h3>
-          <p>Email: {customerData.email}</p>
-          <p>Tickets: {customerData.tickets.join(', ')}</p>
-          <button onClick={() => handleUpdateProfile({ name: 'New Name' })}>
-            Update Profile
-          </button>
-        </div>
-      ) : (
-        <p>Loading...</p>
-      )}
+      <div className="profile-info">
+        <h3>{profileData.name}</h3>
+        <p>Email: {profileData.email}</p>
+      </div>
+
+      <div className="profile-tickets">
+        <h4>Your Tickets/Events</h4>
+        {profileData.tickets.length > 0 ? (
+          <ul>
+            {profileData.tickets.map((ticket, index) => (
+              <li key={index}>
+                <div>
+                  <strong>{ticket.event}</strong>
+                </div>
+                <div>
+                  Expiry Date: {new Date(ticket.expiry).toLocaleDateString()}
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>You have no tickets or events.</p>
+        )}
+      </div>
     </div>
   );
 };
