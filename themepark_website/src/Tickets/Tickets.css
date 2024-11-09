@@ -45,7 +45,7 @@
     background-color: #f9f9f9; /* Card background color */
     border: 1px solid #ddd; /* Card border */
     border-radius: 8px; /* Rounded corners */
-    padding: 10px; /* Padding inside cards */
+    padding: 20px; /* Padding inside cards */
     width: 360px; /* Adjust width based on how many cards you want in a row */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Shadow effect */
     color: black; /* Change text color to black */
