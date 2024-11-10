@@ -17,7 +17,7 @@ import PageNotFound from "./PageNotFound";
 import axios from "axios";
 import { MaintenanceData } from './Maintenance/MaintenanceEdit';
 import { RidesInfo, RidesInfoBox } from './Rides/Rides';
-import { EventsEditView } from './Views/EventsEdit';
+import { EventsEditView } from './Views/EventsEdit/EventsEditView';
 import { AttractionsEditView } from './Views/AttractionsEdit';
 import ProfilePage from './ProfilePage'; 
 
