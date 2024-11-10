@@ -101,7 +101,7 @@ export function MaintenanceInfoBox(props) {
                     ))}
                 </select>
             </div>
-
+            
             <InputField
                 name="Date"
                 type="date"
@@ -109,6 +109,7 @@ export function MaintenanceInfoBox(props) {
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
             />
+            
             <InputField
                 name="Description"
                 containerStyle={{ margin: "12px 12px" }}
