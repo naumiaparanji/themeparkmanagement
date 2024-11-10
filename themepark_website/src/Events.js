@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { api } from './App';
 import CustomerAccount from './CustomerAccount';
 import { useNavigate } from 'react-router-dom';
-import EventRegistration from './EventRegistration';  // Import the registration component
 import Navbar from './Navbar';
 import './Events.css';
 import './CustomerAccount'
@@ -26,10 +25,6 @@ const Events = () => {
     const [eventsData, setEventsData] = useState([]);
     const [categories, setCategories] = useState([]);
 
-    // Check eventsRoutes.js and db.js in the server to see what this is retrieving.
-    // If any of this is too confusing just lmk and I'll take care of app <-> db connections.
-    // Frontend rendering, triggers, etc are more important.
-    // - Ian
     useEffect(() => {
         api.get("/events")
         .then((response) => {
@@ -74,12 +69,6 @@ const Events = () => {
                                     <p><strong>Time:</strong> {displayEventDate(events.EventDateTime, events.EventDuration)}</p>
                                     <p><strong>Age Limit:</strong> {events.EventAgeLimit}+</p>
                                     <p><strong>Restrictions:</strong> {events.EventRestrictions}</p>
-                                    
-                                    {/* Add the registration button for the event */}
-                                    {/* Please move this to the customer portal or remove it. <3 Ian */}
-                                    {events.EventID === 14 && (
-                                        <EventRegistration eventId={14} customerId={1} />
-                                    )}
                                 </div>
                             ))}
                         </div>
