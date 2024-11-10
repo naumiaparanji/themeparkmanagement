@@ -103,7 +103,7 @@ body {
 
 .navbar-links {
     list-style: none;
-    display: flex;
+    display: left;
     margin-right: 1%;
     margin-left: 1%;
     padding-right: 1%;

@@ -75,14 +75,14 @@ export default class CustomerAccount extends React.Component {
 
     render() {
         const { loggedIn, username, error } = this.state;
-
+    
         return (
             <div className="customer-account">
                 {error ? (
                     <p>{error}</p>
                 ) : loggedIn ? (
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <p style={{ marginRight: '5px', marginLeft: '-10px' }}>Welcome!</p>
+                    <div>
+                        <p>Welcome!</p>
                         <button onClick={this.handleLogout}>Logout</button>
                     </div>
                 ) : (
@@ -93,4 +93,5 @@ export default class CustomerAccount extends React.Component {
             </div>
         );
     }
+    
 }
