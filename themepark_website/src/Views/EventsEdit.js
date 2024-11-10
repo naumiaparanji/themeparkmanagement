@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import { api } from "../App";
 import { Accordion, AccordionContext, Button, Form, Container, InputGroup, Modal, Row, Col, Navbar } from "react-bootstrap";
 
@@ -97,6 +97,7 @@ const defaultFormState = {
 export const EventsEditContext = React.createContext();
 
 // Contains all shared state variables and functions
+// Also manages logic between component states
 export function EventsEditContextProvider({children}) {
     const [events, setEvents] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -106,40 +107,45 @@ export function EventsEditContextProvider({children}) {
     const [formEditState, setFormEditState] = useState(defaultFormState);
     const [isFormStateValid, setIsFormStateValid] = useState(false);
 
-    const refreshEvents = () => {
+    const refreshEvents = useCallback(() => {
         api.get("/events")
         .then((response) => {
             setEvents(response.data.events);
         })
         .catch((e) => console.log(e));
-    }
+    }, []);
 
-    const refreshCategories = () => {
+    const refreshCategories = useCallback(() => {
         api.get("/events/categories")
         .then((response) => {
             setCategories(response.data.categories);
         })
         .catch((e) => console.log(e));
-    }
+    }, []);
 
-    const resetFormEditState = () => {
+    const refreshAll = useCallback(() => {
+        refreshEvents();
+        refreshCategories();
+    }, [refreshEvents, refreshCategories]);
+    
+    const resetFormEditState = useCallback(() => {
         setFormEditState({
             ...defaultFormState,
             ...formatEventTime24H(defaultFormState.EventDateTime, defaultFormState.EventDuration)
         });
-    }
+    }, []);
 
-    const applyEventToFormState = (event) => {
+    const applyEventToFormState = useCallback((event) => {
         setFormEditState({
             ...event,
             ...formatEventTime24H(event.EventDateTime, event.EventDuration)
         });
-    }
+    }, []);
 
     useEffect(() => {
         refreshEvents();
         refreshCategories();
-    }, []);
+    }, [refreshCategories, refreshEvents]);
 
     useEffect(() => {
         let newEvents = events;
@@ -162,6 +168,7 @@ export function EventsEditContextProvider({children}) {
             refreshEvents, 
             categories, 
             refreshCategories,
+            refreshAll,
             search,
             setSearch,
             activeCategory,
@@ -182,14 +189,13 @@ export function EventsEditContextProvider({children}) {
 export function EventForm() {
     const { formEditState, setFormEditState } = useContext(EventsEditContext);
 
-    const handleChange = (e) => {
+    const handleChange = useCallback((e) => {
         let { name, value } = e.target;
-        const newState = {
-            ...formEditState,
+        setFormEditState(prevState => ({
+            ...prevState,
             [name]: value
-        }
-        setFormEditState(newState);
-    }
+        }));
+    }, [setFormEditState]);
 
     return (
         <Form>
@@ -217,6 +223,12 @@ export function EventForm() {
 }
 
 function ConfirmModal({show, title, body, confirmText, cancelText, confirmCallback, onClose, confirmVariant, cancelVariant}) {
+    
+    const handleConfirm = useCallback(() => {
+        confirmCallback(); 
+        onClose();
+    }, [confirmCallback, onClose]);
+    
     return (
         <Modal show={show} animation={false} onHide={onClose}>
             <Modal.Header closeButton>
@@ -225,39 +237,34 @@ function ConfirmModal({show, title, body, confirmText, cancelText, confirmCallba
             <Modal.Body>{body}</Modal.Body>
             <Modal.Footer>
                 <Button variant={cancelVariant || "secondary"} onClick={onClose}>{cancelText}</Button>
-                <Button variant={confirmVariant || "primary"} onClick={() => {confirmCallback(); onClose();}}>{confirmText}</Button>
+                <Button variant={confirmVariant || "primary"} onClick={handleConfirm}>{confirmText}</Button>
             </Modal.Footer>
         </Modal>
     );
 }
 
 export function EventEditForm({event, eventKey}) {
-    const { applyEventToFormState, formEditState, isFormStateValid, refreshEvents, refreshCategories } = useContext(EventsEditContext);
-    const [confirmDelete, setConfirmDelete] = useState(false);
+    const { applyEventToFormState, formEditState, isFormStateValid, refreshAll } = useContext(EventsEditContext);
+    const [ confirmDelete, setConfirmDelete ] = useState(false);
     const { activeEventKey } = useContext(AccordionContext);
-    const [isActivated, setIsActivated] = useState(false);
     
     useEffect(() => {
-        if (activeEventKey === eventKey && !isActivated) {
+        if (activeEventKey === eventKey) {
             applyEventToFormState(event);
-            setIsActivated(true);
-        } else if (activeEventKey !== eventKey && isActivated) {
-            setIsActivated(false);
         }
-    }, [applyEventToFormState, activeEventKey, eventKey, event, isActivated]);
+    }, [applyEventToFormState, activeEventKey, eventKey, event]);
 
-    const refreshAll = () => {
-        refreshEvents();
-        refreshCategories();
-    };
-
-    const handleSubmit = () => {
+    const handleSubmit = useCallback(() => {
         updateEvent(formEditState, refreshAll, (e) => console.log(e));
-    }
-
-    const handleDelete = () => {
+    }, [formEditState, refreshAll]);
+    
+    const handleDelete = useCallback(() => {
         deleteEvent(formEditState, refreshAll, (e) => console.log(e));
-    }
+    }, [formEditState, refreshAll]);
+
+    const handleConfirmDelete = useCallback(() => setConfirmDelete(true), []);
+
+    const handleConfirmClose = useCallback(() => setConfirmDelete(false), []);
 
     return (
         <div>
@@ -267,11 +274,11 @@ export function EventEditForm({event, eventKey}) {
                 <Button disabled={!isFormStateValid} onClick={handleSubmit}>
                     Save
                 </Button>
-                <Button variant="danger" className="mx-3" onClick={() => setConfirmDelete(true)}>
+                <Button variant="danger" className="mx-3" onClick={handleConfirmDelete}>
                     Delete
                 </Button>
             </div>
-            <ConfirmModal show={confirmDelete} onClose={() => setConfirmDelete(false)} 
+            <ConfirmModal show={confirmDelete} onClose={handleConfirmClose} 
                 title="Confirm Delete"
                 body={`You are about to delete "${event.EventName}". This action cannot be undone.`}
                 confirmText="Delete"
@@ -334,15 +341,15 @@ export function NewEventModal({show, onHide}) {
         }
     }, [show, isActivated, resetFormEditState]);
     
-    const successAction = () => {
+    const successAction = useCallback(() => {
         refreshEvents();
         refreshCategories();
         onHide();
-    };
+    }, [refreshEvents, refreshCategories, onHide]);
 
-    const handleSubmit = () => {
+    const handleSubmit = useCallback(() => {
         addEvent(formEditState, successAction, (e) => console.log(e));
-    }
+    }, [formEditState, successAction]);
 
     return (
         <Modal show={show} onHide={onHide}>
@@ -361,6 +368,9 @@ export function EventsTopBar() {
     const {search, setSearch, setActiveCategory, categories} = useContext(EventsEditContext);
     const [createState, setCreateState] = useState(false);
 
+    const handleHide = useCallback(() => setCreateState(false), []);
+    const handleAddEvent = useCallback(() => setCreateState(true), []);
+
     return (
         <>
         <Navbar fixed="top">
@@ -374,12 +384,12 @@ export function EventsTopBar() {
                                 <option value={i} key={i}>{category}</option>
                             ))}
                         </Form.Select>
-                        <Button onClick={() => setCreateState(true)}>Add new event</Button>
+                        <Button onClick={handleAddEvent}>Add new event</Button>
                     </InputGroup>
                 </Form>
             </Container>
         </Navbar>
-        <NewEventModal show={createState} onHide={() => setCreateState(false)} />
+        <NewEventModal show={createState} onHide={handleHide} />
         <hr/>
         </>
     );
