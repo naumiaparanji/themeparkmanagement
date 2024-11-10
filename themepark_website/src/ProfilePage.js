@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { api } from './App'; // Import the api instance from App.js
 
 const ProfilePage = () => {
   const [customerData, setCustomerData] = useState(null);
@@ -7,29 +8,24 @@ const ProfilePage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Check if user is logged in by verifying if the auth token exists
     const authToken = localStorage.getItem('authToken');
     if (!authToken) {
       navigate('/login'); // Redirect to login if no auth token
       return;
     }
   
-    // Fetch customer profile data
-    fetch('/customer/info', {
-      method: 'GET',
+    // Fetch customer profile data using Axios
+    api.get('/customer/info', {
       headers: {
         'Authorization': `Bearer ${authToken}`, // Send the token in the header
       },
     })
       .then((response) => {
-        console.log('Response:', response); // Log the full response object
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`); // Check for non-OK responses
-        }
-        return response.json(); // Parse the JSON response
-      })
-      .then((data) => {
-        if (data.success) {
-          setCustomerData(data.user); // Assuming 'data.user' contains the profile info
+        console.log('API Response:', response); // Log the full response to debug
+  
+        if (response.data.success) {
+          setCustomerData(response.data.user); // Assuming 'data.user' contains the profile info
         } else {
           setError('Failed to fetch user data');
         }
@@ -45,8 +41,11 @@ const ProfilePage = () => {
   const profileData = customerData || {
     name: 'Guest',
     email: 'No email provided',
-    tickets: [],
+    tickets: [], // Ensure tickets is always an array
   };
+
+  // Ensure tickets is an array before using length
+  const tickets = Array.isArray(profileData.tickets) ? profileData.tickets : [];
 
   return (
     <div className="profile-container">
@@ -62,9 +61,9 @@ const ProfilePage = () => {
 
           <div className="profile-tickets">
             <h2 className="profheading">Your Tickets/Events</h2>
-            {profileData.tickets.length > 0 ? (
+            {tickets.length > 0 ? (
               <ul>
-                {profileData.tickets.map((ticket, index) => (
+                {tickets.map((ticket, index) => (
                   <li key={index}>
                     <div>
                       <strong>{ticket.event}</strong>

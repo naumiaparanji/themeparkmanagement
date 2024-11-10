@@ -118,7 +118,8 @@ setInterval(async () => {
     require('./runsRoutes')(app);
     require('./restaurantRoutes')(app);
     require('./concessionRoutes')(app);
-    
+    require('./giftshopRoutes')(app);
+    require('./miscRoutes')(app);    
 
     http.createServer(options, app).listen(port, () => {
         console.log(`Listening on port ${port}`);

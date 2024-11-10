@@ -18,7 +18,7 @@ import axios from "axios";
 import { MaintenanceData } from './Maintenance/MaintenanceEdit';
 import { RidesInfo, RidesInfoBox } from './Rides/Rides';
 import { EventsEditView } from './Views/EventsEdit/EventsEditView';
-import { AttractionsEditView } from './Views/AttractionsEdit';
+import { AttractionsEditView } from './Views/AttractionsEdit/AttractionsEdit';
 import ProfilePage from './ProfilePage'; 
 
 
@@ -47,6 +47,8 @@ function App() {
                 <Route exact path="/your-profile" element={<ProfilePage />} /> 
                 <Route exact path='/employee/login' element={<EmployeeLogin />} />
                 <Route exact path='/employee/signup' element={<EmployeeSignup />} />
+                <Route exact path='/attractions/edit' element={<AttractionsEditView/>} />
+                <Route exact path='/events/edit' element={<EventsEditView/>} />
                 <Route path='/employee/access/*' element={<EmployeeDashboard />}>
                 <Route path="" element={<WhoAmI/>} />
                 <Route path="events" element={<EventsEditView/>} />

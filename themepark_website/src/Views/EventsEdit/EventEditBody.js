@@ -5,7 +5,7 @@ import { EventConfirmModal } from "./EventConfirmModal";
 import { AccordionContext, Button } from "react-bootstrap";
 
 export function EventEditBody({event, eventKey}) {
-    const { applyEventToFormState, formEditState, isFormStateValid, refreshAll } = useContext(EventsEditContext);
+    const { applyEventToFormState, formEditState, setFormEditState, isFormStateValid, refreshAll } = useContext(EventsEditContext);
     const [ confirmDelete, setConfirmDelete ] = useState(false);
     const { activeEventKey } = useContext(AccordionContext);
     
@@ -28,7 +28,7 @@ export function EventEditBody({event, eventKey}) {
 
     return (
         <div>
-            <EventForm/>
+            <EventForm formState={formEditState} setFormState={setFormEditState}/>
             <hr/>
             <div className="d-flex justify-content-left">
                 <Button disabled={!isFormStateValid} onClick={handleSubmit}>

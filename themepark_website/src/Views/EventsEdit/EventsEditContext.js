@@ -104,7 +104,9 @@ export function EventsEditContextProvider({children}) {
     const [activeCategory, setActiveCategory] = useState(-1);
     const [displayEvents, setDisplayEvents] = useState([]);
     const [formEditState, setFormEditState] = useState(defaultFormState);
+    const [newEventEditState, setNewEventEditState] = useState(defaultFormState);
     const [isFormStateValid, setIsFormStateValid] = useState(false);
+    const [isNewEventValid, setIsNewEventValid] = useState(false);
 
     const refreshEvents = useCallback(() => {
         api.get("/events")
@@ -129,6 +131,13 @@ export function EventsEditContextProvider({children}) {
     
     const resetFormEditState = useCallback(() => {
         setFormEditState({
+            ...defaultFormState,
+            ...formatEventTime24H(defaultFormState.EventDateTime, defaultFormState.EventDuration)
+        });
+    }, []);
+
+    const resetNewEventEditState = useCallback(() => {
+        setNewEventEditState({
             ...defaultFormState,
             ...formatEventTime24H(defaultFormState.EventDateTime, defaultFormState.EventDuration)
         });
@@ -161,6 +170,10 @@ export function EventsEditContextProvider({children}) {
         setIsFormStateValid(Object.entries(formEditState).every(([k, v]) => k === "Deleted"? true : Boolean(v)));
     }, [formEditState]);
 
+    useEffect(() => {
+        setIsNewEventValid(Object.entries(newEventEditState).every(([k, v]) => k === "Deleted"? true : Boolean(v)));
+    }, [newEventEditState]);
+
     return (
         <EventsEditContext.Provider value={{
             events, 
@@ -176,8 +189,12 @@ export function EventsEditContextProvider({children}) {
             formEditState,
             setFormEditState,
             resetFormEditState,
+            resetNewEventEditState,
             applyEventToFormState,
-            isFormStateValid
+            isFormStateValid,
+            isNewEventValid,
+            newEventEditState,
+            setNewEventEditState
         }}>
             {children}
         </EventsEditContext.Provider>
