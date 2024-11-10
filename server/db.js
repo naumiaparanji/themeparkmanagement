@@ -11,6 +11,13 @@ const db = require("knex")({
   },
 });
 
+module.exports = {
+  themeparkDB: db,
+  getUser: async (email) => {
+      return await db('CUSTOMER').where('Email', email).andWhere('Deleted', 0).first();
+  }
+};
+
 // Predefined queries
 async function getUser(userEmail, isEmployee = false) {
   if (!userEmail) return;
