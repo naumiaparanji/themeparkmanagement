@@ -45,7 +45,7 @@ const Navbar = () => {
             </section>
             <section className="navbar-links">
                 {isLoggedIn && 
-                    (<Link to="/your-profile" style={linkStyle}>Your Profile</Link>)
+                    (<Link to="/your-profile" style={linkStyle}>My Profile</Link>)
                 }
                   </section>
             
