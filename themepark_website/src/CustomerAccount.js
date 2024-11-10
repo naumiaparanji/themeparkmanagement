@@ -8,13 +8,23 @@ export default class CustomerAccount extends React.Component {
         super(props);
         this.state = {
             username: null, 
-            error: null,
             email: null, // To store the user's email for logout
+            error: null,
+            loggedIn: false, // Track if the user is logged in
         };
     }
 
     componentDidMount() {
-        this.GetUsername();
+        this.checkLoginStatus();  // Check if user is logged in first
+        this.GetUsername();  // Then fetch the username if logged in
+    }
+
+    // Check if the user is logged in by checking for authToken
+    checkLoginStatus() {
+        const token = localStorage.getItem('authToken');
+        if (token) {
+            this.setState({ loggedIn: true });  // User is logged in
+        }
     }
 
     // Fetch the user's username and email
@@ -25,7 +35,10 @@ export default class CustomerAccount extends React.Component {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                this.setState({ username: data.user.username, email: data.user.email }); // Assuming email is available in the response
+                this.setState({ 
+                    username: data.user.username,
+                    email: data.user.email
+                });
             } else {
                 this.setState({ error: data.error });
             }
@@ -52,6 +65,7 @@ export default class CustomerAccount extends React.Component {
         .then(() => {
             // Clear auth token and redirect to login page
             localStorage.removeItem('authToken');  // Clear the auth token
+            this.setState({ loggedIn: false, username: null, email: null });  // Reset state
             window.location.pathname = '/login';  // Redirect to login page
         })
         .catch((error) => {
@@ -60,17 +74,20 @@ export default class CustomerAccount extends React.Component {
     }
 
     render() {
-        const { username, error } = this.state;
+        const { loggedIn, username, error } = this.state;
 
         return (
             <div className="customer-account">
                 {error ? (
                     <p>{error}</p>
+                ) : loggedIn ? (
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <p style={{ marginRight: '5px', marginLeft: '-10px' }}>Welcome!</p>
+                        <button onClick={this.handleLogout}>Logout</button>
+                    </div>
                 ) : (
                     <div>
-                        <p>Welcome, {username}</p>
-                        {/* Add the logout button */}
-                        <button onClick={this.handleLogout}>Logout</button>
+                        <p>Log in</p>
                     </div>
                 )}
             </div>
