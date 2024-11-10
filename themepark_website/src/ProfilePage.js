@@ -13,7 +13,7 @@ const ProfilePage = () => {
 
   return (
     <div className="profile-container">
-      <h1>Your Profile</h1>
+      <h1>My Profile</h1>
       <div className="profile-info">
         <h3>{profileData.name}</h3>
         <p>Email: {profileData.email}</p>
