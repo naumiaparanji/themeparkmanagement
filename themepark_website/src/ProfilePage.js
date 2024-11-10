@@ -1,87 +1,52 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { api } from './App'; // Import the api instance from App.js
+import { api } from './App'; // Assuming `api` is your Axios instance
 
 const ProfilePage = () => {
-  const [customerData, setCustomerData] = useState(null);
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
+    const [profile, setProfile] = useState(null);
+    const [tickets, setTickets] = useState([]);
+    const [error, setError] = useState(null);
 
-  useEffect(() => {
-    // Check if user is logged in by verifying if the auth token exists
-    const authToken = localStorage.getItem('authToken');
-    if (!authToken) {
-      navigate('/login'); // Redirect to login if no auth token
-      return;
-    }
-  
-    // Fetch customer profile data using Axios
-    api.get('/customer/info', {
-      headers: {
-        'Authorization': `Bearer ${authToken}`, // Send the token in the header
-      },
-    })
-      .then((response) => {
-        console.log('API Response:', response); // Log the full response to debug
-  
-        if (response.data.success) {
-          setCustomerData(response.data.user); // Assuming 'data.user' contains the profile info
-        } else {
-          setError('Failed to fetch user data');
-        }
-      })
-      .catch((err) => {
-        console.error('Error fetching profile data:', err);
-        setError(`Error fetching data: ${err.message}`);
-      });
-  }, [navigate]);
-  
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const profileResponse = await api.get('/api/customer/info');
+                setProfile(profileResponse.data.user);
 
-  // Default data structure if no customer data is available
-  const profileData = customerData || {
-    name: 'Guest',
-    email: 'No email provided',
-    tickets: [], // Ensure tickets is always an array
-  };
+                const ticketsResponse = await api.get('/api/customer/tickets');
+                setTickets(ticketsResponse.data.tickets);
+            } catch (err) {
+                setError('Failed to fetch data');
+                console.error(err);
+            }
+        };
 
-  // Ensure tickets is an array before using length
-  const tickets = Array.isArray(profileData.tickets) ? profileData.tickets : [];
+        fetchProfile();
+    }, []);
 
-  return (
-    <div className="profile-container">
-      <h1>My Profile</h1>
-      {error ? (
-        <p>{error}</p> // Display error message if there was an issue
-      ) : (
+    return (
         <div>
-          <div className="profile-info">
-            <h3>{profileData.name}</h3>
-            <p>Email: {profileData.email}</p>
-          </div>
-
-          <div className="profile-tickets">
-            <h2 className="profheading">Your Tickets/Events</h2>
-            {tickets.length > 0 ? (
-              <ul>
-                {tickets.map((ticket, index) => (
-                  <li key={index}>
-                    <div>
-                      <strong>{ticket.event}</strong>
-                    </div>
-                    <div>
-                      Expiry Date: {new Date(ticket.expiry).toLocaleDateString()}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>You have no tickets or events.</p>
+            <h1>Profile Page</h1>
+            {error && <p>{error}</p>}
+            {profile && (
+                <div>
+                    <h2>{profile.name}</h2>
+                    <p>Email: {profile.email}</p>
+                </div>
             )}
-          </div>
+            <h2>Your Tickets</h2>
+            {tickets.length > 0 ? (
+                <ul>
+                    {tickets.map(ticket => (
+                        <li key={ticket.EventTicketID}>
+                            Event ID: {ticket.EventID}, Bought: {ticket.Bought}, Expires: {ticket.ExpirationDate}
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p>No tickets available</p>
+            )}
         </div>
-      )}
-    </div>
-  );
+    );
 };
 
 export default ProfilePage;
