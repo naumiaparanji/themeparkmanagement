@@ -4,17 +4,17 @@ import { Modal, Button } from "react-bootstrap";
 import { EventForm } from "./EventForm";
 
 export function NewEventModal({show, onHide}) {
-    const {resetFormEditState, isFormStateValid, refreshEvents, refreshCategories, formEditState} = useContext(EventsEditContext);
+    const {resetNewEventEditState, isNewEventValid, refreshEvents, refreshCategories, newEventEditState, setNewEventEditState } = useContext(EventsEditContext);
     const [isActivated, setIsActivated] = useState(false);
 
     useEffect(() => {
         if(show && !isActivated) {
             setIsActivated(true);
-            resetFormEditState();
+            resetNewEventEditState();
         } else if (!show && isActivated) {
             setIsActivated(false);
         }
-    }, [show, isActivated, resetFormEditState]);
+    }, [show, isActivated, resetNewEventEditState]);
     
     const successAction = useCallback(() => {
         refreshEvents();
@@ -23,17 +23,17 @@ export function NewEventModal({show, onHide}) {
     }, [refreshEvents, refreshCategories, onHide]);
 
     const handleSubmit = useCallback(() => {
-        addEvent(formEditState, successAction, (e) => console.log(e));
-    }, [formEditState, successAction]);
+        addEvent(newEventEditState, successAction, (e) => console.log(e));
+    }, [newEventEditState, successAction]);
 
     return (
         <Modal show={show} onHide={onHide}>
             <Modal.Header closeButton>New Event</Modal.Header>
             <Modal.Body>
-            <EventForm/>
+            <EventForm formState={newEventEditState} setFormState={setNewEventEditState}/>
             </Modal.Body>
             <Modal.Footer>
-                <Button disabled={!isFormStateValid} onClick={handleSubmit}>Save</Button>
+                <Button disabled={!isNewEventValid} onClick={handleSubmit}>Save</Button>
             </Modal.Footer>
         </Modal>
     );
