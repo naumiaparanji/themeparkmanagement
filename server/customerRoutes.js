@@ -9,6 +9,39 @@ const customerAuth = auth.authenticate(async (username) => {
     return user.Password;
 });
 
+const checkSessionForCustomer = async (req, res, next) => {
+    if (req.session.user === undefined) {
+        return res.status(401).json({success: false, error: 'NotAuthorized'});
+    }
+    return next();
+}
+
+const getRequestingCustomer = async (req, res, next) => {
+    if (req.session.user) {
+        try {
+            req.requestingCustomer = await db.getUser(req.session.user);
+        } catch (e) {
+            console.error(e);
+            return res.status(500).json({success: false, error: "SQLError"});
+        }
+    }
+    if (!req.requestingCustomer) return res.status(500).json({success: false, error: 'UserNotFound'});
+    return next();
+}
+
+const returnCustomerData = (req, res, next) => {
+    if (!req.requestingCustomer)
+        throw new Error("req.requestingEmployee does not exist");
+    return res.status(200).json({success: true, 
+        firstName: req.requestingCustomer.FirstName,
+        lastName: req.requestingCustomer.LastName,
+        dob: req.requestingCustomer.DOB,
+        address: req.requestingCustomer.Address,
+        email: req.requestingCustomer.Email,
+        created: req.requestingCustomer.Created
+    });
+}
+
 // App routes
 module.exports = (app) => {
 
@@ -37,30 +70,11 @@ module.exports = (app) => {
         }
     });
 
-    app.get("/customer/info", async (req, res) => {
-        if (!req.session.user) {
-            return res.status(401).json({ success: false, error: 'NotAuthorized' });
-        }
-    
-        try {
-            // Query the database for the user's full profile
-            const user = await db.themeparkDB('CUSTOMER')
-                .where('Email', req.session.user) // Assuming session stores user email
-                .andWhere('Deleted', 0) // Optional: filter out soft-deleted users
-                .first(); // Retrieve a single user
-    
-            if (!user) {
-                return res.status(404).json({ success: false, error: 'UserNotFound' });
-            }
-    
-            res.status(200).json({ success: true, user });
-        } catch (err) {
-            console.error('Error fetching user info:', err);
-            res.status(500).json({ success: false, error: 'ServerError' });
-        }
-    });
-    
-    
+    app.get("/customer/info", 
+        checkSessionForCustomer,
+        getRequestingCustomer,
+        returnCustomerData
+    );
 
     app.post("/customer/register", async (req, res) => {
         if (!req.body.username || !req.body.password) {
@@ -90,11 +104,9 @@ module.exports = (app) => {
         res.status(200).json({success: true});
     });
 
-    app.post("/customer/logout", async (req, res) => {
-        if (req.session.user == undefined) {
-            res.status(401).json({error: 'NotAuthorized'});
-            return;
-        }
+    app.post("/customer/logout", 
+        checkSessionForCustomer,
+        async (req, res) => {
         if (req.body.user != req.session.user) {
             // This check is to prevent unintended state changes to the session store. 
             // The client must have clear intent when requesting a logout.
@@ -115,6 +127,26 @@ module.exports = (app) => {
             });
         });
         res.status(200).json({success: true});
+    });
+
+    app.get('/customer/tickets', 
+        checkSessionForCustomer,
+        getRequestingCustomer,
+        async (req, res) => {
+        db.themeparkDB('EVENT_TICKET')
+        .where('CustomerID', req.requestingCustomer.CustomerID)
+        .where('Deleted', 0)
+        .then((tickets) => {
+            if (tickets.length > 0) {
+                res.status(200).json({ success: true, tickets });
+            } else {
+                res.status(404).json({ success: false, error: 'NoTicketsFound' });
+            }
+        })
+        .catch((err) => {
+            console.error('Error fetching tickets:', err);
+            res.status(500).json({ success: false, error: 'SQLError' });
+        })
     });
 
 };

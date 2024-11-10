@@ -120,7 +120,6 @@ require('./restaurantRoutes')(app);
 require('./concessionRoutes')(app);
 require('./giftshopRoutes')(app);
 require('./miscRoutes')(app);
-require('./profilePageRoutes')(app); 
 
     http.createServer(options, app).listen(port, () => {
         console.log(`Listening on port ${port}`);
