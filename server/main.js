@@ -118,6 +118,7 @@ setInterval(async () => {
     require('./runsRoutes')(app);
     require('./restaurantRoutes')(app);
     require('./concessionRoutes')(app);
+    require('./giftshopRoutes')(app);
     
 
     http.createServer(options, app).listen(port, () => {
