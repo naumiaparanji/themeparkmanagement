@@ -9,24 +9,10 @@ const {
 // App routes
 module.exports = (app) => {
   app.get(
-    "/maintenance/data/all/:part",
-    checkSessionForEmployee,
-    getRequestingEmployee,
+    "/maintenance/data/allCategories",
     async (req, res) => {
-      if (req.requestingEmployee.AccessLevel === "EMP") {
-        res.status(403).json({ success: false, error: "Restricted" });
-        return;
-      }
-      if (
-        !req.params.part ||
-        isNaN(req.params.part) ||
-        Number(req.params.part) < 0
-      ) {
-        res.status(400).json({ success: false, error: "BadParams" });
-        return;
-      }
       const categoriesData = await db
-        .getUsers(50, Number(req.params.part), true)
+        .getRidesCategories()
         .catch((e) => {
           console.log(e);
           res.status(500).json({ success: false, error: "SQLError" });
@@ -35,6 +21,23 @@ module.exports = (app) => {
       res.status(200).json({
         success: true,
         data: categoriesData
+      });
+    }
+  );
+
+  app.get(
+    "/maintenance/data/allRideNames",
+    async (req, res) => {
+      const rideNameData = await db
+        .getRidesNames()
+        .catch((e) => {
+          console.log(e);
+          res.status(500).json({ success: false, error: "SQLError" });
+          return;
+        });
+      res.status(200).json({
+        success: true,
+        data: rideNameData
       });
     }
   );
@@ -54,6 +57,8 @@ module.exports = (app) => {
     }
   );
 
+
+
   app.post("/maintenance/input", async (req, res) => {
     const rideData = await db.getRides().catch((e) => {
       console.log(e);
@@ -64,6 +69,7 @@ module.exports = (app) => {
     const ride = rideData.find(
       (element) => element.RideName === req.body.rideName
     );
+    
     if (ride === undefined) {
       res.status(503).json({ success: false, error: "BadRide" });
       return;

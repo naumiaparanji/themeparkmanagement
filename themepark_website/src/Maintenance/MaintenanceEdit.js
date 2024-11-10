@@ -15,30 +15,54 @@ export function MaintenanceDataBox(props) {
   const [searchRideId, setSearchRideId] = useState("");
   const [searchCategory, setSearchCategory] = useState("");
   const [categories, setCategories] = useState([]);
+  const [rideNames, setRideNames] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
       try {
         let categoryItems = [];
-        let data = await api.get("/maintenance/data/all/0");
-        console.log("made past request")
-        for (let i = 0; i <= this.props.maxValue; i++) {
-          categoryItems.push(
-            <option key={data[i]} value={data[i]}>
-              {data[i]}
-            </option>
-          );
-        }
+        let data = await api.get("/maintenance/data/allCategories").then((data) =>{
+          console.log(data["data"]["data"].length)
+          let arrayData = data["data"]["data"]
+          console.log(arrayData) 
+          for (let i = 0; i < arrayData.length; i++) {
+            categoryItems.push(
+              <option key={arrayData[i].Category} value={arrayData[i].Category}>
+                {arrayData[i].Category}
+              </option>
+            );
+          }
+          setCategories([{key: "Select category", value:'-1'}, ...categoryItems])
+        });
 
-        setCategories([{key: "Select category", value:''}, ...categoryItems])
+        let rideNameItems = [];
+        let nameData = await api.get("/maintenance/data/allRideNames").then((nameData) =>{
+          console.log(nameData["data"]["data"].length)
+          let nameArrayData = nameData["data"]["data"]
+          console.log(nameArrayData)
+          for (let i = 0; i < nameArrayData.length; i++) {
+            rideNameItems.push(
+              <option key={nameArrayData[i].RideName} value={nameArrayData[i].RideName}>
+                {nameArrayData[i].RideName}
+              </option>
+            );
+          }
+          setRideNames([{key: "Select Ride Name", value:'-1'}, ...rideNameItems])
+        });
+        console.log("made past request")
+        
+
+      
 
         // const response = await api.get(props.apiPath || "/maintenance/data");
         // setMaintenanceData(response.data);
         // setFilteredData(response.data);
       } catch (error) {
+        console.log(error)
         if (error.response) {
           setMessage("Failed to load data: Server error");
         } else if (error.request) {
+          console.log(error.request);
           setMessage("Failed to connect to server");
         } else {
           console.log(error);
@@ -58,7 +82,7 @@ export function MaintenanceDataBox(props) {
         ? item.rideId.toString().includes(searchRideId)
         : true;
       const matchesRideName = searchRideName
-        ? item.rideName.toLowerCase().includes(searchRideName.toLowerCase())
+        ? item.rideName === searchRideName
         : true;
       const matchesCategory = searchCategory
         ? item.category === searchCategory
@@ -169,7 +193,7 @@ export function MaintenanceDataBox(props) {
           />
         </label>
 
-        <label style={{ flex: "1 1 100px" }}>
+        {/* <label style={{ flex: "1 1 100px" }}>
           Ride Name:
           <input
             type="text"
@@ -182,6 +206,23 @@ export function MaintenanceDataBox(props) {
               width: "100%",
             }}
           />
+        </label> */}
+
+        <label style={{ flex: "1 1 100px" }}>
+          Ride Name:
+          <select
+            value={searchRideName}
+            onChange={(e) => setSearchRideName(e.target.value)}
+            style={{
+              padding: "8px",
+              borderRadius: "4px",
+              border: "1px solid #ccc",
+              width: "100%",
+              marginTop: "4px",
+            }}
+          >
+            {rideNames.map((option) => {return (<option key={option.value} value={option.value}>{option.key}</option>)})}
+          </select>
         </label>
 
         <label style={{ flex: "1 1 100px" }}>

@@ -50,10 +50,15 @@ async function getRides(){
     return await db("RIDES").where("Deleted", 0).orderBy("RideID");
 }
 
-async function getRidesCategories(limit, offsetCount){
-  let query = db("RIDES").select("Category").where("Deleted", 0).orderedBy("Category").limit(limit);
-  const offset = limit * offsetCount;
-  if (offset > 0) query = query.offset(offset);
+async function getRidesNames() {
+  let query = db("RIDES").select("RideName").where("Deleted", 0).orderBy("RideName").distinct();
+  return await query;
+}
+
+async function getRidesCategories(){
+  let query = db("RIDES").select("Category").where("Deleted", 0).orderBy("Category").distinct();
+  // const offset = limit * offsetCount;
+  // if (offset > 0) query = query.offset(offset);
   return await query;
 }
 
@@ -111,6 +116,7 @@ module.exports = {
   setUser,
   getUsers,
   getRides,
+  getRidesNames,
   getRidesCategories,
   getEvents,
   getEventCategories,
