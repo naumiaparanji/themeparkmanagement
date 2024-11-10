@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { api } from './App'; // Assuming `api` is your Axios instance
+import axios from 'axios'; // Import Axios directly if needed
+import { api } from './App'; // Assuming `api` is your configured Axios instance
 
 const ProfilePage = () => {
     const [profile, setProfile] = useState(null);
@@ -7,20 +8,22 @@ const ProfilePage = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchProfile = async () => {
+        const fetchProfileAndTickets = async () => {
             try {
-                const profileResponse = await api.get('/api/customer/info');
+                // Fetch customer profile
+                const profileResponse = await api.get('/customer/info');
                 setProfile(profileResponse.data.user);
 
-                const ticketsResponse = await api.get('/api/customer/tickets');
-                setTickets(ticketsResponse.data.tickets);
+                // Fetch customer tickets
+               // const ticketsResponse = await api.get('/customer/tickets');
+                //setTickets(ticketsResponse.data.tickets);
             } catch (err) {
-                setError('Failed to fetch data');
-                console.error(err);
+                setError('Failed to fetch data. Please try again.');
+                console.error(err); // Log the full error for debugging
             }
         };
 
-        fetchProfile();
+        fetchProfileAndTickets();
     }, []);
 
     return (
@@ -38,7 +41,8 @@ const ProfilePage = () => {
                 <ul>
                     {tickets.map(ticket => (
                         <li key={ticket.EventTicketID}>
-                            Event ID: {ticket.EventID}, Bought: {ticket.Bought}, Expires: {ticket.ExpirationDate}
+                            Event ID: {ticket.EventID}, Bought: {new Date(ticket.Bought).toLocaleDateString()}, 
+                            Expires: {new Date(ticket.ExpirationDate).toLocaleDateString()}
                         </li>
                     ))}
                 </ul>

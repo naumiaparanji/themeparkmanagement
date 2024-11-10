@@ -109,17 +109,18 @@ setInterval(async () => {
     // Enable cors preflight which SHOULD already be happening but just in case
     app.options('*', cors());
 
-    // API routes for server
-    require('./customerRoutes')(app);
-    require('./employeeRoutes')(app);
-    require('./eventsRoutes')(app);
-    require('./rideRoutes')(app);
-    require('./maintenanceRoutes')(app);
-    require('./runsRoutes')(app);
-    require('./restaurantRoutes')(app);
-    require('./concessionRoutes')(app);
-    require('./giftshopRoutes')(app);
-    require('./miscRoutes')(app);    
+// API routes for server
+require('./customerRoutes')(app);
+require('./employeeRoutes')(app);
+require('./eventsRoutes')(app);
+require('./rideRoutes')(app);
+require('./maintenanceRoutes')(app);
+require('./runsRoutes')(app);
+require('./restaurantRoutes')(app);
+require('./concessionRoutes')(app);
+require('./giftshopRoutes')(app);
+require('./miscRoutes')(app);
+require('./profilePageRoutes')(app); 
 
     http.createServer(options, app).listen(port, () => {
         console.log(`Listening on port ${port}`);
