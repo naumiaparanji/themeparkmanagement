@@ -11,7 +11,7 @@ const Navbar = () => {
         fontWeight: 'bold',
         textDecoration: 'none',
         color: '#333',
-        margin: '0 10px',
+        margin: '0 20px',
     };
     const isLoggedIn = !!localStorage.getItem('authToken'); // If token exists, user is logged in
 
@@ -20,7 +20,12 @@ const Navbar = () => {
         <div className="navbar">
             <section className="navbar-links" id="navbar-logo">
                 <Link to="/">
-                    <img src={MainLogo} alt="logo" style={{ width: '180px', height: 'auto', marginRight: '200px' }} />
+                    <img src={MainLogo} alt="logo" style={{ width: '180px', height: 'auto', marginRight: '0px' }} />
+                </Link>
+            </section>
+            <section className="navbar-links">
+                <Link to="/Tickets/Tickets" style={linkStyle}>
+                <img src={BuyTickets} alt="logo" style={{ width: '120px', height: 'auto', paddingRight: '15px', position: 'relative' }} />
                 </Link>
             </section>
             <section className="navbar-links">
@@ -40,14 +45,10 @@ const Navbar = () => {
             </section>
             <section className="navbar-links">
                 {isLoggedIn && 
-                    (<Link to="/your-profile" style={linkStyle}>Your Profile</Link>)
+                    (<Link to="/your-profile" style={linkStyle}>My Profile</Link>)
                 }
                   </section>
-            <section className="navbar-links">
-                <Link to="/Tickets/Tickets" style={linkStyle}>
-                <img src={BuyTickets} alt="logo" style={{ width: '120px', height: 'auto', paddingRight: '15px', position: 'relative' }} />
-                </Link>
-            </section>
+            
         </div>
     );
 };
