@@ -50,7 +50,7 @@ module.exports = (app) => {
     app.get('/events/categories', (req, res) => {
         db.getEventCategories()
         .then((items) => {
-            res.status(200).json({success: true, categories: items});
+            res.status(200).json({success: true, categories: items.map((cat) => cat.EventType)});
         })
         .catch((e) => {
             console.error(e);
@@ -90,6 +90,7 @@ module.exports = (app) => {
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
         (req, res) => {
+            req.body.EventDateTime = new Date(req.body.EventDateTime);
             db.themeparkDB("EVENTS").insert((req.body))
             .then(() => res.status(200).json({success: true}))
             .catch((e) => {
