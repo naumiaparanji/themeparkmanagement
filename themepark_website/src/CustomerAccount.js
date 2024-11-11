@@ -2,6 +2,8 @@ import React from "react";
 import './App.css';
 import { apiUrl } from "./App";
 import { useNavigate } from "react-router-dom";
+import { api } from './App'; // Ensure the path is correct
+
 
 export default class CustomerAccount extends React.Component {
     constructor(props) {
@@ -47,30 +49,19 @@ export default class CustomerAccount extends React.Component {
     }
 
     handleLogout = () => {
-        fetch(apiUrl + '/customer/logout', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ user: this.state.username }), // Username from state
-            credentials: 'include', // Include session cookies for logout
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.success) {
-                localStorage.removeItem('authToken');
+        const { email } = this.state; // Use email from state
+        api.post("/customer/logout", { user: email }) // Use api.post as required
+            .then(() => {
                 this.setState({ loggedIn: false, username: null, email: null });
-                window.location.pathname = '/login';
-            } else {
-                console.error('Logout failed:', data.error);
-                this.setState({ error: 'Logout failed. Please try again.' });
-            }
-        })
-        .catch((error) => {
-            console.error('Error during logout:', error);
-            this.setState({ error: 'An error occurred while logging out.' });
-        });
+                localStorage.removeItem('authToken');
+                this.props.navigate("/customer/login"); // Use navigate to redirect
+            })
+            .catch((e) => {
+                console.error(e);
+                this.setState({ error: 'An error occurred while logging out.' });
+            });
     };
+    
 
     render() {
         const { loggedIn, username, error } = this.state;
