@@ -35,7 +35,7 @@ export default class CustomerAccount extends React.Component {
                 });
             } else {
                 this.setState({ 
-                    error: 'You are not logged in.',
+                    //error: 'You are not logged in.',
                     loggedIn: false 
                 });
             }

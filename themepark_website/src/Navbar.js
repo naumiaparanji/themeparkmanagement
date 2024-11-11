@@ -1,11 +1,25 @@
-// Navbar.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import MainLogo from './images/flagslogo.png'; 
 import BuyTickets from './images/BuyTickets.png'; 
+import { api } from './App'; // Import API for server-side check
 
 const Navbar = () => {
-    // Common style for navbar links
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        // Check session status on mount
+        api.get('/customer/info', { withCredentials: true })
+            .then(response => {
+                if (response.data.success) {
+                    setIsLoggedIn(true);
+                } else {
+                    setIsLoggedIn(false);
+                }
+            })
+            .catch(() => setIsLoggedIn(false)); // Ensure safe fallback
+    }, []);
+
     const linkStyle = {
         fontSize: '20px',
         fontWeight: 'bold',
@@ -13,8 +27,6 @@ const Navbar = () => {
         color: '#333',
         margin: '0 20px',
     };
-    const isLoggedIn = !!localStorage.getItem('authToken'); // If token exists, user is logged in
-
 
     return (
         <div className="navbar">
@@ -25,7 +37,7 @@ const Navbar = () => {
             </section>
             <section className="navbar-links">
                 <Link to="/Tickets/Tickets" style={linkStyle}>
-                <img src={BuyTickets} alt="logo" style={{ width: '120px', height: 'auto', paddingRight: '15px', position: 'relative' }} />
+                    <img src={BuyTickets} alt="logo" style={{ width: '120px', height: 'auto', paddingRight: '15px', position: 'relative' }} />
                 </Link>
             </section>
             <section className="navbar-links">
@@ -47,8 +59,7 @@ const Navbar = () => {
                 {isLoggedIn && 
                     (<Link to="/your-profile" style={linkStyle}>My Profile</Link>)
                 }
-                  </section>
-            
+            </section>
         </div>
     );
 };
