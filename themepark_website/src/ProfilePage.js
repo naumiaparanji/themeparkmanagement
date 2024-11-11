@@ -1,35 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import { api } from './App'; // Assuming `api` is your Axios instance
+import React, { useState, useContext, useCallback, useEffect } from 'react';
+import { ApiContext, ApiContextProvider } from './ApiContext';
+import { api } from './App';
 
-const ProfilePage = () => {
-    const [profile, setProfile] = useState(null);
-    const [error, setError] = useState(null);
+const ProfileDisplay = () => {
+    const { data } = useContext(ApiContext);
+    
+    // This is what you'd need to get ticket info in a react component.
+    // ----------------------------------------------------------------
+    const [ tickets, setTickets ] = useState([]);
+
+    const refreshTickets = useCallback(() => {
+        api.get("/customer/tickets")
+        .then((response) => {
+            setTickets(response.data.tickets);
+        })
+        .catch((e) => console.log(e));
+    }, []);
 
     useEffect(() => {
-        const fetchProfile = async () => {
-            try {
-                const response = await api.get('/customer/info');
-                setProfile(response.data.user);
-            } catch (err) {
-                setError('Failed to fetch profile data');
-                console.error(err);
-            }
-        };
-
-        fetchProfile();
+        refreshTickets();
     }, []);
+    // ----------------------------------------------------------------
+    // Copy it anywhere you need ticket info for the current customer session
 
     return (
         <div>
             <h1>Profile Page</h1>
-            {error && <p>{error}</p>}
-            {profile && (
+            {data && (
                 <div>
-                    <h2>{profile.FirstName} {profile.LastName}</h2>
-                    <p>Email: {profile.Email}</p>
+                    <h2>{data.firstName} {data.lastName}</h2>
+                    <p>Email: {data.email}</p>
                 </div>
             )}
+            { /* Remove this part when you figure out what you want to do */ }
+            <h2>Event Tickets</h2>
+            {tickets && tickets.map((ticket, i) => (
+                <div key={i}>
+                    {ticket.EventTicketID} {ticket.EventID} {ticket.Bought} {ticket.ExpirationDate}
+                </div>
+            ))}
         </div>
+    );
+};
+
+const ProfilePage = () => {
+    const handleInfoFailureRedirect = useCallback(() => {
+        window.location.pathname = "/login";
+    }, []);
+
+    return (
+        <ApiContextProvider
+            apiPath="/customer/info"
+            apiFailureAction={handleInfoFailureRedirect}
+            blockRendering={true}
+        >
+            <ProfileDisplay/>
+        </ApiContextProvider>
     );
 };
 
