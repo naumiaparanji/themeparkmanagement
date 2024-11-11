@@ -20,45 +20,59 @@ export function MaintenanceDataBox(props) {
   useEffect(() => {
     async function fetchData() {
       try {
-        let categoryItems = [];
-        let data = await api.get("/maintenance/data/allCategories").then((data) =>{
-          console.log(data["data"]["data"].length)
-          let arrayData = data["data"]["data"]
-          console.log(arrayData) 
-          for (let i = 0; i < arrayData.length; i++) {
-            categoryItems.push(
-              <option key={arrayData[i].Category} value={arrayData[i].Category}>
-                {arrayData[i].Category}
-              </option>
-            );
-          }
-          setCategories([{key: "Select category", value:'-1'}, ...categoryItems])
-        });
+        let maintenanceData = await api
+          .get("/maintenance/data/searchReturn")
+          .then((maintenanceData) => {
+            let maintenanceTicketItems = [];
+            let maintenanceArray = maintenanceData["data"]["data"];
+            console.log(maintenanceArray);
+
+            for (let i = 0; i < maintenanceArray.length; i++) {
+              let ticket = {
+                maintenanceId: maintenanceArray[i].MaintenanceID,
+                rideId: maintenanceArray[i].RideID,
+                rideName: maintenanceArray[i].RideName,
+                category: maintenanceArray[i].Category,
+                date: maintenanceArray[i].Date,
+                description: maintenanceArray[i].Description,
+              };
+              maintenanceTicketItems.push(ticket);
+            }
+            setMaintenanceData(maintenanceTicketItems);
+
+            setFilteredData(maintenanceTicketItems);
+            console.log("ticket");
+            console.log(maintenanceTicketItems);
+            console.log("filter");
+            console.log(filteredData);
+          });
+        console.log("made past request");
 
         let rideNameItems = [];
-        let nameData = await api.get("/maintenance/data/allRideNames").then((nameData) =>{
-          console.log(nameData["data"]["data"].length)
-          let nameArrayData = nameData["data"]["data"]
-          console.log(nameArrayData)
-          for (let i = 0; i < nameArrayData.length; i++) {
-            rideNameItems.push(
-              <option key={nameArrayData[i].RideName} value={nameArrayData[i].RideName}>
-                {nameArrayData[i].RideName}
-              </option>
-            );
-          }
-          setRideNames([{key: "Select Ride Name", value:'-1'}, ...rideNameItems])
-        });
-        console.log("made past request")
-        
-
-      
-
-        // const response = await api.get(props.apiPath || "/maintenance/data");
-        // setMaintenanceData(response.data);
-        // setFilteredData(response.data);
+        let nameData = await api
+          .get("/maintenance/data/allRideNames")
+          .then((nameData) => {
+            console.log(nameData["data"]["data"].length);
+            let nameArrayData = nameData["data"]["data"];
+            console.log(nameArrayData);
+            for (let i = 0; i < nameArrayData.length; i++) {
+              rideNameItems.push(
+                <option
+                  key={nameArrayData[i].RideName}
+                  value={nameArrayData[i].RideName}
+                >
+                  {nameArrayData[i].RideName}
+                </option>
+              );
+            }
+            setRideNames([
+              { key: "Select Ride Name", value: "-1" },
+              ...rideNameItems,
+            ]);
+          });
+        console.log("made past request");
       } catch (error) {
-        console.log(error)
+        console.log(error);
         if (error.response) {
           setMessage("Failed to load data: Server error");
         } else if (error.request) {
@@ -74,36 +88,7 @@ export function MaintenanceDataBox(props) {
   }, [props.apiPath]);
 
   const handleSearch = () => {
-    const filtered = maintenanceData.filter((item) => {
-      const matchesMaintenanceId = searchMaintenanceId
-        ? item.maintenanceId.toString().includes(searchMaintenanceId)
-        : true;
-      const matchesRideId = searchRideId
-        ? item.rideId.toString().includes(searchRideId)
-        : true;
-      const matchesRideName = searchRideName
-        ? item.rideName === searchRideName
-        : true;
-      const matchesCategory = searchCategory
-        ? item.category === searchCategory
-        : true;
-      const matchesDateFrom = searchDateFrom
-        ? new Date(item.date) >= new Date(searchDateFrom)
-        : true;
-      const matchesDateTo = searchDateTo
-        ? new Date(item.date) <= new Date(searchDateTo)
-        : true;
-
-      return (
-        matchesMaintenanceId &&
-        matchesRideId &&
-        matchesRideName &&
-        matchesCategory &&
-        matchesDateFrom &&
-        matchesDateTo
-      );
-    });
-    setFilteredData(filtered);
+    
   };
 
   const handleEdit = (item) => {
@@ -116,7 +101,7 @@ export function MaintenanceDataBox(props) {
     );
     if (confirmDelete) {
       try {
-        await api.delete(`/maintenance/delete/${item.maintenanceId}`);
+        await api.delete(`/maintenance/data/delete/${item.maintenanceId}`);
         setMessage("Record deleted successfully");
         setMaintenanceData(
           maintenanceData.filter(
@@ -179,36 +164,6 @@ export function MaintenanceDataBox(props) {
         </label>
 
         <label style={{ flex: "1 1 100px" }}>
-          Ride ID:
-          <input
-            type="text"
-            value={searchRideId}
-            onChange={(e) => setSearchRideId(e.target.value)}
-            style={{
-              padding: "8px",
-              borderRadius: "4px",
-              border: "1px solid #ccc",
-              width: "100%",
-            }}
-          />
-        </label>
-
-        {/* <label style={{ flex: "1 1 100px" }}>
-          Ride Name:
-          <input
-            type="text"
-            value={searchRideName}
-            onChange={(e) => setSearchRideName(e.target.value)}
-            style={{
-              padding: "8px",
-              borderRadius: "4px",
-              border: "1px solid #ccc",
-              width: "100%",
-            }}
-          />
-        </label> */}
-
-        <label style={{ flex: "1 1 100px" }}>
           Ride Name:
           <select
             value={searchRideName}
@@ -221,26 +176,16 @@ export function MaintenanceDataBox(props) {
               marginTop: "4px",
             }}
           >
-            {rideNames.map((option) => {return (<option key={option.value} value={option.value}>{option.key}</option>)})}
+            {rideNames.map((option) => {
+              return (
+                <option key={option.value} value={option.value}>
+                  {option.key}
+                </option>
+              );
+            })}
           </select>
         </label>
 
-        <label style={{ flex: "1 1 100px" }}>
-          Category:
-          <select
-            value={searchCategory}
-            onChange={(e) => setSearchCategory(e.target.value)}
-            style={{
-              padding: "8px",
-              borderRadius: "4px",
-              border: "1px solid #ccc",
-              width: "100%",
-              marginTop: "4px",
-            }}
-          >
-            {categories.map((option) => {return (<option key={option.value} value={option.value}>{option.key}</option>)})}
-          </select>
-        </label>
       </div>
       <div>
         <label style={{ flex: "1 1 100px" }}>
@@ -286,63 +231,71 @@ export function MaintenanceDataBox(props) {
         </button>
       </div>
 
-      <table className="table table-striped">
-        <thead>
-          <tr>
-            <th>Maintenance ID</th>
-            <th>Ride ID</th>
-            <th>Ride Name</th>
-            <th>Category</th>
-            <th>Date</th>
-            <th>Description</th>
-            <th>Modify</th>
-            <th>Delete</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredData.length > 0 ? (
-            filteredData.map((item, index) => (
-              <tr key={index}>
-                <td>{item.maintenanceId}</td>
-                <td>{item.rideId}</td>
-                <td>{item.rideName}</td>
-                <td>{item.category}</td>
-                <td>{item.date}</td>
-                <td>{item.description}</td>
-                <td>
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => handleEdit(item)}
-                  >
-                    Edit
-                  </button>
-                </td>
-                <td>
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => handleDelete(item)}
-                  >
-                    Delete
-                  </button>
+      <div>
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              <th style={{ width: "12%" }}>Maintenance ID</th>
+              <th style={{ width: "10%" }}>Ride ID</th>
+              <th style={{ width: "15%" }}>Ride Name</th>
+              <th style={{ width: "10%" }}>Category</th>
+              <th style={{ width: "15%" }}>Date</th>
+              <th
+                style={{
+                  width: "20%",
+                  wordWrap: "break-word",
+                  whiteSpace: "normal",
+                }}
+              >
+                Description
+              </th>
+              <th style={{ width: "8%" }}>Modify</th>
+              <th style={{ width: "10%" }}>Delete</th>
+            </tr>
+          </thead>
+          <tbody>    
+            {filteredData.length > 0 ? (
+              filteredData.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.maintenanceId}</td>
+                  <td>{item.rideId}</td>
+                  <td>{item.rideName}</td>
+                  <td>{item.category}</td>
+                  <td>{item.date}</td>
+                  <td>{item.description}</td>
+                  <td>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => handleEdit(item)}
+                    >
+                      Edit
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => handleDelete(item)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="8" style={{ textAlign: "center" }}>
+                  No maintenance records found
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="8" style={{ textAlign: "center" }}>
-                No maintenance records found
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            )}
+          </tbody>
+        </table>
+      </div>
 
       <FancyButton text="Refresh" action={() => window.location.reload()} />
     </div>
   );
 }
-
-async function createCategoryItems() {}
 
 export function MaintenanceData(props) {
   return (

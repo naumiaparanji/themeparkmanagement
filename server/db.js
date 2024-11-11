@@ -95,6 +95,14 @@ async function setMaintenanceRequest(fields, isEmployee) {
   return result[0] != 0;
 }
 
+async function getMaintenanceTicket(){
+  return await db("MAINTENANCE").select().where("MAINTENANCE.Deleted", 0).orderBy("MaintenanceID").leftJoin('RIDES', 'MAINTENANCE.RideID', 'RIDES.RideID');
+}
+
+async function deleteMaintenanceTicket(maintenanceID) {
+  return await db("MAINTENANCE").update({deleted: 1}).where("MaintenanceID", maintenanceID);
+}
+
 async function setRuns(fields, isEmployee) {
     if (!isEmployee) return false;
 
@@ -128,6 +136,8 @@ module.exports = {
   getEvents,
   getEventCategories,
   setMaintenanceRequest,
+  getMaintenanceTicket,
+  deleteMaintenanceTicket,
   setRuns,
   registerForEvent
 };
