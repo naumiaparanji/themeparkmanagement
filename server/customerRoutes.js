@@ -129,6 +129,30 @@ module.exports = (app) => {
         res.status(200).json({success: true});
     });
 
+    app.post('/customer/registerEvent',
+        checkSessionForCustomer,
+        getRequestingCustomer,
+        async (req, res) => {
+            const { eventId } = req.body;
+            if (!eventId) {
+                return res.status(400).json({ success: false, error: 'MissingEventID' });
+            }
+    
+            try {
+                const result = await db.registerForEvent(eventId, req.requestingCustomer.CustomerID);
+                if (result) {
+                    return res.status(200).json({ success: true });
+                } else {
+                    return res.status(500).json({ success: false, error: 'RegistrationFailed' });
+                }
+            } catch (error) {
+                console.error('Error registering for event:', error);
+                return res.status(500).json({ success: false, error: 'SQLError' });
+            }
+        }
+    );
+    
+
     app.get('/customer/tickets', 
         checkSessionForCustomer,
         getRequestingCustomer,

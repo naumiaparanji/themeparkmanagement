@@ -1,44 +1,69 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { ApiContext, ApiContextProvider } from './ApiContext';
+import './CustomerAccount';
+import CustomerAccount from './CustomerAccount';
+import Navbar from './Navbar';
 import { api } from './App';
+import './ProfilePage.css'
 
 const ProfileDisplay = () => {
     const { data } = useContext(ApiContext);
-    
-    // This is what you'd need to get ticket info in a react component.
-    // ----------------------------------------------------------------
-    const [ tickets, setTickets ] = useState([]);
+    const [tickets, setTickets] = useState([]);
 
     const refreshTickets = useCallback(() => {
         api.get("/customer/tickets")
-        .then((response) => {
-            setTickets(response.data.tickets);
-        })
-        .catch((e) => console.log(e));
+            .then((response) => {
+                setTickets(response.data.tickets);
+            })
+            .catch((e) => console.log(e));
     }, []);
 
     useEffect(() => {
         refreshTickets();
     }, [refreshTickets]);
-    // ----------------------------------------------------------------
-    // Copy it anywhere you need ticket info for the current customer session
 
     return (
         <div>
-            <h1>Profile Page</h1>
-            {data && (
-                <div>
-                    <h2>{data.firstName} {data.lastName}</h2>
-                    <p>Email: {data.email}</p>
+            <div className="notificationbar">
+                <h1 className="notificationtext">
+                    **WINTER SEASON PASSES AVAILABLE! LOGIN OR CREATE AN ACCOUNT FOR MORE INFORMATION.
+                </h1>
+                <section className="loginbutton">
+                    <a href="login" id="logintext">
+                        <CustomerAccount text="Log In" />
+                    </a>
+                </section>
+            </div>
+
+            <Navbar />
+            <div className="profile-container">
+                <h3>Profile Page</h3>
+                
+                {data && (
+                    <div className="profile-info">
+                        <p>{data.firstName} {data.lastName}</p>
+                        <p>Email: {data.email}</p>
+                    </div>
+                )}
+
+                <div className="profile-tickets">
+                    <h3>Event Tickets</h3>
+                    {tickets.length > 0 ? (
+                        <ul>
+                            {tickets.map((ticket, i) => (
+                                <li key={i}>
+                                    <strong>Ticket ID: {ticket.EventTicketID}</strong>
+                                    <div>Event ID: {ticket.EventID}</div>
+                                    <div>Purchased: {new Date(ticket.Bought).toLocaleDateString()}</div>
+                                    <div>Expires: {new Date(ticket.ExpirationDate).toLocaleDateString()}</div>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No tickets available.</p>
+                    )}
                 </div>
-            )}
-            { /* Remove this part when you figure out what you want to do */ }
-            <h2>Event Tickets</h2>
-            {tickets && tickets.map((ticket, i) => (
-                <div key={i}>
-                    {ticket.EventTicketID} {ticket.EventID} {ticket.Bought} {ticket.ExpirationDate}
-                </div>
-            ))}
+            </div>
         </div>
     );
 };
@@ -54,7 +79,7 @@ const ProfilePage = () => {
             apiFailureAction={handleInfoFailureRedirect}
             blockRendering={true}
         >
-            <ProfileDisplay/>
+            <ProfileDisplay />
         </ApiContextProvider>
     );
 };

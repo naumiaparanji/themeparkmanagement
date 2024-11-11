@@ -1,13 +1,13 @@
 import { useContext } from "react"
-import { RestaurantsEditContext, RestaurantsEditContextProvider } from "./RestaurantsEditContext"
+import { EditContext, EditContextProvider } from "./EditContext"
 
 function PlaceholderList() {
-    const { restaurants } = useContext(RestaurantsEditContext);
+    const { displayItems } = useContext(EditContext)
 
     return (
         <>
         {
-            restaurants.map((restaurant) => (
+            displayItems.map((restaurant) => (
                 <div>
                     {`Restaurant ${restaurant.RestaurantID}: 
                     Capacity ${restaurant.SeatingCapacity} 
@@ -23,8 +23,12 @@ function PlaceholderList() {
 
 export function RestaurantsEditView() {
     return (
-        <RestaurantsEditContextProvider>
+        <EditContextProvider
+            datapath="/restaurants"
+            itemsKey="restaurants"
+            nameKey="RName"
+        >
             <PlaceholderList/>
-        </RestaurantsEditContextProvider>
+        </EditContextProvider>
     )
 }

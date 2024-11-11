@@ -1,29 +1,17 @@
-import { useContext } from "react"
-import { ConcessionsEditContext, ConcessionsEditContextProvider } from "./ConcessionsEditContext"
-
-function PlaceholderList() {
-    const { concessions } = useContext(ConcessionsEditContext); 
-
-    return (
-        <>
-        {
-            concessions.map((concession) => (
-                <div>
-                    {`Concession ${concession.ConcessionID}: 
-                    Opens ${concession.OpensAt} 
-                    OpenFor ${concession.OpenDuration} 
-                    Located@ ${concession.Location}`}
-                </div>
-            ))
-        }
-        </>
-    )
-}
+import { ConcessionEditBody } from "./ConcessionEditBody";
+import { EditContextProvider } from "./EditContext";
+import { EditList } from "./EditList";
+import { EditTopBar } from "./EditTopBar";
 
 export function ConcessionsEditView() {
     return (
-        <ConcessionsEditContextProvider>
-            <PlaceholderList/>
-        </ConcessionsEditContextProvider>
+        <EditContextProvider
+            datapath="/concessions"
+            itemsKey="concessions"
+            nameKey="CName"
+        >
+            <EditTopBar entityName="concession"/>
+            <EditList ItemFormComponent={ConcessionEditBody}/>
+        </EditContextProvider>
     )
 }

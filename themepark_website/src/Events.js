@@ -4,7 +4,6 @@ import CustomerAccount from './CustomerAccount';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import './Events.css';
-import './CustomerAccount'
 
 function displayEventDate(startDate, duration) {
     const startDateTime = new Date(startDate);
@@ -21,27 +20,48 @@ function displayEventDate(startDate, duration) {
 }
 
 const Events = () => {
-    const navigate = useNavigate(); // Initialize useNavigate hook
+    const navigate = useNavigate();
     const [eventsData, setEventsData] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [userTickets, setUserTickets] = useState([]);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
+        // Fetch events data
         api.get("/events")
-        .then((response) => {
-            setEventsData(response.data.events);
-            setCategories([...new Set(response.data.events.map(events => events.EventType))]);
-        })
-        .catch((e) => {
-            console.error(e);
-        });
+            .then((response) => {
+                setEventsData(response.data.events);
+                setCategories([...new Set(response.data.events.map(events => events.EventType))]);
+            })
+            .catch((e) => console.error(e));
+
+        // Check login status and fetch user tickets
+        api.get("/customer/info", { withCredentials: true })
+            .then((res) => {
+                if (res.data.success) {
+                    setIsLoggedIn(true);
+                    return api.get("/customer/tickets"); // Fetch user-registered tickets
+                }
+            })
+            .then((response) => setUserTickets(response?.data?.tickets.map(ticket => ticket.EventID) || []))
+            .catch(() => setIsLoggedIn(false)); // Handle not logged in
     }, []);
+
+    const handleRegister = (eventId) => {
+        api.post("/customer/registerEvent", { eventId })
+            .then(() => {
+                alert("Successfully Registered");
+                setUserTickets((prevTickets) => [...prevTickets, eventId]); // Update UI immediately
+            })
+            .catch((e) => alert("Registration Failed"));
+    };
 
     return (
         <div>
             <div className="notificationbar">
                 <h1 className="notificationtext">**WINTER SEASON PASSES AVAILABLE! LOGIN OR CREATE AN ACCOUNT FOR MORE INFORMATION.</h1>
                 <section className="loginbutton">
-                    <a href="login" id="logintext">
+                    <a href="/login" id="logintext">
                         <CustomerAccount text="Log In" />
                     </a>
                 </section>
@@ -50,12 +70,12 @@ const Events = () => {
             <button className="back-button" onClick={() => navigate('/')}>
                 Back to Home
             </button>
-            <br/><br/>
+            <br /><br />
             <div className="events-container">
                 <div className="banner-image3">
                     <p className="h4">Events And Promotions</p>
                 </div>
-                <br/>
+                <br />
                 <block id="topquote_one"><p><b>Check out our Daily Attractions and Promotions!</b></p></block>
                 {categories.map(category => (
                     <div className="events-category" key={category}>
@@ -69,6 +89,15 @@ const Events = () => {
                                     <p><strong>Time:</strong> {displayEventDate(events.EventDateTime, events.EventDuration)}</p>
                                     <p><strong>Age Limit:</strong> {events.EventAgeLimit}+</p>
                                     <p><strong>Restrictions:</strong> {events.EventRestrictions}</p>
+                                    {isLoggedIn ? (
+                                        userTickets.includes(events.EventID) ? (
+                                            <p>Already Registered</p>
+                                        ) : (
+                                            <button onClick={() => handleRegister(events.EventID)}>Register</button>
+                                        )
+                                    ) : (
+                                        <p>Please log in to register</p>
+                                    )}
                                 </div>
                             ))}
                         </div>
