@@ -1,14 +1,15 @@
+import { ConcessionEditBody } from "./ConcessionEditBody";
 import { EditContextProvider } from "./EditContext";
-import { ConcessionsEditList } from "./ConcessionsEditList";
+import { EditList } from "./EditList";
 
 export function ConcessionsEditView() {
     return (
         <EditContextProvider
             datapath="/concessions"
             itemsKey="concessions"
-            searchKey="CName"
+            nameKey="CName"
         >
-            <ConcessionsEditList />
+            <EditList ItemFormComponent={ConcessionEditBody}/>
         </EditContextProvider>
     )
 }

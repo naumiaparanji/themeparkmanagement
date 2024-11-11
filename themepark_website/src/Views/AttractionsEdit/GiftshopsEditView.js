@@ -25,7 +25,7 @@ export function GiftshopsEditView() {
         <EditContextProvider
             datapath="/giftshops"
             itemsKey="giftshops"
-            searchKey="GName"
+            nameKey="GName"
         >
             <PlaceholderList/>
         </EditContextProvider>

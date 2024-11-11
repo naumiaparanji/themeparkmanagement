@@ -1,10 +1,10 @@
-export function ConcessionEditBody({concession, eventKey}) {
+export function ConcessionEditBody({item, eventKey}) {
     return (
         <div>
-            {`Concession ${concession.ConcessionID}: 
-            Opens ${concession.OpensAt} 
-            OpenFor ${concession.OpenDuration} 
-            Located@ ${concession.Location}`}
+            {`Concession ${item.ConcessionID}: 
+            Opens ${item.OpensAt} 
+            OpenFor ${item.OpenDuration} 
+            Located@ ${item.Location}`}
         </div>
     );
 }

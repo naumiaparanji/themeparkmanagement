@@ -3,7 +3,7 @@ import { api } from "../../App";
 
 export const EditContext = React.createContext();
 
-export function EditContextProvider({datapath, itemsKey, searchKey, children}) {
+export function EditContextProvider({datapath, itemsKey, nameKey, children}) {
     const [items, setItems] = useState([]);
     const [displayItems, setDisplayItems] = useState([]);
     const [search, setSearch] = useState("");
@@ -23,10 +23,10 @@ export function EditContextProvider({datapath, itemsKey, searchKey, children}) {
     useEffect(() => {
         let newItems = items;
         if (search) {
-            newItems = newItems.filter((item) => item[searchKey].toLowerCase().indexOf(search.toLowerCase()) !== -1);
+            newItems = newItems.filter((item) => item[nameKey].toLowerCase().indexOf(search.toLowerCase()) !== -1);
         }
         setDisplayItems(newItems);
-    }, [search, items, searchKey]);
+    }, [search, items, nameKey]);
 
     return (
         <EditContext.Provider value={{
@@ -35,7 +35,8 @@ export function EditContextProvider({datapath, itemsKey, searchKey, children}) {
             refreshItems,
             search,
             setSearch,
-            displayItems
+            displayItems,
+            nameKey
         }}>
             {children}
         </EditContext.Provider>

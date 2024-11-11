@@ -26,7 +26,7 @@ export function RestaurantsEditView() {
         <EditContextProvider
             datapath="/restaurants"
             itemsKey="restaurants"
-            searchKey="RName"
+            nameKey="RName"
         >
             <PlaceholderList/>
         </EditContextProvider>
