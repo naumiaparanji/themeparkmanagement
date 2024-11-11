@@ -1,88 +1,87 @@
 import React from "react";
 import './App.css';
 import { apiUrl } from "./App";
-import { useNavigate } from "react-router-dom"; // Use useNavigate for redirection
+import { useNavigate } from "react-router-dom";
 
 export default class CustomerAccount extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: null, 
-            email: null, // To store the user's email for logout
+            username: null,
+            email: null,
             error: null,
-            loggedIn: false, // Track if the user is logged in
+            loggedIn: false,
         };
     }
 
     componentDidMount() {
-        this.checkLoginStatus();  // Check if user is logged in first
-        this.GetUsername();  // Then fetch the username if logged in
+        this.checkLoginStatus();
     }
 
-    // Check if the user is logged in by checking for authToken
+    // Check if the user session is active and fetch user info
     checkLoginStatus() {
-        const token = localStorage.getItem('authToken');
-        if (token) {
-            this.setState({ loggedIn: true });  // User is logged in
-        }
-    }
-
-    // Fetch the user's username and email
-    GetUsername() {
         fetch(apiUrl + '/customer/info', {
-            credentials: 'include',
+            credentials: 'include', // Ensures session cookies are sent
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
                 this.setState({ 
-                    username: data.user.username,
-                    email: data.user.email
+                    username: data.firstName + " " + data.lastName, 
+                    email: data.email,
+                    loggedIn: true 
                 });
             } else {
-                this.setState({ error: data.error });
+                this.setState({ 
+                    error: 'You are not logged in.',
+                    loggedIn: false 
+                });
             }
         })
         .catch((error) => {
             console.error('Error fetching user data:', error);
-            this.setState({ error: 'Failed to fetch user data.' });
+            this.setState({ 
+                error: 'Unable to fetch user details.' 
+            });
         });
     }
 
-    // Logout function
     handleLogout = () => {
-        const { email } = this.state;
-
-        // Send the logout request
         fetch(apiUrl + '/customer/logout', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ user: email }), // Send the email in the request
+            body: JSON.stringify({ user: this.state.username }), // Username from state
+            credentials: 'include', // Include session cookies for logout
         })
         .then((response) => response.json())
-        .then(() => {
-            // Clear auth token and redirect to login page
-            localStorage.removeItem('authToken');  // Clear the auth token
-            this.setState({ loggedIn: false, username: null, email: null });  // Reset state
-            window.location.pathname = '/login';  // Redirect to login page
+        .then((data) => {
+            if (data.success) {
+                localStorage.removeItem('authToken');
+                this.setState({ loggedIn: false, username: null, email: null });
+                window.location.pathname = '/login';
+            } else {
+                console.error('Logout failed:', data.error);
+                this.setState({ error: 'Logout failed. Please try again.' });
+            }
         })
         .catch((error) => {
             console.error('Error during logout:', error);
+            this.setState({ error: 'An error occurred while logging out.' });
         });
-    }
+    };
 
     render() {
         const { loggedIn, username, error } = this.state;
-    
+
         return (
             <div className="customer-account">
-                {error ? (
-                    <p>{error}</p>
-                ) : loggedIn ? (
+                {error && <p className="error-message">{error}</p>}
+                
+                {loggedIn ? (
                     <div>
-                        <p>Welcome!</p>
+                        <p>Welcome, {username}!</p>
                         <button onClick={this.handleLogout}>Logout</button>
                     </div>
                 ) : (
@@ -93,5 +92,4 @@ export default class CustomerAccount extends React.Component {
             </div>
         );
     }
-    
 }
