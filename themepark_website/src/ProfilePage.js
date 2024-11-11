@@ -19,7 +19,7 @@ const ProfileDisplay = () => {
 
     useEffect(() => {
         refreshTickets();
-    }, []);
+    }, [refreshTickets]);
     // ----------------------------------------------------------------
     // Copy it anywhere you need ticket info for the current customer session
 
