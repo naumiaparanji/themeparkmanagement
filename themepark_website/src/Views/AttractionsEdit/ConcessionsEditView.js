@@ -1,10 +1,14 @@
-import { ConcessionsEditContextProvider } from "./ConcessionsEditContext"
+import { EditContextProvider } from "./EditContext";
 import { ConcessionsEditList } from "./ConcessionsEditList";
 
 export function ConcessionsEditView() {
     return (
-        <ConcessionsEditContextProvider>
+        <EditContextProvider
+            datapath="/concessions"
+            itemsKey="concessions"
+            searchKey="CName"
+        >
             <ConcessionsEditList />
-        </ConcessionsEditContextProvider>
+        </EditContextProvider>
     )
 }
