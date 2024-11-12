@@ -1,25 +1,6 @@
-import { useContext } from "react"
-import { EditContext, EditContextProvider } from "./EditContext"
-
-function PlaceholderList() {
-    const { displayItems } = useContext(EditContext)
-
-    return (
-        <>
-        {
-            displayItems.map((restaurant) => (
-                <div>
-                    {`Restaurant ${restaurant.RestaurantID}: 
-                    Capacity ${restaurant.SeatingCapacity} 
-                    Opens ${restaurant.OpensAt} 
-                    OpenFor ${restaurant.OpenDuration} 
-                    Located@ ${restaurant.Location}`}
-                </div>
-            ))
-        }
-        </>
-    )
-}
+import { EditContextProvider } from "./EditContext"
+import { EditTopBar } from "./EditTopBar";
+import { EditList } from "./EditList";
 
 export function RestaurantsEditView() {
     return (
@@ -28,7 +9,8 @@ export function RestaurantsEditView() {
             itemsKey="restaurants"
             nameKey="RName"
         >
-            <PlaceholderList/>
+            <EditTopBar entityName="item"/>
+            <EditList ItemFormComponent={"placeholder"}/>
         </EditContextProvider>
     )
 }

@@ -1,24 +1,7 @@
-import { useContext } from "react"
-import { EditContext, EditContextProvider } from "./EditContext";
-
-function PlaceholderList() {
-    const { displayItems } = useContext(EditContext); 
-
-    return (
-        <>
-        {
-            displayItems.map((giftshop) => (
-                <div>
-                    {`Gift Shop ${giftshop.GiftshopID}: 
-                    Opens ${giftshop.OpensAt} 
-                    OpenFor ${giftshop.OpenDuration} 
-                    Located@ ${giftshop.Location}`}
-                </div>
-            ))
-        }
-        </>
-    )
-}
+import { EditContextProvider } from "./EditContext";
+import { EditTopBar } from "./EditTopBar";
+import { EditList } from "./EditList";
+import { GiftshopForm } from "./GiftshopForm";
 
 export function GiftshopsEditView() {
     return (
@@ -27,7 +10,8 @@ export function GiftshopsEditView() {
             itemsKey="giftshops"
             nameKey="GName"
         >
-            <PlaceholderList/>
+            <EditTopBar entityName="item"/>
+            <EditList ItemFormComponent={GiftshopForm}/>
         </EditContextProvider>
     )
 }
