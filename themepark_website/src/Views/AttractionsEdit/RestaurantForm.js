@@ -84,13 +84,13 @@ export function RestaurantForm() {
             {item && formState && (
                 <Form>
                     <Form.Text className="mx-0">Name</Form.Text>
-                    <Form.Control className="mx-0" placeholder="Concession stand name" value={formState.RName} name="RName" onChange={handleChange}/>
+                    <Form.Control className="mx-0" placeholder="Restaurant name" value={formState.RName} name="RName" onChange={handleChange}/>
                     <Form.Text className="mx-0">Description</Form.Text>
                     <Form.Control className="mx-0" value={formState.RDesc} name="RDesc" onChange={handleChange}/>
                     <Form.Text className="mx-0">Location</Form.Text>
                     <Form.Control className="mx-0" value={formState.Location} name="Location" onChange={handleChange}/>
                     <Form.Text className="mx-0">Seating Capacity</Form.Text>
-                    <Form.Control className="mx-0" value={formState.SeatingCapacity} name="SeatingCapacity" onChange={handleChange}/>
+                    <Form.Control className="mx-0" type="number" value={formState.SeatingCapacity} name="SeatingCapacity" onChange={handleChange}/>
                     <Form.Text className="mx-0">Operating Hours</Form.Text>
                     <InputGroup>
                         <Form.Control className="mx-0" type="time" value={formState.OpenInput} name="OpenInput" onChange={handleChange}/>

@@ -80,7 +80,7 @@ export function GiftshopForm() {
             {item && formState && (
                 <Form>
                     <Form.Text className="mx-0">Name</Form.Text>
-                    <Form.Control className="mx-0" placeholder="Concession stand name" value={formState.GName} name="GName" onChange={handleChange}/>
+                    <Form.Control className="mx-0" placeholder="Gift shop name" value={formState.GName} name="GName" onChange={handleChange}/>
                     <Form.Text className="mx-0">Description</Form.Text>
                     <Form.Control className="mx-0" value={formState.GDesc} name="GDesc" onChange={handleChange}/>
                     <Form.Text className="mx-0">Location</Form.Text>
