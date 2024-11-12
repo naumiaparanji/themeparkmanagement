@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import MainLogo from "../images/flagslogo.png";
 import { RandomBGImg, MessageBox, FancyButton } from "../Auth/AuthComponents";
 import { api } from "../App";
+import MaintenanceModal, { MaintenanceEditBox } from "./MaintenanceTicketEdit";
+import { MaintenanceInfoBox } from "./Maintenance";
 
 export function MaintenanceDataBox(props) {
   const [maintenanceData, setMaintenanceData] = useState([]);
@@ -16,6 +18,7 @@ export function MaintenanceDataBox(props) {
   const [searchCategory, setSearchCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [rideNames, setRideNames] = useState([]);
+  const [open, setOpen] = React.useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -66,7 +69,7 @@ export function MaintenanceDataBox(props) {
               );
             }
             setRideNames([
-              { key: "Select Ride Name", value: "-1" },
+              { key: "Select Ride Name", value: "Select Ride Name" },
               ...rideNameItems,
             ]);
           });
@@ -87,12 +90,52 @@ export function MaintenanceDataBox(props) {
     fetchData();
   }, [props.apiPath]);
 
+  useEffect(() => {
+    handleSearch();
+  }, [searchMaintenanceId, searchRideName, searchDateFrom, searchDateTo]);
+
   const handleSearch = () => {
-    
+    const filtered = maintenanceData.filter((item) => {
+      const matchesMaintenanceId =
+        searchMaintenanceId === "" ||
+        item.maintenanceId.toString().includes(searchMaintenanceId);
+      const matchesRideId =
+        searchRideId === "" || item.rideId.toString() === searchRideId;
+
+      let fixedSearchRideName =
+        searchRideName === "Select Ride Name" ? "" : searchRideName;
+      console.log("Search Ride Name-----------");
+      console.log(fixedSearchRideName);
+      console.log(searchRideName);
+      const matchesRideName =
+        fixedSearchRideName === "" || item.rideName === fixedSearchRideName;
+      const matchesCategory =
+        searchCategory === "" || item.category === searchCategory;
+      const matchesDateFrom =
+        searchDateFrom === "" ||
+        new Date(item.date) >= new Date(searchDateFrom);
+      const matchesDateTo =
+        searchDateTo === "" || new Date(item.date) <= new Date(searchDateTo);
+
+      return (
+        matchesMaintenanceId &&
+        matchesRideId &&
+        matchesRideName &&
+        matchesCategory &&
+        matchesDateFrom &&
+        matchesDateTo
+      );
+    });
+    setFilteredData(filtered);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   const handleEdit = (item) => {
-    alert(`Editing record for Maintenance ID: ${item.maintenanceId}`);
+    // alert(`Editing record for Maintenance ID: ${item.maintenanceId}`);
+    setOpen(true);
   };
 
   const handleDelete = async (item) => {
@@ -185,7 +228,6 @@ export function MaintenanceDataBox(props) {
             })}
           </select>
         </label>
-
       </div>
       <div>
         <label style={{ flex: "1 1 100px" }}>
@@ -221,7 +263,7 @@ export function MaintenanceDataBox(props) {
         </label>
       </div>
 
-      <div style={{ textAlign: "center", marginBottom: "20px" }}>
+      {/* <div style={{ textAlign: "center", marginBottom: "20px" }}>
         <button
           className="btn btn-primary"
           onClick={handleSearch}
@@ -229,7 +271,7 @@ export function MaintenanceDataBox(props) {
         >
           Search
         </button>
-      </div>
+      </div> */}
 
       <div>
         <table className="table table-striped">
@@ -253,7 +295,7 @@ export function MaintenanceDataBox(props) {
               <th style={{ width: "10%" }}>Delete</th>
             </tr>
           </thead>
-          <tbody>    
+          <tbody>
             {filteredData.length > 0 ? (
               filteredData.map((item, index) => (
                 <tr key={index}>
@@ -264,12 +306,20 @@ export function MaintenanceDataBox(props) {
                   <td>{item.date}</td>
                   <td>{item.description}</td>
                   <td>
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => handleEdit(item)}
-                    >
-                      Edit
-                    </button>
+                    <div>
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={() => handleEdit(item)}
+                      >
+                        Edit
+                      </button>
+                      <MaintenanceModal isOpen={open} onClose={handleClose}>
+                        <>
+                          <MaintenanceEditBox maintenanceData={item} />
+                        </>
+                      </MaintenanceModal>
+                    </div>
                   </td>
                   <td>
                     <button

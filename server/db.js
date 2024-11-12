@@ -95,12 +95,29 @@ async function setMaintenanceRequest(fields, isEmployee) {
   return result[0] != 0;
 }
 
+async function getRideStatusID(){
+  return await db("M_STATUS").select("RideStatusID ").where("M_STATUS.Deleted", 0).orderBy("MaintenanceID").leftJoin("MAINTENANCE", "M_STATUS.MaintenanceID", "MAINTENANCE.MaintenanceID");
+}
+
 async function getMaintenanceTicket(){
   return await db("MAINTENANCE").select().where("MAINTENANCE.Deleted", 0).orderBy("MaintenanceID").leftJoin('RIDES', 'MAINTENANCE.RideID', 'RIDES.RideID');
 }
 
+async function editMaintenanceTicket(fields){
+    const editMaintenance = await db("MAINTENANCE").update({RideID: fields.RideID, Date: fields.Date, Description: fields.Description}).where("MaintenanceID", fields.maintenanceID);
+    const editMStatus = await db("M_STATUS").update({RideID: fields.RideID, Date: fields.Date, Description: fields.Description}).where("MaintenanceID", fields.maintenanceID);
+
+    return editMStatus;
+}
+
 async function deleteMaintenanceTicket(maintenanceID) {
-  return await db("MAINTENANCE").update({deleted: 1}).where("MaintenanceID", maintenanceID);
+  const deleteMaintenannce = await db("MAINTENANCE").update({deleted: 1}).where("MaintenanceID", maintenanceID);
+  const deleteMStatus = await db("M_STATUS").update({deleted: 1}).where("MaintenanceID", maintenanceID);
+  console.log("In Maintenance Table");
+  console.log(deleteMaintenannce);
+  console.log("In M_Status Table");
+  console.log(deleteMStatus);
+  return deleteMStatus;
 }
 
 async function setRuns(fields, isEmployee) {
@@ -136,7 +153,9 @@ module.exports = {
   getEvents,
   getEventCategories,
   setMaintenanceRequest,
+  getRideStatusID,
   getMaintenanceTicket,
+  editMaintenanceTicket,
   deleteMaintenanceTicket,
   setRuns,
   registerForEvent

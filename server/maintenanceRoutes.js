@@ -45,12 +45,10 @@ module.exports = (app) => {
   });
 
   // for update CURRENTLY NOT WORKING
-  app.put("/maintenance/data/update", async (req, res) => {
-    const maintenanceID = req.params.searchMaintenanceId;
+  app.put("/maintenance/edit/:maintenanceID",  async (req, res) => {
+    const {maintenanceID} = req.params;
     try {
-      await db.query("UPDATE MAINTENANCE SET  WHERE MaintenanceID = ?", [
-        maintenanceID,
-      ]);
+      return await db.editMaintenanceTicket(maintenanceID);
       res
         .status(200)
         .json({ message: "Maintenance ticket updated successfully" });
@@ -67,7 +65,7 @@ module.exports = (app) => {
     const {maintenanceID} = req.params;
     try {
       return await db.deleteMaintenanceTicket(maintenanceID);
-      // need to delete in M_STATUS and update in RIDES
+      // need to delete in M_STATUS and update in RIDE_STATUS
       res
         .status(200)
         .json({ message: "Maintenance ticket deleted successfully" });

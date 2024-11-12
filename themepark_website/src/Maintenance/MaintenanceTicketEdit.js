@@ -1,15 +1,116 @@
 import "./Maintenance.css";
 import React, { useState, useEffect } from "react";
 import MainLogo from "../images/flagslogo.png";
-import { RandomBGImg, MessageBox, FancyButton } from "../Auth/AuthComponents";
+import {
+  RandomBGImg,
+  MessageBox,
+  InputField,
+  FancyButton,
+} from "../Auth/AuthComponents";
 import { api } from "../App";
+import Modal from "@mui/material/Modal";
 
-export function MaintenanceEdit(props) {
+export const MaintenanceModal = ({ isOpen, onClose, children }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        background: "rgba(0, 0, 0, 0.05)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        style={{
+          background: "white",
+          // height: 500,
+          // width: 500,
+          margin: "auto",
+          padding: "2%",
+          border: "2px solid #000",
+          borderRadius: "10px",
+          boxShadow: "2px solid black",
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+};
+
+export default MaintenanceModal;
+
+export function MaintenanceEditBox(props) {
+  const [rideName, setRideName] = useState("");
+  const [date, setDate] = useState("");
+  const [description, setDescription] = useState("");
+  const [status, setStatus] = useState("");
+  const [message, setMessage] = useState("");
+  const [rideOptions, setRideOptions] = useState([]);
+
+  console.log("props--------------");
+  console.log(props);
+
+  useEffect(() => {
+    api
+      .get("/rides/names")
+      .then((res) => setRideOptions(res.data.rideNames))
+      .catch((e) => {
+        if (e.response) {
+          if (e.response.status === 500) setMessage("Database error");
+          else if (e.response.status === 501)
+            setMessage("No rides in database");
+          else if (e.response.data && !e.response.data.success)
+            setMessage("Submission failed. Error Code: " + e.response.status);
+          else setMessage("Unknown error");
+        } else if (e.request) setMessage("Failed to connect to server");
+      });
+  }, []);
+
+  const maintenanceEdit = async () => {
+    if (!rideName || !date || !description || !status) {
+      setMessage("All fields are required");
+      return;
+    }
+    api
+      .put(props.apiPath || `/maintenance/edit/${props.maintenanceData.maintenanceId}`, {
+        rideName,
+        date,
+        description,
+        status,
+      })
+      .then(() => {
+        setMessage("Maintenance info submitted successfully");
+        setDate("");
+        setDescription("");
+        setStatus("");
+        setRideName("");
+      })
+      .catch((e) => {
+        if (e.response) {
+          if (e.response.status === 500) setMessage("Server error");
+          else if (e.response.status === 503)
+            setMessage("Ride not found in database");
+          else if (e.response.data && !e.response.data.success)
+            setMessage("Submission failed");
+          else setMessage("Unknown error");
+        } else if (e.request) setMessage("Failed to connect to server");
+      });
+  };
+
   return (
     <div
       className="loginbox"
       style={{
-        width: "90%",
+        width: "60%",
         padding: "20px",
         maxWidth: "800px",
         margin: "0 auto",
@@ -17,7 +118,7 @@ export function MaintenanceEdit(props) {
         borderRadius: "10px",
       }}
     >
-      <a href="/">
+      <a>
         <img src={MainLogo} alt="Main Logo" />
       </a>
       <div style={{ fontSize: "20px", margin: "-18px 0px 14px 0px" }}>
@@ -97,20 +198,19 @@ export function MaintenanceEdit(props) {
         </div>
       </div>
 
-      <FancyButton text="Submit" action={maintenanceSubmit} />
+      <FancyButton text="Submit" action={maintenanceEdit} />
     </div>
-
-);
+  );
 }
 
-export function MaintenanceInfo(props) {
-    return (
-        <div className="container">
-            <RandomBGImg />
-            <MaintenanceInfoBox
-                title={props.title || "Maintenance Ticket Update"}
-                apiPath={props.apiPath || "/maintenance/input"}
-            />
-        </div>
-    );
+export function MaintenanceEdit(props) {
+  return (
+    <div className="container">
+      <RandomBGImg />
+      <MaintenanceEditBox
+        title={props.title || "Maintenance Info Submission"} //Edit to display maintenanceID
+        apiPath={props.apiPath || "/maintenance/edit"}
+      />
+    </div>
+  );
 }
