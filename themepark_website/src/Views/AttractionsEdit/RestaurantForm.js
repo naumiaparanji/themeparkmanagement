@@ -1,5 +1,6 @@
 import { useState, useContext, useEffect, useCallback } from "react";
 import { AccordionContext, Form, InputGroup } from "react-bootstrap";
+import { ItemEditContext } from "./ItemEditContext";
 
 const defaultState = {
     RestaurantID: -1,
@@ -39,8 +40,9 @@ function inputFieldsToTime(item) {
 }
 
 
-export function RestaurantForm({item, eventKey, onChange}) {
+export function RestaurantForm() {
     const { activeEventKey } = useContext(AccordionContext);
+    const { item, eventKey, setEditState } = useContext(ItemEditContext);
     const [ formState, setFormState ] = useState(defaultState);
 
     useEffect(() => {
@@ -73,13 +75,12 @@ export function RestaurantForm({item, eventKey, onChange}) {
         if (name === "OpenInput" || name === "CloseInput") {
             inputFieldsToTime(newState);
         }
-        setFormState(newState);
-        onChange && onChange(newState);
-    }, [setFormState, formState, onChange]);
+        setEditState(newState);
+    }, [setEditState, formState]);
 
     return (
         <>
-            {item && (
+            {item && formState && (
                 <Form>
                     <Form.Text className="mx-0">Name</Form.Text>
                     <Form.Control className="mx-0" placeholder="Concession stand name" value={formState.RName} name="RName" onChange={handleChange}/>

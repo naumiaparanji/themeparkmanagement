@@ -1,5 +1,6 @@
-import { useState, useContext, useEffect, useCallback } from "react";
+import { useContext, useEffect, useCallback, useState } from "react";
 import { AccordionContext, Form, InputGroup } from "react-bootstrap";
+import { ItemEditContext } from "./ItemEditContext";
 
 const defaultState = {
     ConcessionID: -1,
@@ -38,8 +39,9 @@ function inputFieldsToTime(item) {
 }
 
 
-export function ConcessionForm({item, eventKey, onChange}) {
+export function ConcessionForm() {
     const { activeEventKey } = useContext(AccordionContext);
+    const { item, eventKey, setEditState } = useContext(ItemEditContext);
     const [ formState, setFormState ] = useState(defaultState);
 
     useEffect(() => {
@@ -70,12 +72,12 @@ export function ConcessionForm({item, eventKey, onChange}) {
             inputFieldsToTime(newState);
         }
         setFormState(newState);
-        onChange && onChange(newState);
-    }, [setFormState, formState, onChange]);
+        setEditState(newState);
+    }, [setEditState, formState]);
 
     return (
         <>
-            {item && (
+            {item && formState && (
                 <Form>
                     <Form.Text className="mx-0">Name</Form.Text>
                     <Form.Control className="mx-0" placeholder="Concession stand name" value={formState.CName} name="CName" onChange={handleChange}/>

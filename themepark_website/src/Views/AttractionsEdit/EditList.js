@@ -1,8 +1,9 @@
 import { useContext } from "react";
 import { EditContext } from "./EditContext";
 import { Accordion } from "react-bootstrap";
+import { ItemEditContextProvider } from "./ItemEditContext";
 
-export function EditList({ItemFormComponent}) {
+export function EditList({children}) {
     const { displayItems, nameKey } = useContext(EditContext);
     return (
         <div>
@@ -19,7 +20,9 @@ export function EditList({ItemFormComponent}) {
                                 </div>
                             </Accordion.Header>
                             <Accordion.Body>
-                                <ItemFormComponent item={item} eventKey={i}/>
+                                <ItemEditContextProvider item={item} eventKey={i}>
+                                    {children}
+                                </ItemEditContextProvider>
                             </Accordion.Body>
                         </Accordion.Item>
                     ))}

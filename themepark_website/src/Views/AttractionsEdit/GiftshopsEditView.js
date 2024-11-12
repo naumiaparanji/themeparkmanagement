@@ -11,7 +11,9 @@ export function GiftshopsEditView() {
             nameKey="GName"
         >
             <EditTopBar entityName="item"/>
-            <EditList ItemFormComponent={GiftshopForm}/>
+            <EditList>
+                <GiftshopForm/>
+            </EditList>
         </EditContextProvider>
     )
 }

@@ -11,7 +11,9 @@ export function RestaurantsEditView() {
             nameKey="RName"
         >
             <EditTopBar entityName="item"/>
-            <EditList ItemFormComponent={RestaurantForm}/>
+            <EditList>
+                <RestaurantForm />
+            </EditList>
         </EditContextProvider>
     )
 }

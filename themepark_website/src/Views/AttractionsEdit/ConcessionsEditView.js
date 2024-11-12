@@ -11,7 +11,9 @@ export function ConcessionsEditView() {
             nameKey="CName"
         >
             <EditTopBar entityName="item"/>
-            <EditList ItemFormComponent={ConcessionForm}/>
+            <EditList>
+                <ConcessionForm/>
+            </EditList>
         </EditContextProvider>
     )
 }
