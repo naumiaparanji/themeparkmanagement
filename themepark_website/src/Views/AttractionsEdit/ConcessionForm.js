@@ -4,8 +4,8 @@ import { AccordionContext, Form, InputGroup } from "react-bootstrap";
 const defaultState = {
     ConcessionID: -1,
     OpensAt: "00:00:00",
-    OpenInput: "12:00 am", // FOR INPUT ONLY
-    CloseInput: "12:00 pm", // FOR INPUT ONLY
+    OpenInput: "09:00", // FOR INPUT ONLY
+    CloseInput: "20:00", // FOR INPUT ONLY
     OpenDuration: "60",
     Location: "",
     Deleted: 0,

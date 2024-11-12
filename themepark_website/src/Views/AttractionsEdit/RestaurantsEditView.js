@@ -1,6 +1,7 @@
 import { EditContextProvider } from "./EditContext"
 import { EditTopBar } from "./EditTopBar";
 import { EditList } from "./EditList";
+import { RestaurantForm } from "./RestaurantForm";
 
 export function RestaurantsEditView() {
     return (
@@ -10,7 +11,7 @@ export function RestaurantsEditView() {
             nameKey="RName"
         >
             <EditTopBar entityName="item"/>
-            <EditList ItemFormComponent={"placeholder"}/>
+            <EditList ItemFormComponent={RestaurantForm}/>
         </EditContextProvider>
     )
 }

@@ -2,17 +2,18 @@ import { useState, useContext, useEffect, useCallback } from "react";
 import { AccordionContext, Form, InputGroup } from "react-bootstrap";
 
 const defaultState = {
-    GiftshopID: -1,
+    RestaurantID: -1,
     OpensAt: "00:00:00",
     OpenInput: "09:00", // FOR INPUT ONLY
     CloseInput: "20:00", // FOR INPUT ONLY
     OpenDuration: "60",
     Location: "",
     Deleted: 0,
-    GName: "",
-    GDesc: "",
-    GPriceMin: 1,
-    GPriceMax: 1,
+    RName: "",
+    RDesc: "",
+    RPriceMin: 1,
+    RPriceMax: 1,
+    SeatingCapacity: 1
 }
 
 function timeFieldsToInput(item) {
@@ -38,7 +39,7 @@ function inputFieldsToTime(item) {
 }
 
 
-export function GiftshopForm({item, eventKey, onChange}) {
+export function RestaurantForm({item, eventKey, onChange}) {
     const { activeEventKey } = useContext(AccordionContext);
     const [ formState, setFormState ] = useState(defaultState);
 
@@ -54,17 +55,20 @@ export function GiftshopForm({item, eventKey, onChange}) {
             ...formState,
             [name]: value
         };
-        newState.GPriceMin = parseInt(newState.GPriceMin);
-        newState.GPriceMax = parseInt(newState.GPriceMax);
-        if (isNaN(newState.GPriceMin)) newState.GPriceMin = formState.GPriceMin;
-        if (isNaN(newState.GPriceMax)) newState.GPriceMax = formState.GPriceMax;
-        newState.GPriceMin = Math.min(Math.max(1, newState.GPriceMin), 10000);
-        newState.GPriceMax = Math.min(Math.max(1, newState.GPriceMax), 10000);
-        if (newState.GPriceMin > newState.GPriceMax) {
-            if (name === "GPriceMin")
-                newState.GPriceMax = newState.GPriceMin;
+        newState.RPriceMin = parseInt(newState.RPriceMin);
+        newState.RPriceMax = parseInt(newState.RPriceMax);
+        newState.SeatingCapacity = parseInt(newState.SeatingCapacity);
+        if (isNaN(newState.RPriceMin)) newState.RPriceMin = formState.RPriceMin;
+        if (isNaN(newState.RPriceMax)) newState.RPriceMax = formState.RPriceMax;
+        if (isNaN(newState.SeatingCapacity)) newState.SeatingCapacity = formState.SeatingCapacity;
+        newState.RPriceMin = Math.min(Math.max(1, newState.RPriceMin), 10000);
+        newState.RPriceMax = Math.min(Math.max(1, newState.RPriceMax), 10000);
+        newState.SeatingCapacity = Math.min(Math.max(1, newState.SeatingCapacity), 200);
+        if (newState.RPriceMin > newState.RPriceMax) {
+            if (name === "RPriceMin")
+                newState.RPriceMax = newState.RPriceMin;
             else
-                newState.GPriceMin = newState.GPriceMax;
+                newState.RPriceMin = newState.RPriceMax;
         }
         if (name === "OpenInput" || name === "CloseInput") {
             inputFieldsToTime(newState);
@@ -78,11 +82,13 @@ export function GiftshopForm({item, eventKey, onChange}) {
             {item && (
                 <Form>
                     <Form.Text className="mx-0">Name</Form.Text>
-                    <Form.Control className="mx-0" placeholder="Concession stand name" value={formState.GName} name="GName" onChange={handleChange}/>
+                    <Form.Control className="mx-0" placeholder="Concession stand name" value={formState.RName} name="RName" onChange={handleChange}/>
                     <Form.Text className="mx-0">Description</Form.Text>
-                    <Form.Control className="mx-0" value={formState.GDesc} name="GDesc" onChange={handleChange}/>
+                    <Form.Control className="mx-0" value={formState.RDesc} name="RDesc" onChange={handleChange}/>
                     <Form.Text className="mx-0">Location</Form.Text>
                     <Form.Control className="mx-0" value={formState.Location} name="Location" onChange={handleChange}/>
+                    <Form.Text className="mx-0">Seating Capacity</Form.Text>
+                    <Form.Control className="mx-0" value={formState.SeatingCapacity} name="SeatingCapacity" onChange={handleChange}/>
                     <Form.Text className="mx-0">Operating Hours</Form.Text>
                     <InputGroup>
                         <Form.Control className="mx-0" type="time" value={formState.OpenInput} name="OpenInput" onChange={handleChange}/>
@@ -90,8 +96,8 @@ export function GiftshopForm({item, eventKey, onChange}) {
                     </InputGroup>
                     <Form.Text className="mx-0">Price Range</Form.Text>
                     <InputGroup>
-                        <Form.Control className="mx-0" type="number" value={formState.GPriceMin} name="GPriceMin" onChange={handleChange} />
-                        <Form.Control className="mx-0" type="number" value={formState.GPriceMax} name="GPriceMax" onChange={handleChange} />
+                        <Form.Control className="mx-0" type="number" value={formState.RPriceMin} name="RPriceMin" onChange={handleChange} />
+                        <Form.Control className="mx-0" type="number" value={formState.RPriceMax} name="RPriceMax" onChange={handleChange} />
                     </InputGroup>
                 </Form>
             )}
