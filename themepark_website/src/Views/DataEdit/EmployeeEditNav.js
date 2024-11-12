@@ -36,24 +36,10 @@ export function EmployeeEditNav() {
     const [data, setData] = useState([])
 
     useEffect(()=> {
-    axios.get('http://localhost:8080')
+    axios.get('http://localhost:8080/employee/data/info')
         .then(res => setData(res.data))
         .catch(err => console.log(err));
   }, [])
-
-    const fetchData = async () => {
-        console.log(employee);
-        const newData = await fetch('/api', {
-            method: 'POST',
-            headers : {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            }
-        })
-        .then(res => res.json())
-        console.log(newData);
-        setReturnedData(newData.result)
-    }
 
     return (
         <>
@@ -67,6 +53,43 @@ export function EmployeeEditNav() {
                 </Form>
             </Container>
         </Navbar>
+        <div className="d-flex flex-column align-items-center vh-100">
+                    <div className='rounded bg-white p-4'>
+                    <table>
+                            <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>FirstName</th>
+                                        <th>LastName</th>
+                                        <th>DOB</th>
+                                        <th>Address</th>
+                                        <th>PhoneNumber</th>
+                                        <th>Email</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        data.map((d, i) => {
+                                            <tr key={i}>
+                                                <td>{d.EmployeeID}</td>
+                                                <td>{d.FirstName}</td>
+                                                <td>{d.LastName}</td>
+                                                <td>{d.DOB}</td>
+                                                <td>{d.Address}</td>
+                                                <td>{d.PhoneNumber}</td>
+                                                <td>{d.Email}</td>
+                                                <td>
+                                                    <button className="btn btn-sm btn-primary me-2">Edit</button>
+                                                    <button className="btn btn-sm btn-danger">Delete</button>
+                                                </td>
+                                            </tr>
+                                    })}
+                            
+                        </tbody>
+                    </table>
+                    </div>
+                    </div>
         <EmployeeModalFormContainer/> 
         <hr/>
         </>

@@ -162,6 +162,18 @@ module.exports = (app) => {
         returnEmployeeData
     )
 
+
+    app.get("/employee/data/info",
+        checkSessionForEmployee,
+        (req, res) => {
+            db.themeparkDB('EMPLOYEE').where('Deleted', 0)
+            .then((employees) => res.status(200).json(employees))
+            .catch((e) => {
+                console.log(e);
+                res.status(500).json({message: "Server error"})
+        });
+    });
+
     // Get info about other employees
     app.get("/employee/data/:user", 
         checkSessionForEmployee,
