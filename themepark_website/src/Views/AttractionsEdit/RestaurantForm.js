@@ -75,6 +75,7 @@ export function RestaurantForm() {
         if (name === "OpenInput" || name === "CloseInput") {
             inputFieldsToTime(newState);
         }
+        setFormState(newState);
         setEditState(newState);
     }, [setEditState, formState]);
 

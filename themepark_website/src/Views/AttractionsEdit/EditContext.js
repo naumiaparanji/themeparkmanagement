@@ -3,7 +3,7 @@ import { api } from "../../App";
 
 export const EditContext = React.createContext();
 
-export function EditContextProvider({datapath, itemsKey, nameKey, children}) {
+export function EditContextProvider({datapath, idKey, itemsKey, nameKey, children}) {
     const [items, setItems] = useState([]);
     const [displayItems, setDisplayItems] = useState([]);
     const [search, setSearch] = useState("");
@@ -36,7 +36,9 @@ export function EditContextProvider({datapath, itemsKey, nameKey, children}) {
             search,
             setSearch,
             displayItems,
-            nameKey
+            nameKey,
+            idKey,
+            datapath
         }}>
             {children}
         </EditContext.Provider>
