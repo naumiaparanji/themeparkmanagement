@@ -1,34 +1,32 @@
-import { useContext } from "react"
-import { EditContext, EditContextProvider } from "./EditContext"
-
-function PlaceholderList() {
-    const { displayItems } = useContext(EditContext)
-
-    return (
-        <>
-        {
-            displayItems.map((restaurant) => (
-                <div>
-                    {`Restaurant ${restaurant.RestaurantID}: 
-                    Capacity ${restaurant.SeatingCapacity} 
-                    Opens ${restaurant.OpensAt} 
-                    OpenFor ${restaurant.OpenDuration} 
-                    Located@ ${restaurant.Location}`}
-                </div>
-            ))
-        }
-        </>
-    )
-}
+import { EditContextProvider } from "./EditContext"
+import { EditTopBar } from "./EditTopBar";
+import { EditList } from "./EditList";
+import { RestaurantForm } from "./RestaurantForm";
+import { EditFooter } from "./EditFooter";
+import { useCallback, useState } from "react";
+import { NewItemModal } from "./NewItemModal";
 
 export function RestaurantsEditView() {
+    const [ showNew, setShowNew ] = useState(false);
+
+    const handleShowNew = useCallback(() => setShowNew(true), []);
+    const handleHideNew = useCallback(() => setShowNew(false), []);
+
     return (
         <EditContextProvider
             datapath="/restaurants"
             itemsKey="restaurants"
             nameKey="RName"
+            idKey="RestaurantID"
         >
-            <PlaceholderList/>
+            <EditTopBar entityName="item" addNewAction={handleShowNew} />
+            <EditList>
+                <RestaurantForm />
+                <EditFooter/>
+            </EditList>
+            <NewItemModal show={showNew} onHide={handleHideNew}>
+                <RestaurantForm/>
+            </NewItemModal>
         </EditContextProvider>
     )
 }

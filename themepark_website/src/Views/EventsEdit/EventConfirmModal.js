@@ -15,8 +15,8 @@ export function EventConfirmModal({show, title, body, confirmText, cancelText, c
             </Modal.Header>
             <Modal.Body>{body}</Modal.Body>
             <Modal.Footer>
-                <Button variant={cancelVariant || "secondary"} onClick={onClose}>{cancelText}</Button>
-                <Button variant={confirmVariant || "primary"} onClick={handleConfirm}>{confirmText}</Button>
+                {confirmText && <Button variant={cancelVariant || "secondary"} onClick={onClose}>{cancelText}</Button>}
+                {cancelText && <Button variant={confirmVariant || "primary"} onClick={handleConfirm}>{confirmText}</Button>}
             </Modal.Footer>
         </Modal>
     );

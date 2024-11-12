@@ -1,33 +1,32 @@
-import { useContext } from "react"
-import { EditContext, EditContextProvider } from "./EditContext";
-
-function PlaceholderList() {
-    const { displayItems } = useContext(EditContext); 
-
-    return (
-        <>
-        {
-            displayItems.map((giftshop) => (
-                <div>
-                    {`Gift Shop ${giftshop.GiftshopID}: 
-                    Opens ${giftshop.OpensAt} 
-                    OpenFor ${giftshop.OpenDuration} 
-                    Located@ ${giftshop.Location}`}
-                </div>
-            ))
-        }
-        </>
-    )
-}
+import { EditContextProvider } from "./EditContext";
+import { EditTopBar } from "./EditTopBar";
+import { EditList } from "./EditList";
+import { GiftshopForm } from "./GiftshopForm";
+import { EditFooter } from "./EditFooter";
+import { useCallback, useState } from "react";
+import { NewItemModal } from "./NewItemModal";
 
 export function GiftshopsEditView() {
+    const [ showNew, setShowNew ] = useState(false);
+
+    const handleShowNew = useCallback(() => setShowNew(true), []);
+    const handleHideNew = useCallback(() => setShowNew(false), []);
+
     return (
         <EditContextProvider
             datapath="/giftshops"
             itemsKey="giftshops"
             nameKey="GName"
+            idKey="GiftshopID"
         >
-            <PlaceholderList/>
+            <EditTopBar entityName="item" addNewAction={handleShowNew}/>
+            <EditList>
+                <GiftshopForm/>
+                <EditFooter/>
+            </EditList>
+            <NewItemModal show={showNew} onHide={handleHideNew}>
+                <GiftshopForm/>
+            </NewItemModal>
         </EditContextProvider>
     )
 }
