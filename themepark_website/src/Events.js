@@ -67,11 +67,11 @@ const Events = () => {
                 </section>
             </div>
             <Navbar />
+            <div className="events-container">
             <button className="back-button" onClick={() => navigate('/')}>
                 Back to Home
             </button>
-            <br /><br />
-            <div className="events-container">
+            <br /><br /><br />
                 <div className="banner-image3">
                     <p className="h4">Events And Promotions</p>
                 </div>
