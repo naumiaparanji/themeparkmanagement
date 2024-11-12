@@ -162,7 +162,6 @@ module.exports = (app) => {
         returnEmployeeData
     )
 
-
     app.get("/employee/data/info",
         checkSessionForEmployee,
         (req, res) => {
@@ -173,7 +172,7 @@ module.exports = (app) => {
                 res.status(500).json({message: "Server error"})
         });
     });
-
+    
     // Get info about other employees
     app.get("/employee/data/:user", 
         checkSessionForEmployee,

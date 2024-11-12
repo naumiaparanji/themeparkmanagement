@@ -36,7 +36,7 @@ export function EmployeeEditNav() {
     const [data, setData] = useState([])
 
     useEffect(()=> {
-    axios.get('http://localhost:8080/employee/data/info')
+    api.get('/employee/data/info')
         .then(res => setData(res.data))
         .catch(err => console.log(err));
   }, [])
@@ -54,7 +54,7 @@ export function EmployeeEditNav() {
             </Container>
         </Navbar>
         <div className="d-flex flex-column align-items-center vh-100">
-                    <div className='rounded bg-white p-4'>
+                    <div className='bg-white p-4'>
                     <table>
                             <thead>
                                     <tr>
@@ -70,7 +70,7 @@ export function EmployeeEditNav() {
                                 </thead>
                                 <tbody>
                                     {
-                                        data.map((d, i) => {
+                                        data.map((d, i) => (
                                             <tr key={i}>
                                                 <td>{d.EmployeeID}</td>
                                                 <td>{d.FirstName}</td>
@@ -79,12 +79,12 @@ export function EmployeeEditNav() {
                                                 <td>{d.Address}</td>
                                                 <td>{d.PhoneNumber}</td>
                                                 <td>{d.Email}</td>
-                                                <td>
+                                                <td>  
                                                     <button className="btn btn-sm btn-primary me-2">Edit</button>
                                                     <button className="btn btn-sm btn-danger">Delete</button>
                                                 </td>
                                             </tr>
-                                    })}
+                                    ))}
                             
                         </tbody>
                     </table>
