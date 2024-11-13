@@ -112,7 +112,6 @@ export function DashUI() {
                         {data.canAccess.includes('maintenance') && <SideBarLink title="Maintenance" path="maintenance" activeIcon="Hammer" inactiveIcon="Hammer" />}
                         {data.canAccess.includes('runs') && <SideBarLink title="Ride Operator Portal" path="runs" activeIcon="Clipboard2DataFill" inactiveIcon="Clipboard2Data" />}
                         {data.canAccess.includes('datamanage') && <SideBarLink title="Data Management" path="datamanage" activeIcon="DatabaseFillLock" inactiveIcon="DatabaseLock" />}
-                        <SideBarLink className="mt-auto" title="Settings" path="settings" activeIcon="GearFill" inactiveIcon="Gear" />
                     </ListGroup>
                 </div>
                 <div className={`${styles.scrolly} w-100`}>
