@@ -16,18 +16,7 @@
     background-color: yellow;
     padding: .1%;
     margin-top: 15px;
-    width: 100%;
-    min-height: 30px;
-    border-bottom: 1px solid goldenrod;
-    display: inline-block;
-}
-
-.homenotificationbar {
-    position: static;
-    background-color: yellow;
-    padding: .1%;
-    margin-top: -15px;
-    width: 100%;
+    width: 100vw;
     min-height: 30px;
     border-bottom: 1px solid goldenrod;
     display: inline-block;

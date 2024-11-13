@@ -3,8 +3,20 @@
     background-color: yellow;
     padding: .1%;
     margin-top: 0px;
-    width: 100%;
+    width: 100vw;
     min-height: 30px;
+    border-bottom: 1px solid goldenrod;
+    display: inline-block;
+}
+
+.homenotificationbar {
+    position: static;
+    background-color: yellow;
+    padding: .1%;
+    margin-top: -15px;
+    width: 100vw;
+    min-height: 30px;
+    height: auto;
     border-bottom: 1px solid goldenrod;
     display: inline-block;
 }
@@ -14,7 +26,7 @@
 }
 
 .notificationtext {
-    padding-top: 20px;
+    padding-top: 40px;
     font-size: 100%;
 }
 
@@ -64,7 +76,7 @@ h4 {
     padding: .5%;
     font-size: 100%;
     margin-left: -15px;
-    margin-top: 15px;
+    margin-top: 40px;
     width: 160px;
 }
 

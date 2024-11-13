@@ -23,8 +23,8 @@ const ProfileDisplay = () => {
     }, [refreshTickets]);
 
     return (
-        <div>
-            <div className="notificationbar">
+        <div classname="profilepage">
+            <div className="ppnotificationbar">
                 <h1 className="notificationtext">
                     **WINTER SEASON PASSES AVAILABLE! LOGIN OR CREATE AN ACCOUNT FOR MORE INFORMATION.
                 </h1>
