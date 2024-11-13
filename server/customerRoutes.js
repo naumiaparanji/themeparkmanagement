@@ -47,13 +47,14 @@ module.exports = (app) => {
 
     app.post("/customer/login", customerAuth, async (req, res) => {
         if (req.authorized) {
+            const {employeeUser} = req.session;
             auth.pruneSessions(req.body.username, 99);
             req.session.regenerate((err) => {
                 if (err) {
                     res.status(500).json({success: false, error: 'SessionUpdateFailed', errorDetails: err});
                     return;
                 }
-
+                req.session.employeeUser = employeeUser;
                 req.session.user = req.body.username;
                 req.session.save((err) => {
                     if (err) {
