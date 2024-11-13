@@ -55,8 +55,14 @@ export function EditFooter() {
     }, [onSubmitSuccess, onSubmitFailure, datapath, idKey, item, editState]);
 
     const handleDelete = useCallback(() => {
-        deleteItem(`${datapath}/${item[idKey]}`, refreshItems, (e) => console.log(e));
+        deleteItem(`${datapath}/${item[idKey]}?permanent=true`, refreshItems, (e) => console.log(e));
     }, [refreshItems, datapath, idKey, item]);
+
+    const handleToggleActive = useCallback(() => {
+        let payload = {...item};
+        payload.Deleted = Number(!Boolean(payload.Deleted));
+        updateItem(`${datapath}/${item[idKey]}`, payload, onSubmitSuccess, onSubmitFailure);
+    }, [datapath, idKey, item, onSubmitFailure, onSubmitSuccess]);
 
     const handleConfirmDelete = useCallback(() => setConfirmDelete(true), []);
     const handleConfirmClose = useCallback(() => setConfirmDelete(false), []);
@@ -79,10 +85,13 @@ export function EditFooter() {
                         aria-hidden="true"
                     />) : "Save"}
                 </Button>
-                <Button variant="danger" className="mx-3" onClick={handleConfirmDelete}>
+                <Button className="mx-3" onClick={handleToggleActive}>
+                    {item.Deleted? "Inactive" : "Active"}
+                </Button>
+                <Button variant="danger" onClick={handleConfirmDelete}>
                     Delete
                 </Button>
-                {saveDate && (<p className="my-auto">{saveDate}</p>)}
+                {saveDate && (<p className="my-auto mx-3">{saveDate}</p>)}
                 <EventConfirmModal show={confirmDelete} onClose={handleConfirmClose}
                     title="Confirm Delete"
                     body={`You are about to delete "${item[nameKey]}". This action cannot be undone.`}

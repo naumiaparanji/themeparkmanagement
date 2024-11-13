@@ -9,7 +9,7 @@ export function EditContextProvider({datapath, idKey, itemsKey, nameKey, childre
     const [search, setSearch] = useState("");
 
     const refreshItems = useCallback(() => {
-        api.get(datapath)
+        api.get(`${datapath}?deleted=true`)
         .then((response) => {
             setItems(response.data[itemsKey]);
         })
