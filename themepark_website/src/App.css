@@ -166,3 +166,7 @@ h2 {
 .about-us-container {
     overflow-y: auto; /* Allow vertical scrolling */
 }
+
+.profile-container {
+    overflow-y: auto; /* Allow vertical scrolling */
+}
