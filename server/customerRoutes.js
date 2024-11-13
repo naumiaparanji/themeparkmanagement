@@ -159,6 +159,31 @@ module.exports = (app) => {
         }
     );
     
+    app.post('/customer/unregisterEvent',
+        checkSessionForCustomer,
+        getRequestingCustomer,
+        async (req, res) => {
+            const { eventId } = req.body;
+            if (!eventId) {
+                return res.status(400).json({ success: false, error: 'MissingEventID' });
+            }
+            db.themeparkDB('EVENT_TICKET')
+            .where({ EventID: eventId, CustomerID: req.requestingCustomer.CustomerID })
+            .del()
+            .then((deletedCount) => {
+                if (deletedCount > 0) {
+                    res.status(200).json({ success: true });
+                } else {
+                    res.status(404).json({ success: false, error: 'EventNotRegistered' });
+                }
+            })
+            .catch((error) => {
+                console.error('Error unregistering for event:', error);
+                res.status(500).json({ success: false, error: 'SQLError' });
+            });
+        }
+    );
+    
 
     app.get('/customer/tickets', 
         checkSessionForCustomer,

@@ -63,6 +63,24 @@ const Events = () => {
             });
     };
 
+    const handleUnregister = (eventId) => {
+        api.post("/customer/unregisterEvent", { eventId })
+            .then((res) => {
+                if (res.data.success) {
+                    alert("Successfully unregistered from the event!");
+                    setUserTickets((prevTickets) => prevTickets.filter(id => id !== eventId)); // Update local tickets state
+                } else {
+                    alert("Unregister failed. Please try again.");
+                }
+            })
+            .catch((e) => {
+                const errorMsg = e.response?.data?.error || "An unexpected error occurred.";
+                alert(errorMsg);
+                console.error("Error unregistering from event:", e);
+            });
+    };
+          
+
     return (
         <div>
             <div className="notificationbar">
@@ -98,13 +116,17 @@ const Events = () => {
                                     <p><strong>Restrictions:</strong> {events.EventRestrictions}</p>
                                     {isLoggedIn ? (
                                         userTickets.includes(events.EventID) ? (
-                                            <p>Already Registered</p>
+                                            <>
+                                                <p>Already Registered</p>
+                                                <button onClick={() => handleUnregister(events.EventID)}>Unregister</button>
+                                            </>
                                         ) : (
                                             <button onClick={() => handleRegister(events.EventID)}>Register for Event</button>
                                         )
                                     ) : (
                                         <p>Please log in to register</p>
                                     )}
+
                                 </div>
                             ))}
                         </div>
