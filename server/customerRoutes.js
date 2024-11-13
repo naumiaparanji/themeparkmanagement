@@ -153,7 +153,7 @@ module.exports = (app) => {
             .catch((error) => {
                 if (error.sqlState === '45000')
                     return res.status(500).json({ success: false, error: error.sqlMessage });
-                res.status(500).json({ success: false, error: 'SQLError' });
+                res.status(500).json({ success: false, error: error.sqlMessage });
             });
         }
     );
