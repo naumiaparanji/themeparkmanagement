@@ -197,7 +197,7 @@ module.exports = (app) => {
         getRequestingEmployee,
         setMinEmployeeAccessLevel(2), // 2 is admin
         (req, res) => {
-            db.themeparkDB('EMPLOYEE').where('Deleted', 0)
+            db.themeparkDB('EMPLOYEE').where('Deleted', 0).whereNot("EmployeeID", 1)
             .then((employees) => res.status(200).json(employees))
             .catch((e) => {
                 console.log(e);
