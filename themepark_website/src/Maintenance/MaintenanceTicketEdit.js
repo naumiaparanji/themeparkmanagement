@@ -8,7 +8,6 @@ import {
   FancyButton,
 } from "../Auth/AuthComponents";
 import { api } from "../App";
-import Modal from "@mui/material/Modal";
 
 export const MaintenanceModal = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
