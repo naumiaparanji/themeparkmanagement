@@ -204,6 +204,18 @@ module.exports = (app) => {
                 res.status(500).json({message: "Server error"})
         });
     });
+
+    app.get("/customer/data/info",
+        checkSessionForEmployee,
+        (req, res) => {
+            db.themeparkDB('CUSTOMER').where('Deleted', 0).whereNot("CustomerID", 1)
+            .then((employees) => res.status(200).json(employees))
+            .catch((e) => {
+                console.log(e);
+                res.status(500).json({message: "Server error"})
+        });
+    });
+
     
     // Get info about other employees
     app.get("/employee/data/:user", 
