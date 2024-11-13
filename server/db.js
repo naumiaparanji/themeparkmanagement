@@ -131,18 +131,6 @@ async function setRuns(fields, isEmployee) {
     return result[0] != 0;
 }
 
-async function registerForEvent(eventId, customerId) {
-  try {
-      // Insert a new event ticket
-      const result = await db('EVENT_TICKET').insert({ EventID: eventId, CustomerID: customerId });
-      return result;  // Return result if successful
-  } catch (error) {
-      console.error('Error during event registration:', error);
-      throw error;  // Re-throw the error to be handled by the caller
-  }
-}
-
-
 module.exports = {
   themeparkDB: db,
   getUser,
@@ -158,6 +146,5 @@ module.exports = {
   getMaintenanceTicket,
   editMaintenanceTicket,
   deleteMaintenanceTicket,
-  setRuns,
-  registerForEvent
+  setRuns
 };

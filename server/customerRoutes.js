@@ -148,12 +148,13 @@ module.exports = (app) => {
             if (!eventId) {
                 return res.status(400).json({ success: false, error: 'MissingEventID' });
             }
-            db.registerForEvent(eventId, req.requestingCustomer.CustomerID)
+            db.themeparkDB('EVENT_TICKET').insert({ EventID: eventId, CustomerID: req.requestingCustomer.CustomerID })
             .then(() => res.status(200).json({ success: true }))
             .catch((error) => {
                 if (error.sqlState === '45000')
                     return res.status(500).json({ success: false, error: error.sqlMessage });
-                res.status(500).json({ success: false, error: error.sqlMessage });
+                console.log(error);
+                res.status(500).json({ success: false, error: "SQLError" });
             });
         }
     );

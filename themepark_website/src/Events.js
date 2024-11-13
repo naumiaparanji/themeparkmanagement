@@ -55,8 +55,8 @@ const Events = () => {
                 setUserTickets((prevTickets) => [...prevTickets, eventId]); // Update local tickets state
             })
             .catch((e) => {
-                if (e.response && e.response.data) {
-                    alert("Sorry, we are currently at maximum capacity for the event. Please check back at a later time!");
+                if (e.response?.data?.error !== "SQLError") {
+                    alert(e.response.data.error);
                 } else {
                     console.error("Error registering for event:", e);
                 }
