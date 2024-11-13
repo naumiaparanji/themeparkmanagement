@@ -90,8 +90,7 @@ export function EmployeeEditNav() {
                     </table>
                     </div>
                     </div>
-        <EmployeeModalFormContainer/> 
-        <hr/>
+        <EmployeeModalFormContainer/>
         </>
     );
 }
