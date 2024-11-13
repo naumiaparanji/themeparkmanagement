@@ -56,7 +56,7 @@ const Events = () => {
             })
             .catch((e) => {
                 if (e.response && e.response.data) {
-                    alert(`Error: ${e.response.data.error}`);
+                    alert("Sorry, we are currently at maximum capacity for the event. Please check back at a later time!");
                 } else {
                     console.error("Error registering for event:", e);
                 }
