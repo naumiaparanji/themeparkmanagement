@@ -40,10 +40,11 @@ const Events = () => {
             .then((res) => {
                 if (res.data.success) {
                     setIsLoggedIn(true);
-                    return api.get("/customer/tickets"); // Fetch user-registered tickets
+                    api.get("/customer/tickets")
+                    .then((response) => setUserTickets(response?.data?.tickets.map(ticket => ticket.EventID) || []))
+                    .catch((e) => console.log(e));
                 }
             })
-            .then((response) => setUserTickets(response?.data?.tickets.map(ticket => ticket.EventID) || []))
             .catch(() => setIsLoggedIn(false)); // Handle not logged in
     }, []);
 
@@ -53,7 +54,11 @@ const Events = () => {
                 alert("Successfully Registered");
                 setUserTickets((prevTickets) => [...prevTickets, eventId]); // Update UI immediately
             })
-            .catch((e) => alert("Registration Failed"));
+            .catch((e) => {
+                if (e.response && e.response.data && e.response.data.error !== "SQLError")
+                    return alert(e.response.data.error);
+                alert("Registration Failed")
+            });
     };
 
     return (
@@ -67,11 +72,11 @@ const Events = () => {
                 </section>
             </div>
             <Navbar />
+            <div className="events-container">
             <button className="back-button" onClick={() => navigate('/')}>
                 Back to Home
             </button>
             <br /><br />
-            <div className="events-container">
                 <div className="banner-image3">
                     <p className="h4">Events And Promotions</p>
                 </div>

@@ -11,6 +11,17 @@
     background-repeat: no-repeat; /* Prevent repeating of the image */
 }
 
+.abnotificationbar {
+    position: static;
+    background-color: yellow;
+    padding: .1%;
+    margin-top: 15px;
+    width: 100vw;
+    min-height: 30px;
+    border-bottom: 1px solid goldenrod;
+    display: inline-block;
+}
+
 /* Title style */
 .about-us-title {
     font-size: 46px;

@@ -8,7 +8,7 @@ import { Container, Row, Col, Tabs, Tab } from "react-bootstrap";
 export function DataManage() {
     return (
             <Container fluid>
-                <Tabs defaultActiveKey="Customer">
+                <Tabs defaultActiveKey="Employees">
                     <Tab eventKey="Employees" title="Employees">
                     <Col>
                         <Row>

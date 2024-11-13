@@ -10,7 +10,7 @@ import Rides from './Rides';
 import Runs from './Runs/Runs';
 import { EmployeeLogin, Login } from './Auth/Login';
 import { EmployeeSignup, SignUp } from './Auth/Signup';
-import DataManage from './DataEdit/DataManage';
+import DataManage from './Views/DataEdit/DataManage';
 import EmployeeDashboard, { WhoAmI } from './Views/EmployeeDashboard';
 import { MaintenanceInfo } from './Maintenance/Maintenance';
 import PageNotFound from "./PageNotFound";

@@ -76,6 +76,17 @@ module.exports = (app) => {
         returnCustomerData
     );
 
+    app.get("/customer/info/data", 
+        checkSessionForCustomer,
+        (req, res) => {
+        db.themeparkDB('CUSTOMER').where('Deleted', 0)
+        .then((employees) => res.status(200).json(employees))
+        .catch((e) => {
+            console.log(e);
+            res.status(500).json({message: "Server error"})
+        });
+    });
+
     app.post("/customer/register", async (req, res) => {
         if (!req.body.username || !req.body.password) {
             res.status(400).json({success: false, error:"MissingParams"});
@@ -137,18 +148,13 @@ module.exports = (app) => {
             if (!eventId) {
                 return res.status(400).json({ success: false, error: 'MissingEventID' });
             }
-    
-            try {
-                const result = await db.registerForEvent(eventId, req.requestingCustomer.CustomerID);
-                if (result) {
-                    return res.status(200).json({ success: true });
-                } else {
-                    return res.status(500).json({ success: false, error: 'RegistrationFailed' });
-                }
-            } catch (error) {
-                console.error('Error registering for event:', error);
-                return res.status(500).json({ success: false, error: 'SQLError' });
-            }
+            db.registerForEvent(eventId, req.requestingCustomer.CustomerID)
+            .then(() => res.status(200).json({ success: true }))
+            .catch((error) => {
+                if (error.sqlState === '45000')
+                    return res.status(500).json({ success: false, error: error.sqlMessage });
+                res.status(500).json({ success: false, error: 'SQLError' });
+            });
         }
     );
     

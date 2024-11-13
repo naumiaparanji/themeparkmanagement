@@ -9,8 +9,8 @@ const AboutUs = () => {
     const navigate = useNavigate(); // Initialize useNavigate hook
 
   return (
-    <div>
-            <div className="notificationbar">
+    <div><br />
+            <div className="abnotificationbar">
             {/* Edit Notification Text */}
             <h1 className="notificationtext">**WINTER SEASON PASSES AVAILABLE! LOGIN OR CREATE AN ACCOUNT FOR MORE INFORMATION.</h1>
             <section className="loginbutton">
@@ -21,12 +21,11 @@ const AboutUs = () => {
             </div>
               
               <Navbar />
-    <div className="about-us-container">
+    <div className="about-us-container"> 
       {/* Title Section  */}
       <button className="back-button" onClick={() => navigate('/')}>
               Back to Home
-          </button>  
-      <br></br>
+      </button> 
       <h1 className="about-us-title">About Our Theme Park</h1>
       
       {/* Cards Section */}
