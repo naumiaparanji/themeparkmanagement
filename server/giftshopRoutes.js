@@ -18,6 +18,7 @@ module.exports = (app) => {
     app.put('/giftshops/:id',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
+        employee.setMinEmployeeAccessLevel(2),
         (req, res) => {
             db.themeparkDB("GIFTSHOP").update(req.body).where('GiftshopID', req.params.id)
             .then(() => res.status(200).json({success: true}))
@@ -31,6 +32,7 @@ module.exports = (app) => {
     app.delete('/giftshops/:id',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
+        employee.setMinEmployeeAccessLevel(2),
         (req, res) => {
             db.themeparkDB("GIFTSHOP").update("Deleted", 1).where('GiftshopID', req.params.id)
             .then(() => res.status(200).json({success: true}))
@@ -44,6 +46,7 @@ module.exports = (app) => {
     app.post('/giftshops',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
+        employee.setMinEmployeeAccessLevel(2),
         (req, res) => {
             db.themeparkDB("GIFTSHOP").insert((req.body))
             .then(() => res.status(200).json({success: true}))

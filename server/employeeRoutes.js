@@ -109,6 +109,30 @@ const returnRequestedEmployee = (req, res, next) => {
     });
 }
 
+const setMinEmployeeAccessLevel = (accessLevel) => {
+    return (req, res, next) => {
+        if (!req.requestingEmployee)
+            throw new Error("req.requestingEmployee does not exist");
+        const requesterLevel = employeeRanks[req.requestingEmployee.AccessLevel];
+        if (requesterLevel < accessLevel) {
+            return res.status(403).json({success: false, error: 'Restricted'});
+        }
+        return next();
+    }
+}
+
+const setExactEmployeeAccessLevel = (accessLevel) => {
+    return (req, res, next) => {
+        if (!req.requestingEmployee)
+            throw new Error("req.requestingEmployee does not exist");
+        const requesterLevel = employeeRanks[req.requestingEmployee.AccessLevel];
+        if (requesterLevel !== accessLevel) {
+            return res.status(403).json({success: false, error: 'Restricted'});
+        }
+        return next();
+    }
+}
+
 // App routes
 module.exports = (app) => {
 
@@ -143,6 +167,11 @@ module.exports = (app) => {
         async (req, res) => {
             const roleRank = employeeRanks[req.requestingEmployee.AccessLevel];
             const roleName = employeeNames[req.requestingEmployee.AccessLevel];
+            let canAccess = ['maintenance', 'runs'];
+            if (roleRank > 0)
+                canAccess.push('reports');
+            if (roleRank > 1)
+                canAccess.push('attractions', 'events', 'datamanage');
             res.status(200).json({success: true, 
                 user: req.session.employeeUser,
                 firstName: req.requestingEmployee.FirstName,
@@ -150,7 +179,8 @@ module.exports = (app) => {
                 accessLevel: req.requestingEmployee.AccessLevel,
                 role: roleName,
                 rank: roleRank,
-                canModify: employeeRoles.slice(0, roleRank)
+                canModify: employeeRoles.slice(0, roleRank),
+                canAccess: canAccess
             });
         }
     );
@@ -164,6 +194,8 @@ module.exports = (app) => {
 
     app.get("/employee/data/info",
         checkSessionForEmployee,
+        getRequestingEmployee,
+        setMinEmployeeAccessLevel(2), // 2 is admin
         (req, res) => {
             db.themeparkDB('EMPLOYEE').where('Deleted', 0)
             .then((employees) => res.status(200).json(employees))
@@ -177,19 +209,16 @@ module.exports = (app) => {
     app.get("/employee/data/:user", 
         checkSessionForEmployee,
         getRequestingEmployee, 
+        setMinEmployeeAccessLevel(2), // 2 is admin
         getRequestedEmployee,
-        compareAccessLevels,
         returnRequestedEmployee
     );
 
     app.get("/employee/data/all/:part",
         checkSessionForEmployee,
         getRequestingEmployee,
+        setMinEmployeeAccessLevel(2), // 2 is admin
         async (req, res) => {
-            if (req.requestingEmployee.AccessLevel === "EMP") {
-                res.status(403).json({success: false, error: 'Restricted'});
-                return;
-            }
             if (!req.params.part || isNaN(req.params.part) || Number(req.params.part) < 0) {
                 res.status(400).json({success: false, error:"BadParams"});
                 return;
@@ -218,14 +247,11 @@ module.exports = (app) => {
     app.post("/employee/register", 
         checkSessionForEmployee,
         getRequestingEmployee, 
+        setMinEmployeeAccessLevel(2), // 2 is admin
         async (req, res) => {
             // Differs from customer registration in that the session needs to be authorized
             // Needs additional logic for checking registration permissions per employee
             const allowedLevels = ['MGR', 'ADM', 'SUP'];
-            if(!req.requestingEmployee || allowedLevels.indexOf(req.requestingEmployee.AccessLevel) === -1) {
-                res.status(401).json({success: false, error: "NotAuthorized"});
-                return;
-            }
             requiredKeys = [
                 "firstName",
                 "lastName",
@@ -312,3 +338,5 @@ module.exports.employeeRanks = employeeRanks;
 module.exports.employeeNames = employeeNames;
 module.exports.checkSessionForEmployee = checkSessionForEmployee;
 module.exports.getRequestingEmployee = getRequestingEmployee;
+module.exports.setMinEmployeeAccessLevel = setMinEmployeeAccessLevel;
+module.exports.setExactEmployeeAccessLevel = setExactEmployeeAccessLevel;

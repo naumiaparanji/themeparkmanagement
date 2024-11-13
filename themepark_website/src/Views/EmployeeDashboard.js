@@ -7,6 +7,15 @@ import * as Icon from 'react-bootstrap-icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Navbar, Nav, Container, NavDropdown, ListGroup} from "react-bootstrap";
 import { StaffManagerContextProvider } from "./Staff";
+import { Routes, Route } from 'react-router-dom';
+import { MaintenanceData } from '../Maintenance/MaintenanceEdit';
+import { RidesInfo, RidesInfoBox } from '../Rides/Rides';
+import Runs from '../Runs/Runs';
+import { EventsEditView } from './EventsEdit/EventsEditView';
+import { AttractionsEditView } from './AttractionsEdit/AttractionsEdit';
+import { MaintenanceInfo } from '../Maintenance/Maintenance';
+import DataManage from './DataEdit/DataManage';
+import PageNotFound from "../PageNotFound";
 import { api } from "../App";
 
 export function WhoAmI() {
@@ -97,17 +106,28 @@ export function DashUI() {
                 <div className={`${styles.sidepanel}`}>
                     <ListGroup className={`list-group-flush ${styles.grow}`}>
                         <SideBarLink title="Home" path="" activeIcon="HouseFill" inactiveIcon="House" />
-                        <SideBarLink title="Attractions" path="attractions" activeIcon="MapFill" inactiveIcon="Map" />
-                        <SideBarLink title="Events" path="events" activeIcon="CalendarEventFill" inactiveIcon="CalendarEvent" />
-                        <SideBarLink title="Reports" path="reports" activeIcon="Clipboard2DataFill" inactiveIcon="Clipboard2Data" />
-                        <SideBarLink title="Maintenance" path="maintenance" activeIcon="Hammer" inactiveIcon="Hammer" />
-                        <SideBarLink title="Ride Operator Portal" path="runs" activeIcon="Clipboard2DataFill" inactiveIcon="Clipboard2Data" />
-                        <SideBarLink title="Data Management" path="datamanage" activeIcon="DatabaseFillLock" inactiveIcon="DatabaseLock" />
+                        {data.canAccess.includes('attractions') && <SideBarLink title="Attractions" path="attractions" activeIcon="MapFill" inactiveIcon="Map" />}
+                        {data.canAccess.includes('events') && <SideBarLink title="Events" path="events" activeIcon="CalendarEventFill" inactiveIcon="CalendarEvent" />}
+                        {data.canAccess.includes('reports') && <SideBarLink title="Reports" path="reports" activeIcon="Clipboard2DataFill" inactiveIcon="Clipboard2Data" />}
+                        {data.canAccess.includes('maintenance') && <SideBarLink title="Maintenance" path="maintenance" activeIcon="Hammer" inactiveIcon="Hammer" />}
+                        {data.canAccess.includes('runs') && <SideBarLink title="Ride Operator Portal" path="runs" activeIcon="Clipboard2DataFill" inactiveIcon="Clipboard2Data" />}
+                        {data.canAccess.includes('datamanage') && <SideBarLink title="Data Management" path="datamanage" activeIcon="DatabaseFillLock" inactiveIcon="DatabaseLock" />}
                         <SideBarLink className="mt-auto" title="Settings" path="settings" activeIcon="GearFill" inactiveIcon="Gear" />
                     </ListGroup>
                 </div>
                 <div className={`${styles.scrolly} w-100`}>
-                    <Outlet />
+                    <Routes>
+                        <Route path="" element={<WhoAmI/>} />
+                        {data.canAccess.includes('events') && <Route path="events" element={<EventsEditView/>} />}
+                        {data.canAccess.includes('attractions') && <Route path="attractions" element={<AttractionsEditView/>} />}
+                        {data.canAccess.includes('reports') && <Route path="reports" element={<WhoAmI/>} />}
+                        {data.canAccess.includes('rides') && <Route path="rides" element={<RidesInfo/>} />}
+                        {data.canAccess.includes('maintenance') && <Route path="maintenance" element={<MaintenanceInfo/>} />}
+                        {data.canAccess.includes('runs') && <Route path="runs" element={<Runs/>} />}
+                        {data.canAccess.includes('maintenance') && <Route path="maintenance/data" element={<MaintenanceData/>} />}
+                        {data.canAccess.includes('datamanage') && <Route path="datamanage" element={<DataManage/>} />}
+                        <Route path='*' element={<PageNotFound />} />
+                    </Routes>
                 </div>
             </div>
         </Container>
