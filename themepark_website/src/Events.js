@@ -40,10 +40,11 @@ const Events = () => {
             .then((res) => {
                 if (res.data.success) {
                     setIsLoggedIn(true);
-                    return api.get("/customer/tickets"); // Fetch user-registered tickets
+                    api.get("/customer/tickets")
+                    .then((response) => setUserTickets(response?.data?.tickets.map(ticket => ticket.EventID) || []))
+                    .catch((e) => console.log(e));
                 }
             })
-            .then((response) => setUserTickets(response?.data?.tickets.map(ticket => ticket.EventID) || []))
             .catch(() => setIsLoggedIn(false)); // Handle not logged in
     }, []);
 
