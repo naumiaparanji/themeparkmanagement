@@ -36,12 +36,14 @@ function generateEventStartAndDuration(startTime, endTime) {
 }
 
 function prepareEventPayload(event) {
-    const {startDate, duration} = generateEventStartAndDuration(event.startTime, event.endTime);
     let payload = {...event};
-    payload.EventDateTime = startDate;
-    payload.EventDuration = duration;
-    delete payload.startTime;
-    delete payload.endTime;
+    if (event.startTime && event.endTime) {
+        const {startDate, duration} = generateEventStartAndDuration(event.startTime, event.endTime);
+        payload.EventDateTime = startDate;
+        payload.EventDuration = duration;
+        delete payload.startTime;
+        delete payload.endTime;
+    }
     return payload;
 }
 
