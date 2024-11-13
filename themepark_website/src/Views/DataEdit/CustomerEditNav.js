@@ -53,7 +53,7 @@ export function CustomerEditNav() {
                 </Form>
             </Container>
         </Navbar>
-                    <div className='d-flex flex-column align-items-center bg-white p-4 m-0'>
+                    <div className='d-flex flex-column align-items-center bg-white p-1'>
                     <table>
                             <thead>
                                     <tr>

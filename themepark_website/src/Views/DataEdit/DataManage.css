@@ -55,3 +55,25 @@ label {
 .Create {
     background-color: #04AA6D;
 }
+
+table {
+    width: 20vh;
+    border-spacing: 15px;
+    color: #444;
+    background-color: white;
+  }
+  
+tr {
+    margin-bottom: 20px;
+}
+  
+th {
+    width: 22vh;
+    text-align: left;
+    font-size: 20px;
+}
+  
+td {
+    width: 30vh;
+
+}

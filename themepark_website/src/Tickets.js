@@ -34,6 +34,7 @@ const Tickets = () => {
   const navigate = useNavigate(); // Initialize useNavigate hook
   const categories = [...new Set(ticketData.map(ticket => ticket.category))]; // Unique categories
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isNotLoggedIn, setIsNotLoggedIn] = useState(false);
 
   useEffect(() => {
       // Check session status on mount
@@ -94,6 +95,9 @@ const Tickets = () => {
                               <p><strong>{ticket.subName}</strong></p>
                               <p><strong>Description: </strong> <p>{ticket.Description}</p></p>
                               <p className="price"><strong>Price: </strong>{ticket.price}</p>
+                              {isLoggedIn ||
+                                        <p className="PleaseLogin">Please Login to Purchase Tickets</p>
+                                    }
                               {isLoggedIn && 
                                         <button className="button" onClick={toggleModal} style={linkStyle}>Purchase</button>
                                     }
