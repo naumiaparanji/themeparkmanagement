@@ -10,7 +10,7 @@ const AboutUs = () => {
 
   return (
     <div><br />
-            <div className="notificationbar">
+            <div className="abnotificationbar">
             {/* Edit Notification Text */}
             <h1 className="notificationtext">**WINTER SEASON PASSES AVAILABLE! LOGIN OR CREATE AN ACCOUNT FOR MORE INFORMATION.</h1>
             <section className="loginbutton">
@@ -27,6 +27,7 @@ const AboutUs = () => {
               Back to Home
       </button> 
       <h1 className="about-us-title">About Our Theme Park</h1>
+      
       {/* Cards Section */}
       <div className="about-us-cards">
         {/* History Card */}

@@ -1,4 +1,4 @@
-import './Home.css';
+//import './Home.css';
 import BgVideo from './images/stock_footage_bg.mp4';
 import Navbar from './Navbar'; 
 import './CustomerAccount';
@@ -7,8 +7,8 @@ import CustomerAccount from './CustomerAccount';
 const Home = () => {
 
     return (
-        <div>
-            <div className="notificationbar">
+        <div className="homepage">
+            <div className="homenotificationbar">
                 {/* Edit Notification Text */}
                 <h1 className="notificationtext">**WINTER SEASON PASSES AVAILABLE! LOGIN OR CREATE AN ACCOUNT FOR MORE INFORMATION.</h1>
                 <section className="loginbutton">

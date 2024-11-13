@@ -71,7 +71,7 @@ const Events = () => {
             <button className="back-button" onClick={() => navigate('/')}>
                 Back to Home
             </button>
-            <br /><br /><br />
+            <br /><br />
                 <div className="banner-image3">
                     <p className="h4">Events And Promotions</p>
                 </div>

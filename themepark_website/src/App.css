@@ -2,13 +2,19 @@
     position: static;
     background-color: yellow;
     padding: .1%;
+    margin-top: 0px;
     width: 100%;
+    min-height: 30px;
     border-bottom: 1px solid goldenrod;
     display: inline-block;
 }
 
+.homepage {
+    width: 100vw;
+}
+
 .notificationtext {
-    padding-top: 0.15%;
+    padding-top: 20px;
     font-size: 100%;
 }
 
@@ -58,6 +64,7 @@ h4 {
     padding: .5%;
     font-size: 100%;
     margin-left: -15px;
+    margin-top: 15px;
     width: 160px;
 }
 

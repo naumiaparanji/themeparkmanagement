@@ -11,19 +11,26 @@
     background-repeat: no-repeat; /* Prevent repeating of the image */
 }
 
-.back-button {
-    float: left;
-    position: relative;
-    margin-bottom: 0px; /* Space below the button */
-    padding: 10px 20px; /* Padding around the button */
-    padding-top: 20%;
-    background-color: white; /* Button background color */
-    color: black; /* Button text color */
-    text-decoration: underline;
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor on hover */
-    font-size: 16px; /* Font size */
+.abnotificationbar {
+    position: static;
+    background-color: yellow;
+    padding: .1%;
+    margin-top: 15px;
+    width: 100%;
+    min-height: 30px;
+    border-bottom: 1px solid goldenrod;
+    display: inline-block;
+}
+
+.homenotificationbar {
+    position: static;
+    background-color: yellow;
+    padding: .1%;
+    margin-top: -15px;
+    width: 100%;
+    min-height: 30px;
+    border-bottom: 1px solid goldenrod;
+    display: inline-block;
 }
 
 /* Title style */
