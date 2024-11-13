@@ -12,7 +12,7 @@ export function EventsTopBar() {
 
     return (
         <>
-        <Navbar fixed="top">
+        <Navbar>
             <Container fluid>
                 <Form className="w-100">
                     <InputGroup className="d-flex">
