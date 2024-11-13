@@ -54,7 +54,11 @@ const Events = () => {
                 alert("Successfully Registered");
                 setUserTickets((prevTickets) => [...prevTickets, eventId]); // Update UI immediately
             })
-            .catch((e) => alert("Registration Failed"));
+            .catch((e) => {
+                if (e.response && e.response.data && e.response.data.error !== "SQLError")
+                    return alert(e.response.data.error);
+                alert("Registration Failed")
+            });
     };
 
     return (

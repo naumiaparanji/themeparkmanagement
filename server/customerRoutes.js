@@ -148,18 +148,13 @@ module.exports = (app) => {
             if (!eventId) {
                 return res.status(400).json({ success: false, error: 'MissingEventID' });
             }
-    
-            try {
-                const result = await db.registerForEvent(eventId, req.requestingCustomer.CustomerID);
-                if (result) {
-                    return res.status(200).json({ success: true });
-                } else {
-                    return res.status(500).json({ success: false, error: 'RegistrationFailed' });
-                }
-            } catch (error) {
-                console.error('Error registering for event:', error);
-                return res.status(500).json({ success: false, error: 'SQLError' });
-            }
+            db.registerForEvent(eventId, req.requestingCustomer.CustomerID)
+            .then(() => res.status(200).json({ success: true }))
+            .catch((error) => {
+                if (error.sqlState === '45000')
+                    return res.status(500).json({ success: false, error: error.sqlMessage });
+                res.status(500).json({ success: false, error: 'SQLError' });
+            });
         }
     );
     
