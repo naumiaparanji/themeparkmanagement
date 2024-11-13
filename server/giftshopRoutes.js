@@ -5,8 +5,10 @@ const employee = require("./employeeRoutes");
 module.exports = (app) => {
     
     app.get('/giftshops', (req, res) => {
-        db.themeparkDB("GIFTSHOP").where("Deleted", 0).orderBy("GiftshopID")
-        .then((items) => {
+        let query = db.themeparkDB("GIFTSHOP").orderBy("GiftshopID")
+        if (!req.query.deleted)
+            query = query.where("Deleted", 0);
+        query.then((items) => {
             res.status(200).json({success: true, giftshops: items});
         })
         .catch((e) => {
@@ -34,8 +36,12 @@ module.exports = (app) => {
         employee.getRequestingEmployee,
         employee.setMinEmployeeAccessLevel(2),
         (req, res) => {
-            db.themeparkDB("GIFTSHOP").update("Deleted", 1).where('GiftshopID', req.params.id)
-            .then(() => res.status(200).json({success: true}))
+            let query = db.themeparkDB("GIFTSHOP").where('GiftshopID', req.params.id)
+            if (req.query.permanent)
+                query = query.delete();
+            else
+                query = query.update("Deleted", 1)
+            query.then(() => res.status(200).json({success: true}))
             .catch((e) => {
                 console.error(e);
                 res.status(500).json({success: false, error: "SQLError"});
