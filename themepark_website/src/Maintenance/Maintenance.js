@@ -1,5 +1,5 @@
 import "./Maintenance.css";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import MainLogo from "../images/flagslogo.png";
 import {
     RandomBGImg,
@@ -8,6 +8,8 @@ import {
     FancyButton,
 } from "../Auth/AuthComponents";
 import { api } from "../App";
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
 
 export function MaintenanceInfoBox(props) {
     const [rideName, setRideName] = useState("");
@@ -19,7 +21,7 @@ export function MaintenanceInfoBox(props) {
 
     useEffect(() => {
         api.get("/rides/names")
-            .then((res) => setRideOptions(res.data.rideNames) )
+            .then((res) => setRideOptions(res.data.rideNames))
             .catch((e) => {
                 if (e.response) {
                     if (e.response.status === 500)
@@ -30,8 +32,7 @@ export function MaintenanceInfoBox(props) {
                         setMessage("Submission failed. Error Code: " + e.response.status);
                     else
                         setMessage("Unknown error");
-                }
-                else if (e.request)
+                } else if (e.request)
                     setMessage("Failed to connect to server");
             });
     }, []);
@@ -66,7 +67,7 @@ export function MaintenanceInfoBox(props) {
 
     return (
         <div className="loginbox" style={{
-            width: "60%",
+            width: "80%",
             padding: "20px",
             maxWidth: "800px",
             margin: "0 auto",
@@ -161,11 +162,20 @@ export function MaintenanceInfoBox(props) {
 export function MaintenanceInfo(props) {
     return (
         <div className="container">
-            <RandomBGImg />
-            <MaintenanceInfoBox
-                title={props.title || "Maintenance Info Submission"}
-                apiPath={props.apiPath || "/maintenance/input"}
-            />
+            
+            <Tabs>
+                <TabList>
+                    <Tab>Maintenance Request</Tab>
+                    <Tab>Maintenance Update</Tab>
+                </TabList>
+
+                <TabPanel>
+                    <MaintenanceInfoBox
+                        title={props.title || "Maintenance Info Submission"}
+                        apiPath={props.apiPath || "/maintenance/input"}
+                    />
+                </TabPanel>
+            </Tabs>
         </div>
     );
 }

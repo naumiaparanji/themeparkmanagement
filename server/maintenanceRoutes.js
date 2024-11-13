@@ -46,9 +46,8 @@ module.exports = (app) => {
 
   // for update CURRENTLY NOT WORKING
   app.put("/maintenance/edit/:maintenanceID",  async (req, res) => {
-    const {maintenanceID} = req.params;
     try {
-      return await db.editMaintenanceTicket(maintenanceID);
+      return await db.editMaintenanceTicket(req.body.fields);
       res
         .status(200)
         .json({ message: "Maintenance ticket updated successfully" });

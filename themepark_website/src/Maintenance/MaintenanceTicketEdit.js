@@ -12,7 +12,6 @@ import Modal from "@mui/material/Modal";
 
 export const MaintenanceModal = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
-
   return (
     <div
       onClick={onClose}
@@ -29,6 +28,7 @@ export const MaintenanceModal = ({ isOpen, onClose, children }) => {
       }}
     >
       <div
+        onClick={(e) => e.stopPropagation()}
         style={{
           background: "white",
           // height: 500,
@@ -80,13 +80,20 @@ export function MaintenanceEditBox(props) {
       setMessage("All fields are required");
       return;
     }
-    api
-      .put(props.apiPath || `/maintenance/edit/${props.maintenanceData.maintenanceId}`, {
-        rideName,
-        date,
-        description,
-        status,
-      })
+    await api
+      .put(
+        props.apiPath ||
+          `/maintenance/edit/${props.maintenanceData.maintenanceId}`,
+        {
+          fields: {
+            maintenanceID: props.maintenanceData.maintenanceId,
+            rideName: props.maintenanceData.rideName,
+            date: props.maintenanceData.date,
+            description: props.maintenanceData.description,
+            status: props.maintenanceData.status,
+          },
+        }
+      )
       .then(() => {
         setMessage("Maintenance info submitted successfully");
         setDate("");

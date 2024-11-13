@@ -104,10 +104,11 @@ async function getMaintenanceTicket(){
 }
 
 async function editMaintenanceTicket(fields){
-    const editMaintenance = await db("MAINTENANCE").update({RideID: fields.RideID, Date: fields.Date, Description: fields.Description}).where("MaintenanceID", fields.maintenanceID);
-    const editMStatus = await db("M_STATUS").update({RideID: fields.RideID, Date: fields.Date, Description: fields.Description}).where("MaintenanceID", fields.maintenanceID);
+    const editMaintenance = await db("MAINTENANCE").update({RideID: fields.rideID, Date: new Date(fields.date), Description: fields.description}).where("MaintenanceID", fields.maintenanceID);
+    const rideStatusID = await db("M_STATUS").select("RideStatusID").where("MaintenanceID", fields.maintenanceID);
+    const editRideStatus = await db("RIDE_STATUS").update({Status: fields.status}).where("RideStatusID", rideStatusID);
 
-    return editMStatus;
+    return editRideStatus;
 }
 
 async function deleteMaintenanceTicket(maintenanceID) {

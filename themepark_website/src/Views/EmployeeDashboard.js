@@ -100,7 +100,7 @@ export function DashUI() {
                         <SideBarLink title="Attractions" path="attractions" activeIcon="MapFill" inactiveIcon="Map" />
                         <SideBarLink title="Events" path="events" activeIcon="CalendarEventFill" inactiveIcon="CalendarEvent" />
                         <SideBarLink title="Reports" path="reports" activeIcon="Clipboard2DataFill" inactiveIcon="Clipboard2Data" />
-                        <SideBarLink title="Maintenance Report" path="maintenance" activeIcon="Hammer" inactiveIcon="Hammer" />
+                        <SideBarLink title="Maintenance" path="maintenance" activeIcon="Hammer" inactiveIcon="Hammer" />
                         <SideBarLink title="Ride Operator Portal" path="runs" activeIcon="Clipboard2DataFill" inactiveIcon="Clipboard2Data" />
                         <SideBarLink title="Data Management" path="datamanage" activeIcon="DatabaseFillLock" inactiveIcon="DatabaseLock" />
                         <SideBarLink className="mt-auto" title="Settings" path="settings" activeIcon="GearFill" inactiveIcon="Gear" />
