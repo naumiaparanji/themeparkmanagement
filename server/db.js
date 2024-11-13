@@ -69,10 +69,6 @@ async function getRidesCategories(){
   return await query;
 }
 
-async function getEvents() {
-  return await db("EVENTS").where("Deleted", 0).orderBy("EventID");
-}
-
 async function getEventCategories() {
   return await db("EVENTS").select("EventType").where("Deleted", 0).distinct().orderBy("EventType");
 }
@@ -139,7 +135,6 @@ module.exports = {
   getRides,
   getRidesNames,
   getRidesCategories,
-  getEvents,
   getEventCategories,
   setMaintenanceRequest,
   getRideStatusID,

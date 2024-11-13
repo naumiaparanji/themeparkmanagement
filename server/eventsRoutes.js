@@ -8,8 +8,10 @@ module.exports = (app) => {
 
     // Event registration route
     app.get('/events', (req, res) => {
-        db.getEvents()
-        .then((events) => {
+        let query = db.themeparkDB("EVENTS").orderBy("EventID");
+        if (!req.query.deleted)
+            query = query.where("Deleted", 0);
+        query.then((events) => {
             res.status(200).json({success: true, events: events});
         })
         .catch((e) => {
@@ -50,8 +52,12 @@ module.exports = (app) => {
         employee.setMinEmployeeAccessLevel(2),
         (req, res) => {
             req.body.EventDateTime = new Date(req.body.EventDateTime);
-            db.themeparkDB("EVENTS").update("Deleted", 1).where('EventID', req.params.id)
-            .then(() => res.status(200).json({success: true}))
+            let query = db.themeparkDB("EVENTS").where('EventID', req.params.id);
+            if (req.query.permanent)
+                query = query.delete();
+            else
+                query = query.update("Deleted", 1)
+            query.then(() => res.status(200).json({success: true}))
             .catch((e) => {
                 console.error(e);
                 res.status(500).json({success: false, error: "SQLError"});

@@ -70,7 +70,7 @@ export function addEvent(event, onSuccess, onFailure) {
 }
 
 export function deleteEvent(event, onSuccess, onFailure) {
-    api.delete(`/events/${event.EventID}`)
+    api.delete(`/events/${event.EventID}?permanent=true`)
     .then((response) => {
         onSuccess(response);
     })
@@ -109,7 +109,7 @@ export function EventsEditContextProvider({children}) {
     const [isNewEventValid, setIsNewEventValid] = useState(false);
 
     const refreshEvents = useCallback(() => {
-        api.get("/events")
+        api.get("/events?deleted=true")
         .then((response) => {
             setEvents(response.data.events);
         })

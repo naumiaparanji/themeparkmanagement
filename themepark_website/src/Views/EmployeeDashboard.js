@@ -1,6 +1,6 @@
 import styles from "./Dashboard.module.css";
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate, useLocation, useResolvedPath, Outlet } from 'react-router-dom';
+import { useNavigate, useLocation, useResolvedPath } from 'react-router-dom';
 import { ApiContext, ApiContextProvider } from "../ApiContext";
 import MainLogo from '../images/flagslogo.png'; 
 import * as Icon from 'react-bootstrap-icons';
@@ -9,7 +9,7 @@ import {Navbar, Nav, Container, NavDropdown, ListGroup} from "react-bootstrap";
 import { StaffManagerContextProvider } from "./Staff";
 import { Routes, Route } from 'react-router-dom';
 import { MaintenanceData } from '../Maintenance/MaintenanceEdit';
-import { RidesInfo, RidesInfoBox } from '../Rides/Rides';
+import { RidesInfo } from '../Rides/Rides';
 import Runs from '../Runs/Runs';
 import { EventsEditView } from './EventsEdit/EventsEditView';
 import { AttractionsEditView } from './AttractionsEdit/AttractionsEdit';
