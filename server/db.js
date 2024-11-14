@@ -133,23 +133,17 @@ async function setRuns(fields, isEmployee) {
     return result[0] != 0;
 }
 
-async function getRidePopularityInfo(isEmployee) {
-    if (!isEmployee) return false;
-
+async function getRidePopularityInfo() {
     let target = "RIDE_POPULARITY_INFO";
     return db(target).select();
 }
 
-async function getRidePopularitySummary(fields, isEmployee) {
-    if (!isEmployee) return false;
-
+async function getRidePopularitySummary() {
     let target = "RIDE_POPULARITY_SUMMARY";
     return db(target).select();
 }
 
-async function getCategoryPopularitySummary(fields, isEmployee) {
-    if (!isEmployee) return false;
-
+async function getCategoryPopularitySummary() {
     let target = "CATEGORY_POPULARITY_SUMMARY";
     return db(target).select();
 }

@@ -221,11 +221,9 @@ export function RidePopularityReportsView() {
                     </select>
                 </div>
                 <div className="m-4">
-                {() => {
-                    if (reportType === "category-summary") return (<CategoryPopularitySummary/>);
-                    if (reportType === "ride-summary") return (<RidePopularitySummary/>);
-                    if (reportType === "runs") return (<IndividualRuns/>);
-                }}
+                {reportType === "category-summary" && <CategoryPopularitySummary/>}
+                {reportType === "ride-summary" && <RidePopularitySummary/>}
+                {reportType === "runs" && <IndividualRuns/>}
                 </div>
             </Card>
         </RidePopularityReportContextProvider>
