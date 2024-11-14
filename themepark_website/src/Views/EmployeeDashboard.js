@@ -8,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {Navbar, Nav, Container, NavDropdown, ListGroup} from "react-bootstrap";
 import { StaffManagerContextProvider } from "./Staff";
 import { Routes, Route } from 'react-router-dom';
-import { MaintenanceData } from '../Maintenance/MaintenanceEdit';
+import { MaintenanceData, MaintenanceDataBox } from '../Maintenance/MaintenanceEdit';
 import { RidesInfo } from '../Rides/Rides';
 import Runs from '../Runs/Runs';
 import { EventsEditView } from './EventsEdit/EventsEditView';
@@ -119,7 +119,7 @@ export function DashUI() {
                         <Route path="" element={<WhoAmI/>} />
                         {data.canAccess.includes('events') && <Route path="events" element={<EventsEditView/>} />}
                         {data.canAccess.includes('attractions') && <Route path="attractions" element={<AttractionsEditView/>} />}
-                        {data.canAccess.includes('reports') && <Route path="reports" element={<WhoAmI/>} />}
+                        {data.canAccess.includes('reports') && <Route path="reports" element={<MaintenanceDataBox isReport = {true}/>} />}
                         {data.canAccess.includes('rides') && <Route path="rides" element={<RidesInfo/>} />}
                         {data.canAccess.includes('maintenance') && <Route path="maintenance" element={<MaintenanceInfo/>} />}
                         {data.canAccess.includes('runs') && <Route path="runs" element={<Runs/>} />}

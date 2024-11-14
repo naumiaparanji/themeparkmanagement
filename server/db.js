@@ -64,8 +64,6 @@ async function getRidesNames() {
 
 async function getRidesCategories(){
   let query = db("RIDES").select("Category").where("Deleted", 0).orderBy("Category").distinct();
-  // const offset = limit * offsetCount;
-  // if (offset > 0) query = query.offset(offset);
   return await query;
 }
 
@@ -96,7 +94,9 @@ async function getRideStatusID(){
 }
 
 async function getMaintenanceTicket(){
-  return await db("MAINTENANCE").select().where("MAINTENANCE.Deleted", 0).orderBy("MaintenanceID").leftJoin('RIDES', 'MAINTENANCE.RideID', 'RIDES.RideID');
+  let result = await db("MAINTENANCE").select().where("MAINTENANCE.Deleted", 0).orderBy("MAINTENANCE.MaintenanceID").leftJoin('RIDES', 'MAINTENANCE.RideID', 'RIDES.RideID').leftJoin('M_STATUS','MAINTENANCE.MaintenanceID', 'M_STATUS.MaintenanceID').leftJoin('RIDE_STATUS', 'M_STATUS.RideStatusID', 'RIDE_STATUS.RideStatusID');
+  console.log(result.toString());
+  return result
 }
 
 async function editMaintenanceTicket(fields){

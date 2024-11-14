@@ -39,18 +39,14 @@ export function MaintenanceDataBox(props) {
                 category: maintenanceArray[i].Category,
                 date: maintenanceArray[i].Date,
                 description: maintenanceArray[i].Description,
+                status: maintenanceArray[i].Status,
               };
               maintenanceTicketItems.push(ticket);
             }
             setMaintenanceData(maintenanceTicketItems);
 
             setFilteredData(maintenanceTicketItems);
-            console.log("ticket");
-            console.log(maintenanceTicketItems);
-            console.log("filter");
-            console.log(filteredData);
           });
-        console.log("made past request");
 
         let rideNameItems = [];
         let nameData = await api
@@ -74,7 +70,27 @@ export function MaintenanceDataBox(props) {
               ...rideNameItems,
             ]);
           });
-        console.log("made past request");
+
+        let categoryItems = [];
+        let categoryData = await api
+          .get("/maintenance/data/allCategories")
+          .then((categoryData) => {
+            let categoryArrayData = categoryData["data"]["data"];
+            for (let i = 0; i < categoryArrayData.length; i++) {
+              categoryItems.push(
+                <option
+                  key={categoryArrayData[i].Category}
+                  value={categoryArrayData[i].Category}
+                >
+                  {categoryArrayData[i].Category}
+                </option>
+              );
+            }
+            setCategories([
+              { key: "Select Category", value: "Select Category" },
+              ...categoryItems,
+            ]);
+          });
       } catch (error) {
         console.log(error);
         if (error.response) {
@@ -93,7 +109,13 @@ export function MaintenanceDataBox(props) {
 
   useEffect(() => {
     handleSearch();
-  }, [searchMaintenanceId, searchRideName, searchDateFrom, searchDateTo]);
+  }, [
+    searchMaintenanceId,
+    searchRideName,
+    searchCategory,
+    searchDateFrom,
+    searchDateTo,
+  ]);
 
   const handleSearch = () => {
     const filtered = maintenanceData.filter((item) => {
@@ -105,13 +127,13 @@ export function MaintenanceDataBox(props) {
 
       let fixedSearchRideName =
         searchRideName === "Select Ride Name" ? "" : searchRideName;
-      console.log("Search Ride Name-----------");
-      console.log(fixedSearchRideName);
-      console.log(searchRideName);
       const matchesRideName =
         fixedSearchRideName === "" || item.rideName === fixedSearchRideName;
+
+      let fixedSearchCategory =
+        searchCategory === "Select Category" ? "" : searchCategory;
       const matchesCategory =
-        searchCategory === "" || item.category === searchCategory;
+        fixedSearchCategory === "" || item.category === fixedSearchCategory;
       const matchesDateFrom =
         searchDateFrom === "" ||
         new Date(item.date) >= new Date(searchDateFrom);
@@ -196,20 +218,24 @@ export function MaintenanceDataBox(props) {
           marginBottom: "3px",
         }}
       >
-        <label style={{ flex: "1 1 100px" }}>
-          Maintenance ID:
-          <input
-            type="text"
-            value={searchMaintenanceId}
-            onChange={(e) => setSearchMaintenanceId(e.target.value)}
-            style={{
-              padding: "8px",
-              borderRadius: "4px",
-              border: "1px solid #ccc",
-              width: "100%",
-            }}
-          />
-        </label>
+        {!props.isReport ? (
+          <>
+            <label style={{ flex: "1 1 100px" }}>
+              Maintenance ID:
+              <input
+                type="text"
+                value={searchMaintenanceId}
+                onChange={(e) => setSearchMaintenanceId(e.target.value)}
+                style={{
+                  padding: "8px",
+                  borderRadius: "4px",
+                  border: "1px solid #ccc",
+                  width: "100%",
+                }}
+              />
+            </label>
+          </>
+        ) : null}
 
         <label style={{ flex: "1 1 100px" }}>
           Ride Name:
@@ -233,6 +259,33 @@ export function MaintenanceDataBox(props) {
             })}
           </select>
         </label>
+
+        {props.isReport ? (
+          <>
+            <label style={{ flex: "1 1 100px" }}>
+              Category:
+              <select
+                value={searchCategory}
+                onChange={(e) => setSearchCategory(e.target.value)}
+                style={{
+                  padding: "8px",
+                  borderRadius: "4px",
+                  border: "1px solid #ccc",
+                  width: "100%",
+                  marginTop: "4px",
+                }}
+              >
+                {categories.map((option) => {
+                  return (
+                    <option key={option.value} value={option.value}>
+                      {option.key}
+                    </option>
+                  );
+                })}
+              </select>
+            </label>
+          </>
+        ) : null}
       </div>
       <div>
         <label style={{ flex: "1 1 100px" }}>
@@ -273,23 +326,25 @@ export function MaintenanceDataBox(props) {
           <thead>
             <tr>
               <th style={{ width: "12%" }}>Maintenance ID</th>
-              <th style={{ width: "10%" }}>Ride ID</th>
               <th style={{ width: "15%" }}>Ride Name</th>
               <th style={{ width: "10%" }}>Category</th>
               <th style={{ width: "17%" }}>Date</th>
-              {/*  */}
-              <th
-                style={{
-                  width: "18%",
-                  wordWrap: "break-word",
-                  whiteSpace: "normal",
-                }}
-              >
-                Description
-              </th>
-              <th style={{ width: "8%" }}>Modify</th>
-              <th style={{ width: "10%" }}>Delete</th>
-              {/*  */}
+              <th style={{ width: "17%" }}>Ride Status</th>
+              {!props.isReport ? (
+                <>
+                  <th
+                    style={{
+                      width: "18%",
+                      wordWrap: "break-word",
+                      whiteSpace: "normal",
+                    }}
+                  >
+                    Description
+                  </th>
+                  <th style={{ width: "8%" }}>Modify</th>
+                  <th style={{ width: "10%" }}>Delete</th>
+                </>
+              ) : null}
             </tr>
           </thead>
           <tbody>
@@ -297,37 +352,44 @@ export function MaintenanceDataBox(props) {
               filteredData.map((item, index) => (
                 <tr key={index}>
                   <td>{item.maintenanceId}</td>
-                  <td>{item.rideId}</td>
                   <td>{item.rideName}</td>
                   <td>{item.category}</td>
                   <td>{new Date(item.date).toLocaleString()}</td>
-                  {/*  */}
-                  {!props.isReport ? <td>{item.description}</td> : null}
-                  <td>
-                    <div>
-                      <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={() => handleEdit(item)}
-                      >
-                        Edit
-                      </button>
-                      {open && selectedItem && (
-                        <MaintenanceModal isOpen={open} onClose={handleClose}>
-                          <MaintenanceEditBox maintenanceData={selectedItem} />
-                        </MaintenanceModal>
-                      )}
-                    </div>
-                  </td>
-                  <td>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => handleDelete(item)}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                  {/*  */}
+                  <td>{item.status === 1 ? "Operational" : "Out of Order"}</td>
+                  {!props.isReport ? (
+                    <>
+                      <td>{item.description}</td>
+                      <td>
+                        <div>
+                          <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={() => handleEdit(item)}
+                          >
+                            Edit
+                          </button>
+                          {open && selectedItem && (
+                            <MaintenanceModal
+                              isOpen={open}
+                              onClose={handleClose}
+                            >
+                              <MaintenanceEditBox
+                                maintenanceData={selectedItem}
+                              />
+                            </MaintenanceModal>
+                          )}
+                        </div>
+                      </td>
+                      <td>
+                        <button
+                          className="btn btn-danger"
+                          onClick={() => handleDelete(item)}
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </>
+                  ) : null}
                 </tr>
               ))
             ) : (
@@ -341,7 +403,11 @@ export function MaintenanceDataBox(props) {
         </table>
       </div>
 
-      <FancyButton text="Refresh" action={() => window.location.reload()} />
+      {!props.isReport ? (
+        <>
+          <FancyButton text="Refresh" action={() => window.location.reload()} />
+        </>
+      ) : null}
     </div>
   );
 }
