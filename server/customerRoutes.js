@@ -165,17 +165,18 @@ module.exports = (app) => {
         getRequestingCustomer,
         async (req, res) => {
             const { passId } = req.body;
+            console.log("Received PassID:", passId);
+
             if (!passId) {
                 return res.status(400).json({ success: false, error: 'MissingPassID' });
             }
-            db.themeparkDB('TICKET').insert({ PassID: passId, CustomerID: req.requestingCustomer.CustomerID })
+            db.themeparkDB('PASS_TICKET').insert({ PassID: passId, CustomerID: req.requestingCustomer.CustomerID })
             .then(() => res.status(200).json({ success: true }))
             .catch((error) => {
-                if (error.sqlState === '45000')
-                    return res.status(500).json({ success: false, error: error.sqlMessage });
-                console.log(error);
-                res.status(500).json({ success: false, error: "SQLError" });
+                console.error("Error inserting pass:", error.message);
+                res.status(500).json({ success: false, error: "SQLError", details: error.message });
             });
+            
         }
     );
     
@@ -212,7 +213,7 @@ module.exports = (app) => {
             if (!passId) {
                 return res.status(400).json({ success: false, error: 'MissingPassID' });
             }
-            db.themeparkDB('TICKET')
+            db.themeparkDB('PASS_TICKET')
             .where({ PassID: passId, CustomerID: req.requestingCustomer.CustomerID })
             .del()
             .then((deletedCount) => {
@@ -253,7 +254,7 @@ module.exports = (app) => {
         checkSessionForCustomer,
         getRequestingCustomer,
         async (req, res) => {
-        db.themeparkDB('TICKET')
+        db.themeparkDB('PASS_TICKET')
         .where('CustomerID', req.requestingCustomer.CustomerID)
         .where('Deleted', 0)
         .then((passes) => {
