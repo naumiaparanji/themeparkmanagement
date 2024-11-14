@@ -14,8 +14,11 @@ const db = require("knex")({
 module.exports = {
   themeparkDB: db,
   getUser: async (email) => {
-      return await db('CUSTOMER').where('Email', email).andWhere('Deleted', 0).first();
-  }
+    return await db("CUSTOMER")
+      .where("Email", email)
+      .andWhere("Deleted", 0)
+      .first();
+  },
 };
 
 // Predefined queries
@@ -26,19 +29,17 @@ async function getUser(userEmail, isEmployee = false) {
   return await db(target).where("Deleted", 0).where("Email", userEmail).first();
 }
 
-async function getUsers(limit, offsetCount, isEmployee=false) {
-    let target = "CUSTOMER";
-    let order = "CustomerID";
-    if (isEmployee) {
-        target = "EMPLOYEE";
-        order = "EmployeeID";
-    }
-    let query = db(target).where("Deleted", 0)
-    .orderBy(order)
-    .limit(limit)
-    const offset = limit * offsetCount;
-    if (offset > 0) query = query.offset(offset);
-    return await query;
+async function getUsers(limit, offsetCount, isEmployee = false) {
+  let target = "CUSTOMER";
+  let order = "CustomerID";
+  if (isEmployee) {
+    target = "EMPLOYEE";
+    order = "EmployeeID";
+  }
+  let query = db(target).where("Deleted", 0).orderBy(order).limit(limit);
+  const offset = limit * offsetCount;
+  if (offset > 0) query = query.offset(offset);
+  return await query;
 }
 
 async function setUser(userEmail, fields, isEmployee = false, merge = true) {
@@ -53,62 +54,126 @@ async function setUser(userEmail, fields, isEmployee = false, merge = true) {
   return result[0] != 0; // Returned id should never be 0 unless there was a conflict
 }
 
-async function getRides(){
-    return await db("RIDES").where("Deleted", 0).orderBy("RideID");
+async function getRides() {
+  return await db("RIDES").where("Deleted", 0).orderBy("RideID");
 }
 
 async function getRidesNames() {
-  let query = db("RIDES").select("RideName").where("Deleted", 0).orderBy("RideName").distinct();
+  let query = db("RIDES")
+    .select("RideName")
+    .where("Deleted", 0)
+    .orderBy("RideName")
+    .distinct();
   return await query;
 }
 
-async function getRidesCategories(){
-  let query = db("RIDES").select("Category").where("Deleted", 0).orderBy("Category").distinct();
+async function getRidesCategories() {
+  let query = db("RIDES")
+    .select("Category")
+    .where("Deleted", 0)
+    .orderBy("Category")
+    .distinct();
   return await query;
 }
 
 async function getEventCategories() {
-  return await db("EVENTS").select("EventType").where("Deleted", 0).distinct().orderBy("EventType");
+  return await db("EVENTS")
+    .select("EventType")
+    .where("Deleted", 0)
+    .distinct()
+    .orderBy("EventType");
 }
 
 async function setMaintenanceRequest(fields, isEmployee) {
   if (!isEmployee) return false;
 
   let target = "MAINTENANCE";
-  let query = db(target).insert({RideID: fields.RideID, Date: fields.Date, Description: fields.Description});
+  let query = db(target).insert({
+    RideID: fields.RideID,
+    Date: fields.Date,
+    Description: fields.Description,
+  });
   let result = await query;
   const maintenanceID = result;
   target = "RIDE_STATUS";
-  query = db(target).insert({RideID: fields.RideID, Status: fields.Status, WeatherCondition: "CLEAR"}); // todo: allow weather condition to vary
+  query = db(target).insert({
+    RideID: fields.RideID,
+    Status: fields.Status,
+    WeatherCondition: "CLEAR",
+  }); // todo: allow weather condition to vary
   result = await query;
   const rideStatusID = result;
   target = "M_STATUS";
-  query = db(target).insert({MaintenanceID: maintenanceID, RideStatusID: rideStatusID});
+  query = db(target).insert({
+    MaintenanceID: maintenanceID,
+    RideStatusID: rideStatusID,
+  });
   result = await query;
 
   return result[0] != 0;
 }
 
-async function getRideStatusID(){
-  return await db("M_STATUS").select("RideStatusID").where("M_STATUS.Deleted", 0).orderBy("MaintenanceID").leftJoin("MAINTENANCE", "M_STATUS.MaintenanceID", "MAINTENANCE.MaintenanceID");
+async function getRideStatusID() {
+  return await db("M_STATUS")
+    .select("RideStatusID")
+    .where("M_STATUS.Deleted", 0)
+    .orderBy("MaintenanceID")
+    .leftJoin(
+      "MAINTENANCE",
+      "M_STATUS.MaintenanceID",
+      "MAINTENANCE.MaintenanceID"
+    );
 }
 
-async function getMaintenanceTicket(){
-  let result = await db("MAINTENANCE").select().where("MAINTENANCE.Deleted", 0).orderBy("MAINTENANCE.MaintenanceID").leftJoin('RIDES', 'MAINTENANCE.RideID', 'RIDES.RideID').leftJoin('M_STATUS','MAINTENANCE.MaintenanceID', 'M_STATUS.MaintenanceID').leftJoin('RIDE_STATUS', 'M_STATUS.RideStatusID', 'RIDE_STATUS.RideStatusID');
+async function getResolveData() {
+  return await db("MAINTENANCE")
+    .select("Resolved")
+    .where("MAINTENANCE.Deleted", 0)
+    .distinct();
+}
+
+async function getMaintenanceTicket() {
+  let result = await db("MAINTENANCE")
+    .select()
+    .where("MAINTENANCE.Deleted", 0)
+    .orderBy("MAINTENANCE.MaintenanceID")
+    .leftJoin("RIDES", "MAINTENANCE.RideID", "RIDES.RideID")
+    .leftJoin("M_STATUS", "MAINTENANCE.MaintenanceID", "M_STATUS.MaintenanceID")
+    .leftJoin(
+      "RIDE_STATUS",
+      "M_STATUS.RideStatusID",
+      "RIDE_STATUS.RideStatusID"
+    );
   console.log(result.toString());
-  return result
+  return result;
 }
 
-async function editMaintenanceTicket(fields){
-    const editMaintenance = await db("MAINTENANCE").update({RideID: fields.rideID, Date: new Date(fields.date), Description: fields.description}).where("MaintenanceID", fields.maintenanceID);
-    let rideStatusID = await db("M_STATUS").select("RideStatusID").where("MaintenanceID", fields.maintenanceID);
-    const editRideStatus = await db("RIDE_STATUS").update({Status: fields.status}).where("RideStatusID", rideStatusID[0].RideStatusID);
-    return editRideStatus;
+async function editMaintenanceTicket(fields) {
+  const editMaintenance = await db("MAINTENANCE")
+    .update({
+      RideID: fields.rideID,
+      Date: new Date(fields.date),
+      Description: fields.description,
+      Resolved: fields.resolveTicket,
+      ResolvedDate: new Date(),
+    })
+    .where("MaintenanceID", fields.maintenanceID);
+  let rideStatusID = await db("M_STATUS")
+    .select("RideStatusID")
+    .where("MaintenanceID", fields.maintenanceID);
+  const editRideStatus = await db("RIDE_STATUS")
+    .update({ Status: fields.status })
+    .where("RideStatusID", rideStatusID[0].RideStatusID);
+  return editRideStatus;
 }
 
 async function deleteMaintenanceTicket(maintenanceID) {
-  const deleteMaintenannce = await db("MAINTENANCE").update({deleted: 1}).where("MaintenanceID", maintenanceID);
-  const deleteMStatus = await db("M_STATUS").update({deleted: 1}).where("MaintenanceID", maintenanceID);
+  const deleteMaintenannce = await db("MAINTENANCE")
+    .update({ deleted: 1 })
+    .where("MaintenanceID", maintenanceID);
+  const deleteMStatus = await db("M_STATUS")
+    .update({ deleted: 1 })
+    .where("MaintenanceID", maintenanceID);
   console.log("In Maintenance Table");
   console.log(deleteMaintenannce);
   console.log("In M_Status Table");
@@ -117,20 +182,22 @@ async function deleteMaintenanceTicket(maintenanceID) {
 }
 
 async function deleteEmployee(EmployeeID) {
-  const deleteEmployee = await db("EMPLOYEE").update({deleted: 1}).where("EmployeeID", EmployeeID);
+  const deleteEmployee = await db("EMPLOYEE")
+    .update({ deleted: 1 })
+    .where("EmployeeID", EmployeeID);
   console.log("In Employee Table");
   console.log(deleteEmployee);
   return deleteMStatus;
 }
 
 async function setRuns(fields, isEmployee) {
-    if (!isEmployee) return false;
+  if (!isEmployee) return false;
 
-    let target = "RUNS";
-    let query = db(target).insert(fields);
-    let result = await query;
+  let target = "RUNS";
+  let query = db(target).insert(fields);
+  let result = await query;
 
-    return result[0] != 0;
+  return result[0] != 0;
 }
 
 module.exports = {
@@ -144,9 +211,10 @@ module.exports = {
   getEventCategories,
   setMaintenanceRequest,
   getRideStatusID,
+  getResolveData,
   getMaintenanceTicket,
   editMaintenanceTicket,
   deleteMaintenanceTicket,
   deleteEmployee,
-  setRuns
+  setRuns,
 };

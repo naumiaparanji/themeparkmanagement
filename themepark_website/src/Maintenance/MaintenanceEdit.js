@@ -16,6 +16,10 @@ export function MaintenanceDataBox(props) {
   const [searchMaintenanceId, setSearchMaintenanceId] = useState("");
   const [searchRideId, setSearchRideId] = useState("");
   const [searchCategory, setSearchCategory] = useState("");
+  const [searchResolve, setSearchResolve] = useState("");
+  const [searchResolveDate, setSearchResolveDate] = useState("");
+  const [resolveTicket, setResolveTicket] = useState([]);
+  const [resolveDate, setResolveDate] = useState([]);
   const [categories, setCategories] = useState([]);
   const [rideNames, setRideNames] = useState([]);
   const [open, setOpen] = useState(false);
@@ -40,6 +44,8 @@ export function MaintenanceDataBox(props) {
                 date: maintenanceArray[i].Date,
                 description: maintenanceArray[i].Description,
                 status: maintenanceArray[i].Status,
+                resolveTicket: maintenanceArray[i].Resolved,
+                resolveDate: maintenanceArray[i].ResolvedDate,
               };
               maintenanceTicketItems.push(ticket);
             }
@@ -91,6 +97,27 @@ export function MaintenanceDataBox(props) {
               ...categoryItems,
             ]);
           });
+
+        let resolveItems = [];
+        let resolveData = await api
+          .get("/maintenance/data/allResolveTickets")
+          .then((resolveData) => {
+            let resolveArrayData = resolveData["data"]["data"];
+            for (let i = 0; i < resolveArrayData.length; i++) {
+              resolveItems.push(
+                <option
+                  key={resolveArrayData[i].Resolved == 1 ? "Resolved" : "Open"}
+                  value={resolveArrayData[i].Resolved == 1 ? "Resolved" : "Open"}
+                >
+                  {resolveArrayData[i].Resolved == 1 ? "Resolved" : "Open"}
+                </option>
+              );
+            }
+            setResolveTicket([
+              { key: "Select Ticket Status", value: "Select Ticket Status" },
+              ...resolveItems,
+            ]);
+          });
       } catch (error) {
         console.log(error);
         if (error.response) {
@@ -115,6 +142,7 @@ export function MaintenanceDataBox(props) {
     searchCategory,
     searchDateFrom,
     searchDateTo,
+    searchResolve,
   ]);
 
   const handleSearch = () => {
@@ -134,6 +162,12 @@ export function MaintenanceDataBox(props) {
         searchCategory === "Select Category" ? "" : searchCategory;
       const matchesCategory =
         fixedSearchCategory === "" || item.category === fixedSearchCategory;
+
+      let fixedResolve =
+        searchResolve === "Select Ticket Status" ? "" : searchResolve;
+      const matchesResolve =
+        fixedResolve === "" || item.resolved === fixedResolve;
+
       const matchesDateFrom =
         searchDateFrom === "" ||
         new Date(item.date) >= new Date(searchDateFrom);
@@ -145,6 +179,7 @@ export function MaintenanceDataBox(props) {
         matchesRideId &&
         matchesRideName &&
         matchesCategory &&
+        matchesResolve &&
         matchesDateFrom &&
         matchesDateTo
       );
@@ -158,7 +193,6 @@ export function MaintenanceDataBox(props) {
   };
 
   const handleEdit = (item) => {
-    // alert(`Editing record for Maintenance ID: ${item.maintenanceId}`);
     setOpen(true);
     setSelectedItem(item);
   };
@@ -284,9 +318,33 @@ export function MaintenanceDataBox(props) {
                 })}
               </select>
             </label>
+
+            <label style={{ flex: "1 1 100px" }}>
+              Ticket Status:
+              <select
+                value={searchResolve}
+                onChange={(e) => setSearchResolve(e.target.value)}
+                style={{
+                  padding: "8px",
+                  borderRadius: "4px",
+                  border: "1px solid #ccc",
+                  width: "100%",
+                  marginTop: "4px",
+                }}
+              >
+                {resolveTicket.map((option) => {
+                  return (
+                    <option key={option.value} value={option.value}>
+                      {option.key}
+                    </option>
+                  );
+                })}
+              </select>
+            </label>
           </>
         ) : null}
       </div>
+
       <div>
         <label style={{ flex: "1 1 100px" }}>
           From:
@@ -325,11 +383,12 @@ export function MaintenanceDataBox(props) {
         <table className="table table-striped">
           <thead>
             <tr>
-              <th style={{ width: "12%" }}>Maintenance ID</th>
+              <th style={{ width: "10%" }}>ID</th>
               <th style={{ width: "15%" }}>Ride Name</th>
               <th style={{ width: "10%" }}>Category</th>
               <th style={{ width: "17%" }}>Date</th>
-              <th style={{ width: "17%" }}>Ride Status</th>
+              <th style={{ width: "15%" }}>Ride Status</th>
+              <th style={{ width: "13%" }}>Ticket Status</th>
               {!props.isReport ? (
                 <>
                   <th
@@ -356,6 +415,7 @@ export function MaintenanceDataBox(props) {
                   <td>{item.category}</td>
                   <td>{new Date(item.date).toLocaleString()}</td>
                   <td>{item.status === 1 ? "Operational" : "Out of Order"}</td>
+                  <td>{item.resolved === 1 ? "Resolved" : "Open"}</td>
                   {!props.isReport ? (
                     <>
                       <td>{item.description}</td>

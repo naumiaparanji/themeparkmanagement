@@ -30,16 +30,14 @@ export const MaintenanceModal = ({ isOpen, onClose, children }) => {
         onClick={(e) => e.stopPropagation()}
         style={{
           background: "white",
-          // height: 500,
-          // width: 500,
           margin: "auto",
           padding: "2%",
           border: "2px solid #000",
           borderRadius: "10px",
           boxShadow: "2px solid black",
-          maxHeight: "calc(100vh - 40px)", // Ensure modal content doesn't exceed viewport
-          overflowY: "auto", // Enable scrolling inside modal if content is too tall
-          width: "90%", // Adjust as needed
+          maxHeight: "calc(100vh - 40px)", 
+          overflowY: "auto",
+          width: "90%",
           maxWidth: "600px",
         }}
       >
@@ -58,9 +56,7 @@ export function MaintenanceEditBox(props) {
   const [status, setStatus] = useState("");
   const [message, setMessage] = useState("");
   const [rideOptions, setRideOptions] = useState([]);
-
-  console.log("props--------------");
-  console.log(props);
+  const [resolveTicket, setResolveTicket] = useState(false);
 
   useEffect(() => {
     if (props.maintenanceData) {
@@ -70,11 +66,6 @@ export function MaintenanceEditBox(props) {
       setStatus(props.maintenanceData.status, "");
     }
   }, [props.maintenanceData]);
-
-  useEffect(() =>
-      {},[message]
-  );
-
 
   useEffect(() => {
     api
@@ -96,15 +87,12 @@ export function MaintenanceEditBox(props) {
     if (!inputDate) return "";
     const dateObj = new Date(inputDate);
     if (isNaN(dateObj.getTime())) {
-      // Invalid date
       return "";
     }
-    const month = String(dateObj.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const month = String(dateObj.getMonth() + 1).padStart(2, "0");
     const day = String(dateObj.getDate()).padStart(2, "0");
     const year = dateObj.getFullYear();
-    const date = `${year}-${month}-${day}`
-    console.log(date)
-    return date;
+    return `${year}-${month}-${day}`;
   }
 
   const maintenanceEdit = async () => {
@@ -122,7 +110,8 @@ export function MaintenanceEditBox(props) {
             rideName: rideName,
             date: date,
             description: description,
-            status: status=="Operational" ? 1 : 0,
+            status: status === "Operational" ? 1 : 0,
+            resolveTicket: resolveTicket, // Include resolve ticket state
           },
         }
       )
@@ -132,6 +121,7 @@ export function MaintenanceEditBox(props) {
         setDescription("");
         setStatus("");
         setRideName("");
+        setResolveTicket(false);
       })
       .catch((e) => {
         if (e.response) {
@@ -235,6 +225,19 @@ export function MaintenanceEditBox(props) {
             </label>
           </div>
         </div>
+      </div>
+
+      {/* New Resolve Ticket checkbox */}
+      <div style={{ margin: "12px 12px" }}>
+        <label style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: "150px" }}  >
+          <input
+            type="checkbox"
+            checked={resolveTicket}
+            onChange={(e) => setResolveTicket(e.target.checked)}
+            style={{ marginRight: "8px" }}
+          />
+          Resolve Ticket
+        </label>
       </div>
 
       <FancyButton text="Submit" action={maintenanceEdit} />

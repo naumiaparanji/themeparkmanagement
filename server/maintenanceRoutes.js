@@ -44,6 +44,19 @@ module.exports = (app) => {
     });
   });
 
+  app.get("/maintenance/data/allResolveTickets", async (req, res) => {
+    const resolveData = await db.getResolveData().catch((e) => {
+      console.log(e);
+      res.status(500).json({ success: false, error: "SQLError" });
+      return;
+    });
+    res.status(200).json({
+      success: true,
+      data: resolveData,
+    });
+  });
+
+
   app.get("/maintenance/data/searchReturn", async (req, res) => {
     const maintenanceTicket = await db.getMaintenanceTicket().catch((e) => {
       console.log(e);
