@@ -102,18 +102,11 @@ const Tickets = () => {
                 </a>
             </section>
             </div>
-            <Navbar />
+        <Navbar />
         <div className="background-image"></div>
         <div className="Ticket-container">
-                <button className="back-button" onClick={() => navigate('/')}>
-                    Back to Home
-                </button>
-                <br />
-                <p className="h4-ticket">Tickets</p>
-                <br />
                 {passTypes.map(category => (
                     <div className="ticket-category" key={category}>
-                        <h2>{category}</h2>
                         <div className="ticket-list">
                             {passData.filter(passes => passes.PassType === category).map(passes => (
                                 <div className="ticket-card" key={passes.PassID}>
@@ -125,13 +118,13 @@ const Tickets = () => {
                                         userPasses.includes(passes.PassID) ? (
                                             <>
                                                 <p>Already Registered</p>
-                                                <button onClick={() => handleUnregister(passes.PassID)}>Refund</button>
+                                                <button className="button" onClick={() => handleUnregister(passes.PassID)}>Refund</button>
                                             </>
                                         ) : (
-                                            <button onClick={() => handleRegister(passes.PassID)}>Purchase</button>
+                                            <button className="button" onClick={() => handleRegister(passes.PassID)}>Purchase</button>
                                         )
                                     ) : (
-                                        <p>Please log in to Purchase</p>
+                                        <p className="PleaseLogin">Please log in to Purchase</p>
                                     )}
 
                                 </div>
