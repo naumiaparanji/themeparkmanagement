@@ -92,7 +92,7 @@ async function setMaintenanceRequest(fields, isEmployee) {
 }
 
 async function getRideStatusID(){
-  return await db("M_STATUS").select("RideStatusID ").where("M_STATUS.Deleted", 0).orderBy("MaintenanceID").leftJoin("MAINTENANCE", "M_STATUS.MaintenanceID", "MAINTENANCE.MaintenanceID");
+  return await db("M_STATUS").select("RideStatusID").where("M_STATUS.Deleted", 0).orderBy("MaintenanceID").leftJoin("MAINTENANCE", "M_STATUS.MaintenanceID", "MAINTENANCE.MaintenanceID");
 }
 
 async function getMaintenanceTicket(){
@@ -101,9 +101,8 @@ async function getMaintenanceTicket(){
 
 async function editMaintenanceTicket(fields){
     const editMaintenance = await db("MAINTENANCE").update({RideID: fields.rideID, Date: new Date(fields.date), Description: fields.description}).where("MaintenanceID", fields.maintenanceID);
-    const rideStatusID = await db("M_STATUS").select("RideStatusID").where("MaintenanceID", fields.maintenanceID);
-    const editRideStatus = await db("RIDE_STATUS").update({Status: fields.status}).where("RideStatusID", rideStatusID);
-
+    let rideStatusID = await db("M_STATUS").select("RideStatusID").where("MaintenanceID", fields.maintenanceID);
+    const editRideStatus = await db("RIDE_STATUS").update({Status: fields.status}).where("RideStatusID", rideStatusID[0].RideStatusID);
     return editRideStatus;
 }
 

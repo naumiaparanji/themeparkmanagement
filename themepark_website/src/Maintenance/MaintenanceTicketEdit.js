@@ -37,6 +37,10 @@ export const MaintenanceModal = ({ isOpen, onClose, children }) => {
           border: "2px solid #000",
           borderRadius: "10px",
           boxShadow: "2px solid black",
+          maxHeight: "calc(100vh - 40px)", // Ensure modal content doesn't exceed viewport
+          overflowY: "auto", // Enable scrolling inside modal if content is too tall
+          width: "90%", // Adjust as needed
+          maxWidth: "600px",
         }}
       >
         {children}
@@ -59,6 +63,20 @@ export function MaintenanceEditBox(props) {
   console.log(props);
 
   useEffect(() => {
+    if (props.maintenanceData) {
+      setRideName(props.maintenanceData.rideName, "");
+      setDate(formatDate(props.maintenanceData.date) || "");
+      setDescription(props.maintenanceData.description, "");
+      setStatus(props.maintenanceData.status, "");
+    }
+  }, [props.maintenanceData]);
+
+  useEffect(() =>
+      {},[message]
+  );
+
+
+  useEffect(() => {
     api
       .get("/rides/names")
       .then((res) => setRideOptions(res.data.rideNames))
@@ -74,6 +92,21 @@ export function MaintenanceEditBox(props) {
       });
   }, []);
 
+  function formatDate(inputDate) {
+    if (!inputDate) return "";
+    const dateObj = new Date(inputDate);
+    if (isNaN(dateObj.getTime())) {
+      // Invalid date
+      return "";
+    }
+    const month = String(dateObj.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const day = String(dateObj.getDate()).padStart(2, "0");
+    const year = dateObj.getFullYear();
+    const date = `${year}-${month}-${day}`
+    console.log(date)
+    return date;
+  }
+
   const maintenanceEdit = async () => {
     if (!rideName || !date || !description || !status) {
       setMessage("All fields are required");
@@ -86,10 +119,10 @@ export function MaintenanceEditBox(props) {
         {
           fields: {
             maintenanceID: props.maintenanceData.maintenanceId,
-            rideName: props.maintenanceData.rideName,
-            date: props.maintenanceData.date,
-            description: props.maintenanceData.description,
-            status: props.maintenanceData.status,
+            rideName: rideName,
+            date: date,
+            description: description,
+            status: status=="Operational" ? 1 : 0,
           },
         }
       )
@@ -154,7 +187,7 @@ export function MaintenanceEditBox(props) {
       </div>
 
       <InputField
-        name="Date"
+        name={props.maintenanceData.date}
         type="date"
         containerStyle={{ margin: "12px 12px" }}
         value={date}
@@ -162,7 +195,7 @@ export function MaintenanceEditBox(props) {
       />
 
       <InputField
-        name="Description"
+        name={props.maintenanceData.description}
         containerStyle={{ margin: "12px 12px" }}
         value={description}
         onChange={(e) => setDescription(e.target.value)}

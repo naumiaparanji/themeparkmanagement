@@ -44,7 +44,7 @@ module.exports = (app) => {
     });
   });
 
-  // for update CURRENTLY NOT WORKING
+  // for update
   app.put("/maintenance/edit/:maintenanceID",  async (req, res) => {
     try {
       return await db.editMaintenanceTicket(req.body.fields);

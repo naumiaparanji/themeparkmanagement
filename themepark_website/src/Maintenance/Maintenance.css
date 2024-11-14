@@ -18,10 +18,11 @@
   background: white;
   height: auto;
   padding: 10px 30px 30px 30px;
-  margin-left: auto;
-  margin-right: auto;
+  /* margin-left: auto;
+  margin-right: auto; */
+  margin: 0 auto;
   box-shadow: 0px 0px 6px -2px;
-  position: absolute;
+  /* position: absolute; */
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -37,7 +38,6 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden;
 }
 
 body {
@@ -94,9 +94,13 @@ table {
 
 th,
 td {
+  font-size: 1em;
   border: 1px solid black;
   width: 100px;
   overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .modal {
@@ -105,19 +109,21 @@ td {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5); 
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  overflow-y: auto;
 }
 
 .modal-content {
   background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  max-width: 600px;
-  width: 90%;
+  padding: 2%;
+  border: 2px solid #000;
+  border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-height: calc(100vh - 40px); 
+  overflow-y: auto; 
+  width: 90%;
+  max-width: 600px;
 }

@@ -268,6 +268,16 @@ export function MaintenanceDataBox(props) {
         </label>
       </div>
 
+      {/* <div style={{ textAlign: "center", marginBottom: "20px" }}>
+        <button
+          className="btn btn-primary"
+          onClick={handleSearch}
+          style={{ padding: "10px 30px" }}
+        >
+          Search
+        </button>
+      </div> */}
+
       <div>
         <table className="table table-striped">
           <thead>
@@ -277,7 +287,6 @@ export function MaintenanceDataBox(props) {
               <th style={{ width: "15%" }}>Ride Name</th>
               <th style={{ width: "10%" }}>Category</th>
               <th style={{ width: "17%" }}>Date</th>
-              {/*  */}
               <th
                 style={{
                   width: "18%",
@@ -289,7 +298,6 @@ export function MaintenanceDataBox(props) {
               </th>
               <th style={{ width: "8%" }}>Modify</th>
               <th style={{ width: "10%" }}>Delete</th>
-              {/*  */}
             </tr>
           </thead>
           <tbody>
@@ -301,8 +309,7 @@ export function MaintenanceDataBox(props) {
                   <td>{item.rideName}</td>
                   <td>{item.category}</td>
                   <td>{new Date(item.date).toLocaleString()}</td>
-                  {/*  */}
-                  {!props.isReport ? <td>{item.description}</td> : null}
+                  <td>{item.description}</td>
                   <td>
                     <div>
                       <button
@@ -317,6 +324,11 @@ export function MaintenanceDataBox(props) {
                           <MaintenanceEditBox maintenanceData={selectedItem} />
                         </MaintenanceModal>
                       )}
+                      {/* <MaintenanceModal isOpen={open} onClose={handleClose}>
+                        <>
+                          <MaintenanceEditBox maintenanceData={item} />
+                        </>
+                      </MaintenanceModal> */}
                     </div>
                   </td>
                   <td>
@@ -327,7 +339,6 @@ export function MaintenanceDataBox(props) {
                       Delete
                     </button>
                   </td>
-                  {/*  */}
                 </tr>
               ))
             ) : (

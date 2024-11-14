@@ -184,7 +184,7 @@ export function MaintenanceInfo(props) {
           <MaintenanceDataBox
             title={props.title || "Maintenance Update"}
             apiPath={props.apiPath || "/maintenance/data"}
-            P
+            isReport={false}
           />
         </TabPanel>
       </Tabs>
