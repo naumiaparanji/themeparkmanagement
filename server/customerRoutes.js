@@ -159,6 +159,25 @@ module.exports = (app) => {
             });
         }
     );
+
+    app.post('/customer/registerPass',
+        checkSessionForCustomer,
+        getRequestingCustomer,
+        async (req, res) => {
+            const { passId } = req.body;
+            if (!passId) {
+                return res.status(400).json({ success: false, error: 'MissingPassID' });
+            }
+            db.themeparkDB('TICKET').insert({ PassID: passId, CustomerID: req.requestingCustomer.CustomerID })
+            .then(() => res.status(200).json({ success: true }))
+            .catch((error) => {
+                if (error.sqlState === '45000')
+                    return res.status(500).json({ success: false, error: error.sqlMessage });
+                console.log(error);
+                res.status(500).json({ success: false, error: "SQLError" });
+            });
+        }
+    );
     
     app.post('/customer/unregisterEvent',
         checkSessionForCustomer,
@@ -179,12 +198,36 @@ module.exports = (app) => {
                 }
             })
             .catch((error) => {
-                console.error('Error unregistering for event:', error);
+                console.error('Error purchasing pass:', error);
                 res.status(500).json({ success: false, error: 'SQLError' });
             });
         }
     );
     
+    app.post('/customer/unregisterPass',
+        checkSessionForCustomer,
+        getRequestingCustomer,
+        async (req, res) => {
+            const { passId } = req.body;
+            if (!passId) {
+                return res.status(400).json({ success: false, error: 'MissingPassID' });
+            }
+            db.themeparkDB('TICKET')
+            .where({ PassID: passId, CustomerID: req.requestingCustomer.CustomerID })
+            .del()
+            .then((deletedCount) => {
+                if (deletedCount > 0) {
+                    res.status(200).json({ success: true });
+                } else {
+                    res.status(404).json({ success: false, error: 'PassNotPurchased' });
+                }
+            })
+            .catch((error) => {
+                console.error('Error purchasing pass:', error);
+                res.status(500).json({ success: false, error: 'SQLError' });
+            });
+        }
+    );
 
     app.get('/customer/tickets', 
         checkSessionForCustomer,
@@ -206,4 +249,23 @@ module.exports = (app) => {
         })
     });
 
+    app.get('/customer/passes', 
+        checkSessionForCustomer,
+        getRequestingCustomer,
+        async (req, res) => {
+        db.themeparkDB('TICKET')
+        .where('CustomerID', req.requestingCustomer.CustomerID)
+        .where('Deleted', 0)
+        .then((passes) => {
+            if (passes.length > 0) {
+                res.status(200).json({ success: true, passes });
+            } else {
+                res.status(404).json({ success: false, error: 'NoPassesFound' });
+            }
+        })
+        .catch((err) => {
+            console.error('Error fetching Passes:', err);
+            res.status(500).json({ success: false, error: 'SQLError' });
+        })
+    });
 };
