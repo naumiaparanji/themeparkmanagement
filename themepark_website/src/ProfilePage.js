@@ -83,8 +83,8 @@ const ProfileDisplay = () => {
                         <ul>
                             {passes.map((pass, i) => (
                                 <li key={i}>
-                                    <strong>Pass Status: {pass.TicketID}</strong>
-                                    <div>Pass ID: {pass.PassID}</div>
+                                    <strong>Ticket ID: {pass.TicketID}</strong>
+                                    <div>Event ID: {pass.PassID}</div>
                                     <div>Purchased: {new Date(pass.Bought).toLocaleDateString()}</div>
                                     <div>Expires: {new Date(pass.ExpirationDate).toLocaleDateString()}</div>
                                 </li>
