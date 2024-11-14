@@ -1,6 +1,6 @@
 const db = require("./db");
 const getCurrentTime = require("./currentTime");
-const {checkSessionForEmployee, getRequestingEmployee} = require("./employeeRoutes");
+const { checkSessionForEmployee, getRequestingEmployee } = require("./employeeRoutes");
 
 // App routes
 module.exports = (app) => {
@@ -8,32 +8,31 @@ module.exports = (app) => {
         const rideData = await db.getRides().catch((e) => {
             console.log(e);
             res.status(500).json({ success: false, error: "SQLError" });
+            return;
         });
 
         const ride = rideData.find((element) => element.RideName === req.body.rideName);
         if (ride === undefined) {
-            res.status(501).json({success: false, error: "BadRide"});
+            res.status(501).json({ success: false, error: "BadRide" });
             return;
         }
 
-        // ensuring that the number of riders is not in excess of the ride's capacity and a valid count
-        let rideCap = Number(ride.Capacity);
-        let numericRiders = Number(req.body.numRiders);
+        // Validate the rider count
+        const rideCap = Number(ride.Capacity);
+        const numericRiders = Number(req.body.numRiders);
         if (!Number.isInteger(numericRiders) || numericRiders < 0) {
-            res.status(503).json({success: false, error: "InvalidRiderCount"});
+            res.status(503).json({ success: false, error: "InvalidRiderCount" });
             return;
-        }
-        else if (rideCap < numericRiders) {
-            res.status(502).json({success: false, error: "OverCapacity", capacity: rideCap});
+        } else if (numericRiders > rideCap) {
+            res.status(502).json({ success: false, error: "OverCapacity", capacity: rideCap });
             return;
         }
 
         const empID = req.requestingEmployee.EmployeeID;
-
         const rideTime = getCurrentTime();
 
-        const runs = await db
-            .setRuns(
+        try {
+            const runs = await db.setRuns(
                 {
                     EmployeeID: empID,
                     RideID: ride.RideID,
@@ -41,13 +40,20 @@ module.exports = (app) => {
                     NumofRiders: numericRiders,
                 },
                 true
-            )
-            .catch((e) => {
-                console.log(e);
+            );
+            res.status(201).json({ success: runs });
+        } catch (e) {
+            console.error(e);
+
+            if (e.code === "ER_SIGNAL_EXCEPTION") {
+                res.status(400).json({
+                    success: false,
+                    error: "RideUnderMaintenance",
+                    message: "This ride cannot be operated, it is under maintenance. Please check back at a later time!",
+                });
+            } else {
                 res.status(500).json({ success: false, error: "SQLError" });
-            });
-
-        res.status(201).json({ success: runs });
+            }
+        }
     });
-
 };
