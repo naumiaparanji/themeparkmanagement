@@ -36,12 +36,14 @@ function generateEventStartAndDuration(startTime, endTime) {
 }
 
 function prepareEventPayload(event) {
-    const {startDate, duration} = generateEventStartAndDuration(event.startTime, event.endTime);
     let payload = {...event};
-    payload.EventDateTime = startDate;
-    payload.EventDuration = duration;
-    delete payload.startTime;
-    delete payload.endTime;
+    if (event.startTime && event.endTime) {
+        const {startDate, duration} = generateEventStartAndDuration(event.startTime, event.endTime);
+        payload.EventDateTime = startDate;
+        payload.EventDuration = duration;
+        delete payload.startTime;
+        delete payload.endTime;
+    }
     return payload;
 }
 
@@ -70,7 +72,7 @@ export function addEvent(event, onSuccess, onFailure) {
 }
 
 export function deleteEvent(event, onSuccess, onFailure) {
-    api.delete(`/events/${event.EventID}`)
+    api.delete(`/events/${event.EventID}?permanent=true`)
     .then((response) => {
         onSuccess(response);
     })
@@ -109,7 +111,7 @@ export function EventsEditContextProvider({children}) {
     const [isNewEventValid, setIsNewEventValid] = useState(false);
 
     const refreshEvents = useCallback(() => {
-        api.get("/events")
+        api.get("/events?deleted=true")
         .then((response) => {
             setEvents(response.data.events);
         })

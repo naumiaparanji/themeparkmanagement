@@ -5,8 +5,10 @@ const employee = require("./employeeRoutes");
 module.exports = (app) => {
     
     app.get('/concessions', (req, res) => {
-        db.themeparkDB("CONCESSION_STALL").where("Deleted", 0).orderBy("ConcessionID")
-        .then((items) => {
+        let query = db.themeparkDB("CONCESSION_STALL").orderBy("ConcessionID");
+        if (!req.query.deleted)
+            query = query.where("Deleted", 0);
+        query.then((items) => {
             res.status(200).json({success: true, concessions: items});
         })
         .catch((e) => {
@@ -18,6 +20,7 @@ module.exports = (app) => {
     app.put('/concessions/:id',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
+        employee.setMinEmployeeAccessLevel(2),
         (req, res) => {
             db.themeparkDB("CONCESSION_STALL").update(req.body).where('ConcessionID', req.params.id)
             .then(() => res.status(200).json({success: true}))
@@ -31,9 +34,14 @@ module.exports = (app) => {
     app.delete('/concessions/:id',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
+        employee.setMinEmployeeAccessLevel(2),
         (req, res) => {
-            db.themeparkDB("CONCESSION_STALL").update("Deleted", 1).where('ConcessionID', req.params.id)
-            .then(() => res.status(200).json({success: true}))
+            let query = db.themeparkDB("CONCESSION_STALL").where('ConcessionID', req.params.id);
+            if (req.query.permanent)
+                query = query.delete();
+            else
+                query = query.update("Deleted", 1)
+            query.then(() => res.status(200).json({success: true}))
             .catch((e) => {
                 console.error(e);
                 res.status(500).json({success: false, error: "SQLError"});
@@ -44,6 +52,7 @@ module.exports = (app) => {
     app.post('/concessions',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
+        employee.setMinEmployeeAccessLevel(2),
         (req, res) => {
             db.themeparkDB("CONCESSION_STALL").insert((req.body))
             .then(() => res.status(200).json({success: true}))

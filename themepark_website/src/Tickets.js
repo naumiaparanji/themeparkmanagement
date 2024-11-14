@@ -1,25 +1,26 @@
 import './Tickets.css'; 
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
-import '../CustomerAccount'
-import CustomerAccount from '../CustomerAccount';
-import Navbar from '../Navbar';
-import { api } from "../App";
+import { useNavigate, Link } from 'react-router-dom';
+import './CustomerAccount'
+import CustomerAccount from './CustomerAccount';
+import Navbar from './Navbar';
+import { api } from "./App";
 import axios from "axios";
-import goldpass from '../images/goldpass.png'; 
-import prestige from '../images/prestigeadvent.png'; 
-import newcomer from '../images/newcomer.png'; 
+import goldpass from './images/goldpass.png'; 
+import prestige from './images/prestigeadvent.png'; 
+import newcomer from './images/newcomer.png'; 
 
 function TicketInfo() {
     // Supposed to grab Data from the Database
         const [data, setData] = useState([])
     
         useEffect(()=> {
-        axios.get('http://localhost:8080')
+        api.get('http://localhost:8080')
             .then(res => setData(res.data))
             .catch(err => console.log(err));
-      }, [])
-    }
+      }, [])};
+    
+
 
 const ticketData = [
     // Testing tickets
@@ -28,9 +29,44 @@ const ticketData = [
     { id: 3, name: 'A Newcomer Ticket', image: <img src={newcomer} alt="logo" style={{ width: '100%', height: 'auto', paddingRight: '15px', position: 'relative' }} />, subName: 'Good for a one-day visit!', Description: 'Gain general access to the park and all of the rides for one day! Parking is not included and extra activities will need to be paid for if you are interested in participating in them.', price: "$39.99" }
 ];
 
+
 const Tickets = () => {
   const navigate = useNavigate(); // Initialize useNavigate hook
   const categories = [...new Set(ticketData.map(ticket => ticket.category))]; // Unique categories
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isNotLoggedIn, setIsNotLoggedIn] = useState(false);
+
+  useEffect(() => {
+      // Check session status on mount
+      api.get('/customer/info', { withCredentials: true })
+          .then(response => {
+              if (response.data.success) {
+                  setIsLoggedIn(true);
+              } else {
+                  setIsLoggedIn(false);
+              }
+          })
+          .catch(() => setIsLoggedIn(false)); // Ensure safe fallback
+    }, []);
+
+    const linkStyle = {
+        fontSize: '20px',
+        fontWeight: 'bold',
+        textDecoration: 'none',
+        color: 'white',
+    };
+
+    const [modal, setModal] = useState(false);
+
+    const toggleModal = () => {
+        setModal(!modal);
+    };
+
+    if(modal) {
+        document.body.classList.add('active-modal')
+      } else {
+        document.body.classList.remove('active-modal')
+    };
 
   return (
       <div>
@@ -59,14 +95,21 @@ const Tickets = () => {
                               <p><strong>{ticket.subName}</strong></p>
                               <p><strong>Description: </strong> <p>{ticket.Description}</p></p>
                               <p className="price"><strong>Price: </strong>{ticket.price}</p>
-                              <button className="button">Purchase</button>
+                              {isLoggedIn ||
+                                        <p className="PleaseLogin">Please Login to Purchase Tickets</p>
+                                    }
+                              {isLoggedIn && 
+                                        <button className="button" onClick={toggleModal} style={linkStyle}>Purchase</button>
+                                    }
                           </div>
                       ))}
+                      
                   </div>
               </div>
           ))}
       </div>
       </div>
+
   );
 };
 

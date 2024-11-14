@@ -69,10 +69,6 @@ async function getRidesCategories(){
   return await query;
 }
 
-async function getEvents() {
-  return await db("EVENTS").where("Deleted", 0).orderBy("EventID");
-}
-
 async function getEventCategories() {
   return await db("EVENTS").select("EventType").where("Deleted", 0).distinct().orderBy("EventType");
 }
@@ -121,6 +117,13 @@ async function deleteMaintenanceTicket(maintenanceID) {
   return deleteMStatus;
 }
 
+async function deleteEmployee(EmployeeID) {
+  const deleteEmployee = await db("EMPLOYEE").update({deleted: 1}).where("EmployeeID", EmployeeID);
+  console.log("In Employee Table");
+  console.log(deleteEmployee);
+  return deleteMStatus;
+}
+
 async function setRuns(fields, isEmployee) {
     if (!isEmployee) return false;
 
@@ -131,18 +134,6 @@ async function setRuns(fields, isEmployee) {
     return result[0] != 0;
 }
 
-async function registerForEvent(eventId, customerId) {
-  try {
-      // Insert a new event ticket
-      const result = await db('EVENT_TICKET').insert({ EventID: eventId, CustomerID: customerId });
-      return result;  // Return result if successful
-  } catch (error) {
-      console.error('Error during event registration:', error);
-      throw error;  // Re-throw the error to be handled by the caller
-  }
-}
-
-
 module.exports = {
   themeparkDB: db,
   getUser,
@@ -151,13 +142,12 @@ module.exports = {
   getRides,
   getRidesNames,
   getRidesCategories,
-  getEvents,
   getEventCategories,
   setMaintenanceRequest,
   getRideStatusID,
   getMaintenanceTicket,
   editMaintenanceTicket,
   deleteMaintenanceTicket,
-  setRuns,
-  registerForEvent
+  deleteEmployee,
+  setRuns
 };

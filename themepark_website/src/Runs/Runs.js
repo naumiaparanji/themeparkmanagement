@@ -34,11 +34,13 @@ export function RunsInfoBox(props) {
             });
     }, []);
 
+    //trigger 
     const runsSubmit = async () => {
         if (!rideName || !numRiders) {
             setMessage("All fields are required");
             return;
         }
+    
         api.post(props.apiPath || "/runs/input", {
             rideName,
             numRiders,
@@ -50,23 +52,25 @@ export function RunsInfoBox(props) {
             })
             .catch((e) => {
                 if (e.response) {
-                    if (e.response.status === 500)
+                    if (e.response.status === 400 && e.response.data.error === "RideUnderMaintenance") {
+                        setMessage(e.response.data.message); // Custom trigger message
+                    } else if (e.response.status === 500) {
                         setMessage("Database error");
-                    else if (e.response.status === 501)
+                    } else if (e.response.status === 501) {
                         setMessage("Ride name does not exist in database");
-                    else if (e.response.status === 502)
+                    } else if (e.response.status === 502) {
                         setMessage("Number of riders exceeds specified ride's capacity of " + e.response.data.capacity);
-                    else if (e.response.status === 503)
-                        setMessage("Number of riders must be a non-negative whole number (ex. 0, 1, 2, 3...)");
-                    else if (e.response.data && !e.response.data.success)
+                    } else if (e.response.status === 503) {
+                        setMessage("Number of riders must be a non-negative whole number (e.g., 0, 1, 2)");
+                    } else {
                         setMessage("Submission failed. Error Code: " + e.response.status);
-                    else
-                        setMessage("Unknown error");
-                }
-                else if (e.request)
+                    }
+                } else if (e.request) {
                     setMessage("Failed to connect to server");
+                }
             });
     };
+    
 
     return (
         <div className="loginbox" style={{

@@ -9,7 +9,7 @@ export function EditContextProvider({datapath, idKey, itemsKey, nameKey, childre
     const [search, setSearch] = useState("");
 
     const refreshItems = useCallback(() => {
-        api.get(`${datapath}?deleted=true`)
+        api.get(datapath)
         .then((response) => {
             setItems(response.data[itemsKey]);
         })
@@ -30,9 +30,7 @@ export function EditContextProvider({datapath, idKey, itemsKey, nameKey, childre
 
     return (
         <EditContext.Provider value={{
-            items,
             setItems,
-            refreshItems,
             search,
             setSearch,
             displayItems,

@@ -47,13 +47,14 @@ module.exports = (app) => {
 
     app.post("/customer/login", customerAuth, async (req, res) => {
         if (req.authorized) {
+            const {employeeUser} = req.session;
             auth.pruneSessions(req.body.username, 99);
             req.session.regenerate((err) => {
                 if (err) {
                     res.status(500).json({success: false, error: 'SessionUpdateFailed', errorDetails: err});
                     return;
                 }
-
+                req.session.employeeUser = employeeUser;
                 req.session.user = req.body.username;
                 req.session.save((err) => {
                     if (err) {
@@ -148,11 +149,37 @@ module.exports = (app) => {
             if (!eventId) {
                 return res.status(400).json({ success: false, error: 'MissingEventID' });
             }
-            db.registerForEvent(eventId, req.requestingCustomer.CustomerID)
+            db.themeparkDB('EVENT_TICKET').insert({ EventID: eventId, CustomerID: req.requestingCustomer.CustomerID })
             .then(() => res.status(200).json({ success: true }))
             .catch((error) => {
                 if (error.sqlState === '45000')
                     return res.status(500).json({ success: false, error: error.sqlMessage });
+                console.log(error);
+                res.status(500).json({ success: false, error: "SQLError" });
+            });
+        }
+    );
+    
+    app.post('/customer/unregisterEvent',
+        checkSessionForCustomer,
+        getRequestingCustomer,
+        async (req, res) => {
+            const { eventId } = req.body;
+            if (!eventId) {
+                return res.status(400).json({ success: false, error: 'MissingEventID' });
+            }
+            db.themeparkDB('EVENT_TICKET')
+            .where({ EventID: eventId, CustomerID: req.requestingCustomer.CustomerID })
+            .del()
+            .then((deletedCount) => {
+                if (deletedCount > 0) {
+                    res.status(200).json({ success: true });
+                } else {
+                    res.status(404).json({ success: false, error: 'EventNotRegistered' });
+                }
+            })
+            .catch((error) => {
+                console.error('Error unregistering for event:', error);
                 res.status(500).json({ success: false, error: 'SQLError' });
             });
         }

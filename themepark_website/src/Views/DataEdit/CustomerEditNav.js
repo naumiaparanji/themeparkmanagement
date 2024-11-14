@@ -53,8 +53,7 @@ export function CustomerEditNav() {
                 </Form>
             </Container>
         </Navbar>
-        <div className="d-flex flex-column align-items-center vh-100">
-                    <div className='bg-white p-4 margin-auto'>
+                    <div className='d-flex flex-column align-items-center bg-white p-1'>
                     <table>
                             <thead>
                                     <tr>
@@ -63,32 +62,29 @@ export function CustomerEditNav() {
                                         <th>LastName</th>
                                         <th>DOB</th>
                                         <th>Address</th>
-                                        <th>PhoneNumber</th>
                                         <th>Email</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
-                                        data.map((d, i) => {
+                                        data.map((d, i) => (
                                             <tr key={i}>
-                                                <td>{d.EmployeeID}</td>
+                                                <td>{d.CustomerID}</td>
                                                 <td>{d.FirstName}</td>
                                                 <td>{d.LastName}</td>
                                                 <td>{d.DOB}</td>
                                                 <td>{d.Address}</td>
-                                                <td>{d.PhoneNumber}</td>
                                                 <td>{d.Email}</td>
                                                 <td>  
                                                     <button className="btn btn-sm btn-primary me-2">Edit</button>
                                                     <button className="btn btn-sm btn-danger">Delete</button>
                                                 </td>
                                             </tr>
-                                    })}
+                                    ))}
                             
                         </tbody>
                     </table>
-                    </div>
                     </div>
         <EmployeeModalFormContainer/> 
         <hr/>

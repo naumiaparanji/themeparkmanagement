@@ -38,6 +38,12 @@ export function EventEditBody({event, eventKey}) {
         deleteEvent(formEditState, refreshAll, (e) => console.log(e));
     }, [formEditState, refreshAll]);
 
+    const handleToggleActive = useCallback(() => {
+        let payload = {...event};
+        payload.Deleted = Number(!Boolean(payload.Deleted));
+        updateEvent(payload, onSubmitSuccess, onSubmitFailure);
+    }, [event, onSubmitFailure, onSubmitSuccess]); 
+
     const handleConfirmDelete = useCallback(() => setConfirmDelete(true), []);
     const handleConfirmClose = useCallback(() => setConfirmDelete(false), []);
 
@@ -55,10 +61,13 @@ export function EventEditBody({event, eventKey}) {
                         aria-hidden="true"
                     />) : "Save"}
                 </Button>
-                <Button variant="danger" className="mx-3" onClick={handleConfirmDelete}>
+                <Button  className="mx-3" onClick={handleToggleActive}>
+                    {event.Deleted? "Inactive" : "Active"}
+                </Button>
+                <Button variant="danger" onClick={handleConfirmDelete}>
                     Delete
                 </Button>
-                {saveDate && (<p className="my-auto">{saveDate}</p>)}
+                {saveDate && (<p className="my-auto mx-3">{saveDate}</p>)}
             </div>
             <EventConfirmModal show={confirmDelete} onClose={handleConfirmClose} 
                 title="Confirm Delete"

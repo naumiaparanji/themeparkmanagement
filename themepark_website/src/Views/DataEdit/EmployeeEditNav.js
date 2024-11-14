@@ -1,4 +1,5 @@
 import { useContext, useState, useCallback, useEffect } from "react";
+import { Link, useParams } from 'react-router-dom';
 import { Navbar, Container, Form, InputGroup, Button } from "react-bootstrap";
 import { EmployeeModalFormContainer, StaffManagerContext } from "../Staff";
 import { api } from "../../App";
@@ -33,13 +34,16 @@ export function EmployeeEditNav() {
         }));
     }
 
+    const [query, setQuery] = useState("");
     const [data, setData] = useState([])
 
     useEffect(()=> {
     api.get('/employee/data/info')
         .then(res => setData(res.data))
         .catch(err => console.log(err));
-  }, [])
+    }, [])
+
+
 
     return (
         <>
@@ -53,8 +57,7 @@ export function EmployeeEditNav() {
                 </Form>
             </Container>
         </Navbar>
-        <div className="d-flex flex-column align-items-center vh-100">
-                    <div className='bg-white p-4'>
+                    <div className='flex-column align-items-center bg-white p-4 m-0'>
                     <table>
                             <thead>
                                     <tr>
@@ -89,9 +92,11 @@ export function EmployeeEditNav() {
                         </tbody>
                     </table>
                     </div>
-                    </div>
-        <EmployeeModalFormContainer/> 
-        <hr/>
+        <EmployeeModalFormContainer/>
         </>
     );
 }
+
+/*
+                                                   /* <Link to={`./viewemployee/${d.EmployeeID}`}>Read</Link>
+                                                   */

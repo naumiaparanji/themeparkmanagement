@@ -11,7 +11,7 @@ export function EventsEditList() {
             displayEvents? (
                 <Accordion defaultActiveKey={-1} className="accordion-flush">
                     {displayEvents.map((event, i) => (
-                        <Accordion.Item eventKey={i} key={i}>
+                        <Accordion.Item eventKey={event.EventID} key={event.EventID}>
                             <Accordion.Header className="py-0">
                                 <div className="w-100 d-flex justify-content-between align-items-center">
                                     <center>
@@ -20,7 +20,7 @@ export function EventsEditList() {
                                 </div>
                             </Accordion.Header>
                             <Accordion.Body>
-                                <EventEditBody event={event} eventKey={i}/>
+                                <EventEditBody event={event} eventKey={event.EventID}/>
                             </Accordion.Body>
                         </Accordion.Item>
                     ))}

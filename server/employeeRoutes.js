@@ -109,17 +109,43 @@ const returnRequestedEmployee = (req, res, next) => {
     });
 }
 
+const setMinEmployeeAccessLevel = (accessLevel) => {
+    return (req, res, next) => {
+        if (!req.requestingEmployee)
+            throw new Error("req.requestingEmployee does not exist");
+        const requesterLevel = employeeRanks[req.requestingEmployee.AccessLevel];
+        if (requesterLevel < accessLevel) {
+            return res.status(403).json({success: false, error: 'Restricted'});
+        }
+        return next();
+    }
+}
+
+const setExactEmployeeAccessLevel = (accessLevel) => {
+    return (req, res, next) => {
+        if (!req.requestingEmployee)
+            throw new Error("req.requestingEmployee does not exist");
+        const requesterLevel = employeeRanks[req.requestingEmployee.AccessLevel];
+        if (requesterLevel !== accessLevel) {
+            return res.status(403).json({success: false, error: 'Restricted'});
+        }
+        return next();
+    }
+}
+
 // App routes
 module.exports = (app) => {
 
     app.post("/employee/login", employeeAuth, async (req, res) => {
         if (req.authorized) {
+            const {user} = req.session;
             await auth.pruneSessions(req.body.username, 9, true);
             req.session.regenerate((err) => {
                 if (err) {
                     res.status(500).json({success: false, error: 'SessionUpdateFailed', errorDetails: err});
                     return;
                 }
+                req.session.user = user;
                 req.session.employeeUser = req.body.username;
                 req.session.save((err) => {
                     if (err) {
@@ -143,6 +169,11 @@ module.exports = (app) => {
         async (req, res) => {
             const roleRank = employeeRanks[req.requestingEmployee.AccessLevel];
             const roleName = employeeNames[req.requestingEmployee.AccessLevel];
+            let canAccess = ['maintenance', 'runs'];
+            if (roleRank > 0)
+                canAccess.push('reports');
+            if (roleRank > 1)
+                canAccess.push('attractions', 'events', 'datamanage');
             res.status(200).json({success: true, 
                 user: req.session.employeeUser,
                 firstName: req.requestingEmployee.FirstName,
@@ -150,7 +181,8 @@ module.exports = (app) => {
                 accessLevel: req.requestingEmployee.AccessLevel,
                 role: roleName,
                 rank: roleRank,
-                canModify: employeeRoles.slice(0, roleRank)
+                canModify: employeeRoles.slice(0, roleRank),
+                canAccess: canAccess
             });
         }
     );
@@ -164,32 +196,61 @@ module.exports = (app) => {
 
     app.get("/employee/data/info",
         checkSessionForEmployee,
+        getRequestingEmployee,
+        setMinEmployeeAccessLevel(2), // 2 is admin
         (req, res) => {
-            db.themeparkDB('EMPLOYEE').where('Deleted', 0)
+            db.themeparkDB('EMPLOYEE').where('Deleted', 0).whereNot("EmployeeID", 1)
             .then((employees) => res.status(200).json(employees))
             .catch((e) => {
                 console.log(e);
                 res.status(500).json({message: "Server error"})
         });
     });
+
+    app.get("/customer/data/info",
+        checkSessionForEmployee,
+        (req, res) => {
+            db.themeparkDB('CUSTOMER').where('Deleted', 0).whereNot("CustomerID", 1)
+            .then((employees) => res.status(200).json(employees))
+            .catch((e) => {
+                console.log(e);
+                res.status(500).json({message: "Server error"})
+        });
+    });
+
     
+    app.delete('/employee/data/:id',
+        checkSessionForEmployee,
+        getRequestingEmployee,
+        setMinEmployeeAccessLevel(2),
+        (req, res) => {
+            let query = db.themeparkDB("EMPLOYEE").where('EmployeeID', req.params.id);
+            if (req.query.permanent)
+                query = query.delete();
+            else
+                query = query.update("Deleted", 1)
+            query.then(() => res.status(200).json({success: true}))
+            .catch((e) => {
+                console.error(e);
+                res.status(500).json({success: false, error: "SQLError"});
+            });
+        }
+    )
+
     // Get info about other employees
     app.get("/employee/data/:user", 
         checkSessionForEmployee,
         getRequestingEmployee, 
+        setMinEmployeeAccessLevel(2), // 2 is admin
         getRequestedEmployee,
-        compareAccessLevels,
         returnRequestedEmployee
     );
 
     app.get("/employee/data/all/:part",
         checkSessionForEmployee,
         getRequestingEmployee,
+        setMinEmployeeAccessLevel(2), // 2 is admin
         async (req, res) => {
-            if (req.requestingEmployee.AccessLevel === "EMP") {
-                res.status(403).json({success: false, error: 'Restricted'});
-                return;
-            }
             if (!req.params.part || isNaN(req.params.part) || Number(req.params.part) < 0) {
                 res.status(400).json({success: false, error:"BadParams"});
                 return;
@@ -218,14 +279,11 @@ module.exports = (app) => {
     app.post("/employee/register", 
         checkSessionForEmployee,
         getRequestingEmployee, 
+        setMinEmployeeAccessLevel(2), // 2 is admin
         async (req, res) => {
             // Differs from customer registration in that the session needs to be authorized
             // Needs additional logic for checking registration permissions per employee
             const allowedLevels = ['MGR', 'ADM', 'SUP'];
-            if(!req.requestingEmployee || allowedLevels.indexOf(req.requestingEmployee.AccessLevel) === -1) {
-                res.status(401).json({success: false, error: "NotAuthorized"});
-                return;
-            }
             requiredKeys = [
                 "firstName",
                 "lastName",
@@ -312,3 +370,5 @@ module.exports.employeeRanks = employeeRanks;
 module.exports.employeeNames = employeeNames;
 module.exports.checkSessionForEmployee = checkSessionForEmployee;
 module.exports.getRequestingEmployee = getRequestingEmployee;
+module.exports.setMinEmployeeAccessLevel = setMinEmployeeAccessLevel;
+module.exports.setExactEmployeeAccessLevel = setExactEmployeeAccessLevel;

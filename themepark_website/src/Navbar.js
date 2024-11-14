@@ -36,7 +36,7 @@ const Navbar = () => {
                 </Link>
             </section>
             <section className="navbar-links">
-                <Link to="/Tickets/Tickets" style={linkStyle}>
+                <Link to="/Tickets" style={linkStyle}>
                     <img src={BuyTickets} alt="logo" style={{ width: '120px', height: 'auto', paddingRight: '15px', position: 'relative' }} />
                 </Link>
             </section>

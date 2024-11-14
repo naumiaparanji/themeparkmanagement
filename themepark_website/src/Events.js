@@ -41,8 +41,8 @@ const Events = () => {
                 if (res.data.success) {
                     setIsLoggedIn(true);
                     api.get("/customer/tickets")
-                    .then((response) => setUserTickets(response?.data?.tickets.map(ticket => ticket.EventID) || []))
-                    .catch((e) => console.log(e));
+                        .then((response) => setUserTickets(response?.data?.tickets.map(ticket => ticket.EventID) || []))
+                        .catch((e) => console.log(e));
                 }
             })
             .catch(() => setIsLoggedIn(false)); // Handle not logged in
@@ -50,16 +50,36 @@ const Events = () => {
 
     const handleRegister = (eventId) => {
         api.post("/customer/registerEvent", { eventId })
-            .then(() => {
-                alert("Successfully Registered");
-                setUserTickets((prevTickets) => [...prevTickets, eventId]); // Update UI immediately
+            .then((res) => {
+                alert("Successfully registered for the event!");
+                setUserTickets((prevTickets) => [...prevTickets, eventId]); // Update local tickets state
             })
             .catch((e) => {
-                if (e.response && e.response.data && e.response.data.error !== "SQLError")
-                    return alert(e.response.data.error);
-                alert("Registration Failed")
+                if (e.response?.data?.error !== "SQLError") {
+                    alert(e.response.data.error);
+                } else {
+                    console.error("Error registering for event:", e);
+                }
             });
     };
+
+    const handleUnregister = (eventId) => {
+        api.post("/customer/unregisterEvent", { eventId })
+            .then((res) => {
+                if (res.data.success) {
+                    alert("Successfully unregistered from the event!");
+                    setUserTickets((prevTickets) => prevTickets.filter(id => id !== eventId)); // Update local tickets state
+                } else {
+                    alert("Unregister failed. Please try again.");
+                }
+            })
+            .catch((e) => {
+                const errorMsg = e.response?.data?.error || "An unexpected error occurred.";
+                alert(errorMsg);
+                console.error("Error unregistering from event:", e);
+            });
+    };
+          
 
     return (
         <div>
@@ -73,10 +93,10 @@ const Events = () => {
             </div>
             <Navbar />
             <div className="events-container">
-            <button className="back-button" onClick={() => navigate('/')}>
-                Back to Home
-            </button>
-            <br /><br />
+                <button className="back-button" onClick={() => navigate('/')}>
+                    Back to Home
+                </button>
+                <br /><br />
                 <div className="banner-image3">
                     <p className="h4">Events And Promotions</p>
                 </div>
@@ -96,13 +116,17 @@ const Events = () => {
                                     <p><strong>Restrictions:</strong> {events.EventRestrictions}</p>
                                     {isLoggedIn ? (
                                         userTickets.includes(events.EventID) ? (
-                                            <p>Already Registered</p>
+                                            <>
+                                                <p>Already Registered</p>
+                                                <button onClick={() => handleUnregister(events.EventID)}>Unregister</button>
+                                            </>
                                         ) : (
-                                            <button onClick={() => handleRegister(events.EventID)}>Register</button>
+                                            <button onClick={() => handleRegister(events.EventID)}>Register for Event</button>
                                         )
                                     ) : (
                                         <p>Please log in to register</p>
                                     )}
+
                                 </div>
                             ))}
                         </div>
