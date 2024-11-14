@@ -15,12 +15,11 @@ export function RidesInfoBox(props) {
   const [category, setCategory] = useState("");
   const [capacity, setCapacity] = useState("");
   const [ageLimit, setAgeLimit] = useState("");
-  const [rideHours, setRideHours] = useState("");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const ridesSubmit = async () => {
-    if (!rideName || !category || !capacity || !ageLimit || !rideHours) {
+    if (!rideName || !category || !capacity || !ageLimit) {
       setMessage("All fields are required");
       return;
     }
@@ -28,9 +27,8 @@ export function RidesInfoBox(props) {
     api.post(props.apiPath || "/rides/input", {
       rideName,
       category,
-      capacity,
       ageLimit,
-      rideHours,
+      capacity
     })
     .then(() => {
       setMessage("Rides info submitted successfully");
@@ -38,11 +36,12 @@ export function RidesInfoBox(props) {
       setCategory("");
       setCapacity("");
       setAgeLimit("");
-      setRideHours("");
     })
     .catch((e) => {
       if (e.response) {
         if (e.response.status === 500) setMessage("Server error");
+        else if (e.response.status === 502) setMessage("Age limit must be a non-negative integer");
+        else if (e.response.status === 503) setMessage("Capacity must be an positive integer");
         else if (e.response.data && !e.response.data.success) setMessage("Submission failed");
         else setMessage("Unknown error");
       } else if (e.request) setMessage("Failed to connect to server");
@@ -98,13 +97,6 @@ export function RidesInfoBox(props) {
         containerStyle={{ margin: "12px 12px" }}
         value={ageLimit}
         onChange={(e) => setAgeLimit(e.target.value)}
-      />
-
-      <InputField
-        name="Ride Hours"
-        containerStyle={{ margin: "12px 12px" }}
-        value={rideHours}
-        onChange={(e) => setRideHours(e.target.value)}
       />
 
       <FancyButton text={isLoading ? "Submitting..." : "Submit"} action={ridesSubmit} disabled={isLoading} />

@@ -223,6 +223,16 @@ async function getCategoryPopularitySummary() {
     return db(target).select();
 }
 
+async function setRide(fields, isEmployee) { 
+  if (!isEmployee) return false;
+
+  let target = "RIDES";
+  let query = db(target).insert(fields);
+  let result = await query;
+
+  return result[0] != 0;
+}
+
 module.exports = {
   themeparkDB: db,
   getUser,
@@ -243,5 +253,6 @@ module.exports = {
   setRuns,
   getRidePopularityInfo,
   getRidePopularitySummary,
-  getCategoryPopularitySummary
+  getCategoryPopularitySummary,
+  setRide
 };
