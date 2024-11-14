@@ -71,6 +71,10 @@ async function getEventCategories() {
   return await db("EVENTS").select("EventType").where("Deleted", 0).distinct().orderBy("EventType");
 }
 
+async function getPassCategories() {
+  return await db("PASSES").select("PassType").where("Deleted", 0).distinct().orderBy("PassType");
+}
+
 async function setMaintenanceRequest(fields, isEmployee) {
   if (!isEmployee) return false;
 
@@ -157,6 +161,7 @@ module.exports = {
   getRidesNames,
   getRidesCategories,
   getEventCategories,
+  getPassCategories,
   setMaintenanceRequest,
   getRideStatusID,
   getMaintenanceTicket,
