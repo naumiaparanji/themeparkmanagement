@@ -119,10 +119,11 @@ body {
     z-index: 3;
     justify-content: center;
     align-items: center;
-    top: 30vh;
+    top: 45vh;
     right: 20%;
     left: 20%;
     position: absolute;
+    text-align: center;
 }
 
 .bg-Video {

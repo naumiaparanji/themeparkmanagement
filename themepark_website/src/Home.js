@@ -23,16 +23,16 @@ const Home = () => {
             <Navbar /> 
             <div className="mainText">
                 <div>
-                <div className="BodyText">
-                        <h2 id="HomeHeader">An Exhilarating Experience for that Special Day</h2>
-                        <Button id="homebutton">
-                        <Link id="homebutton" to="/Tickets">Available Passes Here</Link></Button>
-                    </div>
                     <video autoPlay loop muted className="bg-Video" >
                         <source src={BgVideo} type="video/mp4" />
                     </video>
                 </div>
             </div>
+            <div className="BodyText">
+                        <h2 id="HomeHeader">An Exhilarating Experience for that Special Day</h2>
+                        <Button id="homebutton">
+                        <Link id="homebutton" to="/Tickets">Available Passes Here</Link></Button>
+                    </div>
         </div>
     );
 }

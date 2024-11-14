@@ -29,47 +29,70 @@ const ticketData = [
     { id: 3, name: 'A Newcomer Ticket', image: <img src={newcomer} alt="logo" style={{ width: '100%', height: 'auto', paddingRight: '15px', position: 'relative' }} />, subName: 'Good for a one-day visit!', Description: 'Gain general access to the park and all of the rides for one day! Parking is not included and extra activities will need to be paid for if you are interested in participating in them.', price: "$39.99" }
 ];
 
-
 const Tickets = () => {
-  const navigate = useNavigate(); // Initialize useNavigate hook
-  const categories = [...new Set(ticketData.map(ticket => ticket.category))]; // Unique categories
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isNotLoggedIn, setIsNotLoggedIn] = useState(false);
+    const navigate = useNavigate(); // Initialize useNavigate hook
+    //const categories = [...new Set(ticketData.map(ticket => ticket.category))]; // Unique categories
+    const [passData, setPassData] = useState([]);
+    const [passTypes, setPassCategories] = useState([]);
+    const [userPasses, setUserPasses] = useState([]);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  useEffect(() => {
-      // Check session status on mount
-      api.get('/customer/info', { withCredentials: true })
-          .then(response => {
-              if (response.data.success) {
-                  setIsLoggedIn(true);
-              } else {
-                  setIsLoggedIn(false);
-              }
-          })
-          .catch(() => setIsLoggedIn(false)); // Ensure safe fallback
+    useEffect(() => {
+        // Fetch pass data
+        api.get("/passes")
+            .then((response) => {
+                setPassData(response.data.passes);
+                setPassCategories([...new Set(response.data.passes.map(passes => passes.PassType))]);
+            })
+            .catch((e) => console.error(e));
+
+        // Check login status and fetch user passes
+        api.get("/customer/info", { withCredentials: true })
+            .then((res) => {
+                if (res.data.success) {
+                    setIsLoggedIn(true);
+                    api.get("/customer/passes")
+                        .then((response) => setUserPasses(response?.data?.passes.map(passes => passes.PassID) || []))
+                        .catch((e) => console.log(e));
+                }
+            })
+            .catch(() => setIsLoggedIn(false)); // Handle not logged in
     }, []);
 
-    const linkStyle = {
-        fontSize: '20px',
-        fontWeight: 'bold',
-        textDecoration: 'none',
-        color: 'white',
+    const handleRegister = (passId) => {
+        api.post("/customer/registerPass", { passId })
+            .then((res) => {
+                alert("Successfully purchased a Pass!");
+                setUserPasses((prevPasses) => [...prevPasses, passId]); // Update local passes state
+            })
+            .catch((e) => {
+                if (e.response?.data?.error !== "SQLError") {
+                    alert(e.response.data.error);
+                } else {
+                    console.error("Error purchasing pass:", e);
+                }
+            });
     };
 
-    const [modal, setModal] = useState(false);
-
-    const toggleModal = () => {
-        setModal(!modal);
-    };
-
-    if(modal) {
-        document.body.classList.add('active-modal')
-      } else {
-        document.body.classList.remove('active-modal')
+    const handleUnregister = (passId) => {
+        api.post("/customer/unregisterPass", { passId })
+            .then((res) => {
+                if (res.data.success) {
+                    alert("Successfully returned Pass!");
+                    setUserPasses((prevPasses) => prevPasses.filter(id => id !== passId)); // Update local tickets state
+                } else {
+                    alert("Return failed. Please try again.");
+                }
+            })
+            .catch((e) => {
+                const errorMsg = e.response?.data?.error || "An unexpected error occurred.";
+                alert(errorMsg);
+                console.error("Error purchasing pass:", e);
+            });
     };
 
   return (
-      <div>
+      <div className="containermain">
         <div className="notificationbar">
             {/* Edit Notification Text */}
             <h1 className="notificationtext">**WINTER SEASON PASSES AVAILABLE! LOGIN OR CREATE AN ACCOUNT FOR MORE INFORMATION.</h1>
@@ -80,34 +103,43 @@ const Tickets = () => {
             </section>
             </div>
             <Navbar />
-    <div className="background-image"></div>
-      <div className="ticket-container">
-          {categories.map(category => (
-              <div className="ticket-category" key={category}>
-                  <p className="h4-ticket">
-                    Tickets
-                  </p>
-                  <div className="ticket-list">
-                      {ticketData.filter(ticket => ticket.category === category).map(ticket => (
-                          <div className="ticket-card" key={ticket.id}>
-                              <h3>{ticket.name}</h3>
-                              <p>{ticket.image}</p>
-                              <p><strong>{ticket.subName}</strong></p>
-                              <p><strong>Description: </strong> <p>{ticket.Description}</p></p>
-                              <p className="price"><strong>Price: </strong>{ticket.price}</p>
-                              {isLoggedIn ||
-                                        <p className="PleaseLogin">Please Login to Purchase Tickets</p>
-                                    }
-                              {isLoggedIn && 
-                                        <button className="button" onClick={toggleModal} style={linkStyle}>Purchase</button>
-                                    }
-                          </div>
-                      ))}
-                      
-                  </div>
-              </div>
-          ))}
-      </div>
+        <div className="background-image"></div>
+        <div className="Ticket-container">
+                <button className="back-button" onClick={() => navigate('/')}>
+                    Back to Home
+                </button>
+                <br />
+                <p className="h4-ticket">Tickets</p>
+                <br />
+                {passTypes.map(category => (
+                    <div className="ticket-category" key={category}>
+                        <h2>{category}</h2>
+                        <div className="ticket-list">
+                            {passData.filter(passes => passes.PassType === category).map(passes => (
+                                <div className="ticket-card" key={passes.PassID}>
+                                    <h3>{passes.PassName}</h3>
+                                    <p><strong><u>Description:</u></strong> {passes.PassDesc}</p>
+                                    <p><strong>Location:</strong> {passes.Location}</p>
+                                    <p><strong>Restrictions:</strong> {passes.PassRestrictions}</p>
+                                    {isLoggedIn ? (
+                                        userPasses.includes(passes.PassID) ? (
+                                            <>
+                                                <p>Already Registered</p>
+                                                <button onClick={() => handleUnregister(passes.PassID)}>Refund</button>
+                                            </>
+                                        ) : (
+                                            <button onClick={() => handleRegister(passes.PassID)}>Purchase</button>
+                                        )
+                                    ) : (
+                                        <p>Please log in to Purchase</p>
+                                    )}
+
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
       </div>
 
   );

@@ -84,6 +84,14 @@ async function getEventCategories() {
     .orderBy("EventType");
 }
 
+async function getPassCategories() {
+  return await db("PASSES").select("PassType").where("Deleted", 0).distinct().orderBy("PassType");
+}
+
+async function getPassCategories() {
+  return await db("PASSES").select("PassType").where("Deleted", 0).distinct().orderBy("PassType");
+}
+
 async function setMaintenanceRequest(fields, isEmployee) {
   if (!isEmployee) return false;
 
@@ -200,6 +208,21 @@ async function setRuns(fields, isEmployee) {
   return result[0] != 0;
 }
 
+async function getRidePopularityInfo() {
+    let target = "RIDE_POPULARITY_INFO";
+    return db(target).select();
+}
+
+async function getRidePopularitySummary() {
+    let target = "RIDE_POPULARITY_SUMMARY";
+    return db(target).select();
+}
+
+async function getCategoryPopularitySummary() {
+    let target = "CATEGORY_POPULARITY_SUMMARY";
+    return db(target).select();
+}
+
 module.exports = {
   themeparkDB: db,
   getUser,
@@ -209,6 +232,7 @@ module.exports = {
   getRidesNames,
   getRidesCategories,
   getEventCategories,
+  getPassCategories,
   setMaintenanceRequest,
   getRideStatusID,
   getResolveData,
@@ -217,4 +241,7 @@ module.exports = {
   deleteMaintenanceTicket,
   deleteEmployee,
   setRuns,
+  getRidePopularityInfo,
+  getRidePopularitySummary,
+  getCategoryPopularitySummary
 };
