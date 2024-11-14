@@ -113,6 +113,7 @@ setInterval(async () => {
 require('./customerRoutes')(app);
 require('./employeeRoutes')(app);
 require('./eventsRoutes')(app);
+require('./passRoutes')(app);
 require('./rideRoutes')(app);
 require('./maintenanceRoutes')(app);
 require('./runsRoutes')(app);
