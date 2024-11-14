@@ -117,6 +117,13 @@ async function deleteMaintenanceTicket(maintenanceID) {
   return deleteMStatus;
 }
 
+async function deleteEmployee(EmployeeID) {
+  const deleteEmployee = await db("EMPLOYEE").update({deleted: 1}).where("EmployeeID", EmployeeID);
+  console.log("In Employee Table");
+  console.log(deleteEmployee);
+  return deleteMStatus;
+}
+
 async function setRuns(fields, isEmployee) {
     if (!isEmployee) return false;
 
@@ -141,5 +148,6 @@ module.exports = {
   getMaintenanceTicket,
   editMaintenanceTicket,
   deleteMaintenanceTicket,
+  deleteEmployee,
   setRuns
 };

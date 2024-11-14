@@ -219,6 +219,24 @@ module.exports = (app) => {
     });
 
     
+    app.delete('/employee/data/:id',
+        checkSessionForEmployee,
+        getRequestingEmployee,
+        setMinEmployeeAccessLevel(2),
+        (req, res) => {
+            let query = db.themeparkDB("EMPLOYEE").where('EmployeeID', req.params.id);
+            if (req.query.permanent)
+                query = query.delete();
+            else
+                query = query.update("Deleted", 1)
+            query.then(() => res.status(200).json({success: true}))
+            .catch((e) => {
+                console.error(e);
+                res.status(500).json({success: false, error: "SQLError"});
+            });
+        }
+    )
+
     // Get info about other employees
     app.get("/employee/data/:user", 
         checkSessionForEmployee,
