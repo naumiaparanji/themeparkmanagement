@@ -13,19 +13,19 @@ export function RidePopularityReportContextProvider({children}) {
 
     const refreshCategorySummary = useCallback(() => {
         api.get("/ridePopularity/category")
-            .then((res) => setSalesData(res.data.tickets))
+            .then((res) => setCategoryData(res.data.rows))
             .catch((e) => console.log(e));
     }, []);
 
     const refreshRideSummary = useCallback(() => {
         api.get("/ridePopularity/ride")
-            .then((res) => setEventTickets(res.data.tickets))
+            .then((res) => setRideData(res.data.rows))
             .catch((e) => console.log(e));
     }, []);
 
     const refreshRuns = useCallback(() => {
         api.get("/ridePopularity/runs")
-            .then((res) => setEventTickets(res.data.tickets))
+            .then((res) => setRunsData(res.data.rows))
             .catch((e) => console.log(e));
     }, []);
 
