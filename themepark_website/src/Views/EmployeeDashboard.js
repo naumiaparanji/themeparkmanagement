@@ -9,7 +9,7 @@ import {Navbar, Nav, Container, NavDropdown, ListGroup} from "react-bootstrap";
 import { StaffManagerContextProvider } from "./Staff";
 import { Routes, Route } from 'react-router-dom';
 import { MaintenanceData } from '../Maintenance/MaintenanceEdit';
-import { RidesInfo } from '../Rides/Rides';
+import RidesInfo from '../Rides/RidesInfo';
 import Runs from '../Runs/Runs';
 import { EventsEditView } from './EventsEdit/EventsEditView';
 import { AttractionsEditView } from './AttractionsEdit/AttractionsEdit';

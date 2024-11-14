@@ -50,8 +50,8 @@ module.exports = (app) => {
     });
 
     app.post("/rides/input", checkSessionForEmployee, getRequestingEmployee, async (req, res) => {
-        const numericRideAgeLimit = Number(req.body.RideAgeLimit);
-        const numericCapacity = Number(req.body.Capacity);
+        const numericRideAgeLimit = Number(req.body.ageLimit);
+        const numericCapacity = Number(req.body.capacity);
         if (!Number.isInteger(numericRideAgeLimit) || numericRideAgeLimit < 0) {
             res.status(502).json({ success: false, error: "InvalidRideAgeLimit" });
             return;
@@ -66,8 +66,8 @@ module.exports = (app) => {
                 {
                     RideName: req.body.rideName,
                     Category: req.body.category,
-                    RideAgeLimit: req.body.ageLimit,
-                    Capacity: req.body.capacity,
+                    RideAgeLimit: numericRideAgeLimit,
+                    Capacity: numericCapacity,
                     Created: getCurrentTime()
                 },
                 true

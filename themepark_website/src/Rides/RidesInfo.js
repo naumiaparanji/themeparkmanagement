@@ -104,7 +104,7 @@ export function RidesInfoBox(props) {
   );
 }
 
-export function RidesInfo(props) {
+export default function RidesInfo(props) {
   return (
     <div className="container">
       <RandomBGImg />

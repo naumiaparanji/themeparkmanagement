@@ -173,7 +173,7 @@ module.exports = (app) => {
             if (roleRank > 0)
                 canAccess.push('reports');
             if (roleRank > 1)
-                canAccess.push('attractions', 'events', 'datamanage', 'passes');
+                canAccess.push('attractions', 'events', 'datamanage', 'passes', 'rides');
             res.status(200).json({success: true, 
                 user: req.session.employeeUser,
                 firstName: req.requestingEmployee.FirstName,

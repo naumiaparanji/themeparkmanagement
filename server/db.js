@@ -223,7 +223,7 @@ async function getCategoryPopularitySummary() {
     return db(target).select();
 }
 
-async function setRide(fields, isEmployee) { 
+async function setRides(fields, isEmployee) { 
   if (!isEmployee) return false;
 
   let target = "RIDES";
@@ -254,5 +254,5 @@ module.exports = {
   getRidePopularityInfo,
   getRidePopularitySummary,
   getCategoryPopularitySummary,
-  setRide
+  setRides
 };
