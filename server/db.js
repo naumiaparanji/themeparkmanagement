@@ -133,6 +133,20 @@ async function setRuns(fields, isEmployee) {
     return result[0] != 0;
 }
 
+async function getRidePopularityInfo(isEmployee) {
+    if (!isEmployee) return false;
+
+    let target = "RIDE_POPULARITY_INFO";
+    return db(target).select();
+}
+
+async function getRidePopularitySummary(fields, isEmployee) {
+    if (!isEmployee) return false;
+
+    let target = "RIDE_POPULARITY_SUMMARY";
+    return db(target).select();
+}
+
 module.exports = {
   themeparkDB: db,
   getUser,
@@ -148,5 +162,7 @@ module.exports = {
   editMaintenanceTicket,
   deleteMaintenanceTicket,
   deleteEmployee,
-  setRuns
+  setRuns,
+  getRidePopularityInfo,
+  getRidePopularitySummary,
 };
