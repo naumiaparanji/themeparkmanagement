@@ -118,6 +118,7 @@ export function MaintenanceDataBox(props) {
               ...resolveItems,
             ]);
           });
+
       } catch (error) {
         console.log(error);
         if (error.response) {
@@ -165,8 +166,9 @@ export function MaintenanceDataBox(props) {
 
       let fixedResolve =
         searchResolve === "Select Ticket Status" ? "" : searchResolve;
+      let test = item.resolveTicket === 1 ? "Resolved": "Open"
       const matchesResolve =
-        fixedResolve === "" || item.resolved === fixedResolve;
+        fixedResolve === "" || test === fixedResolve;
 
       const matchesDateFrom =
         searchDateFrom === "" ||
@@ -383,7 +385,7 @@ export function MaintenanceDataBox(props) {
         <table className="table table-striped">
           <thead>
             <tr>
-              <th style={{ width: "10%" }}>ID</th>
+              <th style={{ width: "7%" }}>ID</th>
               <th style={{ width: "15%" }}>Ride Name</th>
               <th style={{ width: "10%" }}>Category</th>
               <th style={{ width: "17%" }}>Date</th>
@@ -415,7 +417,7 @@ export function MaintenanceDataBox(props) {
                   <td>{item.category}</td>
                   <td>{new Date(item.date).toLocaleString()}</td>
                   <td>{item.status === 1 ? "Operational" : "Out of Order"}</td>
-                  <td>{item.resolved === 1 ? "Resolved" : "Open"}</td>
+                  <td>{item.resolveTicket === 1 ? "Resolved" : "Open"}</td>
                   {!props.isReport ? (
                     <>
                       <td>{item.description}</td>
