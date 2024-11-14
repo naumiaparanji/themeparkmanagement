@@ -116,7 +116,7 @@ export function MaintenanceEditBox(props) {
     <div
       className="loginbox"
       style={{
-        width: "60%",
+        width: "100%",
         padding: "20px",
         maxWidth: "800px",
         margin: "0 auto",

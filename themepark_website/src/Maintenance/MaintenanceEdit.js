@@ -1,4 +1,4 @@
-import "./Maintenance.css";
+import styles from "./Maintenance.css";
 import React, { useState, useEffect } from "react";
 import MainLogo from "../images/flagslogo.png";
 import { RandomBGImg, MessageBox, FancyButton } from "../Auth/AuthComponents";
@@ -166,12 +166,14 @@ export function MaintenanceDataBox(props) {
     <div
       className="loginbox"
       style={{
-        width: "80%",
+        width: "100%",
+        height: "70%",
         padding: "20px",
         maxWidth: "1000px",
         margin: "0 auto",
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
         borderRadius: "10px",
+        overflowY: "auto"
       }}
     >
       <a href="/">
@@ -281,10 +283,10 @@ export function MaintenanceDataBox(props) {
               <th style={{ width: "10%" }}>Ride ID</th>
               <th style={{ width: "15%" }}>Ride Name</th>
               <th style={{ width: "10%" }}>Category</th>
-              <th style={{ width: "15%" }}>Date</th>
+              <th style={{ width: "17%" }}>Date</th>
               <th
                 style={{
-                  width: "20%",
+                  width: "18%",
                   wordWrap: "break-word",
                   whiteSpace: "normal",
                 }}
@@ -303,7 +305,7 @@ export function MaintenanceDataBox(props) {
                   <td>{item.rideId}</td>
                   <td>{item.rideName}</td>
                   <td>{item.category}</td>
-                  <td>{item.date}</td>
+                  <td>{new Date(item.date).toLocaleString()}</td>
                   <td>{item.description}</td>
                   <td>
                     <div>
@@ -352,7 +354,7 @@ export function MaintenanceData(props) {
     <div className="container">
       <RandomBGImg />
       <MaintenanceDataBox
-        title={props.title || "Maintenance Records"}
+        title={props.title || "Maintenance Update"}
         apiPath={props.apiPath || "/maintenance/data"}
       />
     </div>
