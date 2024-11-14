@@ -8,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {Navbar, Nav, Container, NavDropdown, ListGroup} from "react-bootstrap";
 import { StaffManagerContextProvider } from "./Staff";
 import { Routes, Route } from 'react-router-dom';
-import { MaintenanceData, MaintenanceDataBox } from '../Maintenance/MaintenanceEdit';
+import { MaintenanceData } from '../Maintenance/MaintenanceEdit';
 import { RidesInfo } from '../Rides/Rides';
 import Runs from '../Runs/Runs';
 import { EventsEditView } from './EventsEdit/EventsEditView';
@@ -17,6 +17,7 @@ import { MaintenanceInfo } from '../Maintenance/Maintenance';
 import DataManage from './DataEdit/DataManage';
 import PageNotFound from "../PageNotFound";
 import { api } from "../App";
+import { ReportsView } from "./ReportsView";
 
 export function WhoAmI() {
     // This is a placeholder for testing
@@ -119,7 +120,7 @@ export function DashUI() {
                         <Route path="" element={<WhoAmI/>} />
                         {data.canAccess.includes('events') && <Route path="events" element={<EventsEditView/>} />}
                         {data.canAccess.includes('attractions') && <Route path="attractions" element={<AttractionsEditView/>} />}
-                        {data.canAccess.includes('reports') && <Route path="reports" element={<MaintenanceDataBox isReport = {true}/>} />}
+                        {data.canAccess.includes('reports') && <Route path="reports" element={<ReportsView/>} />}
                         {data.canAccess.includes('rides') && <Route path="rides" element={<RidesInfo/>} />}
                         {data.canAccess.includes('maintenance') && <Route path="maintenance" element={<MaintenanceInfo/>} />}
                         {data.canAccess.includes('runs') && <Route path="runs" element={<Runs/>} />}

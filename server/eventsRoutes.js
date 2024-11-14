@@ -80,4 +80,32 @@ module.exports = (app) => {
         }
     )
 
+    app.get('/events/tickets', 
+        employee.checkSessionForEmployee,
+        employee.getRequestingEmployee,
+        employee.setMinEmployeeAccessLevel(1),
+        (req, res) => {
+            db.themeparkDB("EVENT_TICKETS_INFO")
+            .then((tickets) => res.status(200).json({success: true, tickets: tickets}))
+            .catch((e) => {
+                console.error(e);
+                res.status(500).json({success: false, error: "SQLError"});
+            });
+        }
+    );
+
+    app.get('/events/tickets/summary', 
+        employee.checkSessionForEmployee,
+        employee.getRequestingEmployee,
+        employee.setMinEmployeeAccessLevel(1),
+        (req, res) => {
+            db.themeparkDB("EVENT_SALES_SUMMARY")
+            .then((tickets) => res.status(200).json({success: true, tickets: tickets}))
+            .catch((e) => {
+                console.error(e);
+                res.status(500).json({success: false, error: "SQLError"});
+            });
+        }
+    );
+
 };
