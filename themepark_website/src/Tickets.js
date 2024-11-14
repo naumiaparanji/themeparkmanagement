@@ -117,8 +117,9 @@ const Tickets = () => {
                                     {isLoggedIn ? (
                                         userPasses.includes(passes.PassID) ? (
                                             <>
-                                                <p>Already Registered</p>
-                                                <button className="button" onClick={() => handleUnregister(passes.PassID)}>Refund</button>
+                                            <hr></hr>
+                                                <p><strong>Already Purchased</strong></p>
+                                                <button className="button2" onClick={() => handleUnregister(passes.PassID)}>Refund</button>
                                             </>
                                         ) : (
                                             <button className="button" onClick={() => handleRegister(passes.PassID)}>Purchase</button>
