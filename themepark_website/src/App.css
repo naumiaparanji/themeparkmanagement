@@ -30,6 +30,36 @@
     font-size: 100%;
 }
 
+.mainText {
+    text-align: center;
+    width: 100%;
+    height: 83vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: black;
+    padding-top: 6%;
+    z-index: -1;
+}
+
+#HomeHeader {
+    font-size: 3em;
+    color: black;
+}
+
+#homebutton {
+    transform: scale(1.3);
+    margin-top: 1%;
+    color: black;
+    background-color: white;
+}
+
+#homebutton:hover {
+    transform: scale(1.35);
+    color: white;
+    background-color: black;
+}
+
 h1 {
     float: left;
     font-size: 100%;
@@ -147,35 +177,6 @@ body {
 
 .navbar-links:hover:active {
     transform: scale(1.05);
-}
-
-.mainText {
-    text-align: center;
-    width: 100%;
-    height: 83vh;
-    position: relative;
-    display: flex;
-    align-items: center;
-    background-color: black;
-    padding-top: 6%;
-}
-
-#HomeHeader {
-    font-size: 3em;
-    color: black;
-}
-
-#homebutton {
-    transform: scale(1.3);
-    margin-top: 1%;
-    color: black;
-    background-color: white;
-}
-
-#homebutton:hover {
-    transform: scale(1.35);
-    color: white;
-    background-color: black;
 }
 
 h2 {

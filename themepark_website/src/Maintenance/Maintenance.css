@@ -98,32 +98,4 @@ td {
   border: 1px solid black;
   width: 100px;
   overflow: hidden;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background-color: white;
-  padding: 2%;
-  border: 2px solid #000;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  max-height: calc(100vh - 40px); 
-  overflow-y: auto; 
-  width: 90%;
-  max-width: 600px;
 }
