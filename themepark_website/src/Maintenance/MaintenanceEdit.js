@@ -107,7 +107,9 @@ export function MaintenanceDataBox(props) {
               resolveItems.push(
                 <option
                   key={resolveArrayData[i].Resolved == 1 ? "Resolved" : "Open"}
-                  value={resolveArrayData[i].Resolved == 1 ? "Resolved" : "Open"}
+                  value={
+                    resolveArrayData[i].Resolved == 1 ? "Resolved" : "Open"
+                  }
                 >
                   {resolveArrayData[i].Resolved == 1 ? "Resolved" : "Open"}
                 </option>
@@ -165,8 +167,8 @@ export function MaintenanceDataBox(props) {
 
       let fixedResolve =
         searchResolve === "Select Ticket Status" ? "" : searchResolve;
-      const matchesResolve =
-        fixedResolve === "" || item.resolved === fixedResolve;
+      let test = item.resolveTicket === 1 ? "Resolved" : "Open";
+      const matchesResolve = fixedResolve === "" || test === fixedResolve;
 
       const matchesDateFrom =
         searchDateFrom === "" ||
@@ -383,9 +385,13 @@ export function MaintenanceDataBox(props) {
         <table className="table table-striped">
           <thead>
             <tr>
-              <th style={{ width: "10%" }}>ID</th>
+              <th style={{ width: "7%" }}>ID</th>
               <th style={{ width: "15%" }}>Ride Name</th>
-              <th style={{ width: "10%" }}>Category</th>
+              {props.isReport ? (
+                <>
+                  <th style={{ width: "10%" }}>Category</th>
+                </>
+              ) : null}
               <th style={{ width: "17%" }}>Date</th>
               <th style={{ width: "15%" }}>Ride Status</th>
               <th style={{ width: "13%" }}>Ticket Status</th>
@@ -412,10 +418,14 @@ export function MaintenanceDataBox(props) {
                 <tr key={index}>
                   <td>{item.maintenanceId}</td>
                   <td>{item.rideName}</td>
-                  <td>{item.category}</td>
+                  {props.isReport ? (
+                    <>
+                      <td>{item.category}</td>
+                    </>
+                  ) : null}
                   <td>{new Date(item.date).toLocaleString()}</td>
                   <td>{item.status === 1 ? "Operational" : "Out of Order"}</td>
-                  <td>{item.resolved === 1 ? "Resolved" : "Open"}</td>
+                  <td>{item.resolveTicket === 1 ? "Resolved" : "Open"}</td>
                   {!props.isReport ? (
                     <>
                       <td>{item.description}</td>

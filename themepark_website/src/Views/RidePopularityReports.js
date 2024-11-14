@@ -179,17 +179,13 @@ export function IndividualRuns() {
                 <tbody>
                 {displayData.map((entry, i) => (
                     <tr key={i}>
-                        <td>{entry.RideTime}</td>
+                        <td>{new Date(entry.RideTime).toLocaleString()}</td>
                         <td>{entry.RideID}</td>
                         <td>{entry.RideName}</td>
                         <td>{entry.OperatorID}</td>
                         <td>{entry.OperatorName}</td>
                         <td>{entry.NumofRiders}</td>
                         <td>{entry.Capacity}</td>
-
-                        <td>{new Date(entry.Bought).toLocaleString()}</td>
-                        <td>{new Date(entry.ExpirationDate).toLocaleString()}</td>
-                        <td>{entry.ScannedDate !== "N/A" ? new Date(entry.ScannedDate).toLocaleString() : entry.ScannedDate}</td>
                     </tr>
                 ))}
                 </tbody>

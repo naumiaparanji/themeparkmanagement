@@ -79,7 +79,7 @@ const Tickets = () => {
             .then((res) => {
                 if (res.data.success) {
                     alert("Successfully returned Pass!");
-                    setUserPasses((prevPasses) => prevPasses.filter(id => id !== passId)); // Update local tickets state
+                    setUserPasses((prevPasses) => prevPasses.filter(id => id !== passId));
                 } else {
                     alert("Return failed. Please try again.");
                 }
