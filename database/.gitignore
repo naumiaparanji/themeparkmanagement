@@ -8,3 +8,5 @@
 !MAINTENANCE_SUMMARY view creation query.sql
 !MAINTENANCE_COUNT view creation query.sql
 !RIDE_POPULARITY_SUMMARY view creation query.sql
+!EVENT_SALES_SUMMARY_view.sql
+!EVENT_TICKETS_INFO_view.sql

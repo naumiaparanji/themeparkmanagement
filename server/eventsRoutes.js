@@ -108,4 +108,18 @@ module.exports = (app) => {
         }
     );
 
+    app.get('/events/names', 
+        employee.checkSessionForEmployee,
+        employee.getRequestingEmployee,
+        employee.setMinEmployeeAccessLevel(1),
+        (req, res) => {
+            db.themeparkDB("EVENTS").select("EventName").distinct()
+            .then((names) => res.status(200).json({success: true, names: names.map((n) => n.EventName)}))
+            .catch((e) => {
+                console.error(e);
+                res.status(500).json({success: false, error: "SQLError"});
+            });
+        }
+    );
+
 };

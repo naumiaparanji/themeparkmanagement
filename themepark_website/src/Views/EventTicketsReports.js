@@ -9,6 +9,7 @@ const EventTicketsReportContext = React.createContext();
 export function EventTicketsReportContextProvider({children}) {
     const [ salesData, setSalesData ] = useState([]);
     const [ eventTickets, setEventTickets ] = useState([]);
+    const [ eventNames, setEventNames ] = useState([]);
 
     const refreshSalesData = useCallback(() => {
         api.get("/events/tickets/summary")
@@ -22,17 +23,26 @@ export function EventTicketsReportContextProvider({children}) {
         .catch((e) => console.log(e));
     }, []);
 
+    const refreshEventNames = useCallback(() => {
+        api.get("/events/names")
+        .then((res) => setEventNames(res.data.names))
+        .catch((e) => console.log(e));
+    }, []);
+
     useEffect(() => {
         refreshSalesData();
         refreshEventTickets();
-    }, [refreshEventTickets, refreshSalesData]);
+        refreshEventNames();
+    }, [refreshEventTickets, refreshSalesData, refreshEventNames]);
 
     return (
         <EventTicketsReportContext.Provider value={{
             salesData,
             eventTickets,
+            eventNames,
             refreshSalesData,
-            refreshEventTickets
+            refreshEventTickets,
+            refreshEventNames
         }}>
             {children}
         </EventTicketsReportContext.Provider>
@@ -70,13 +80,13 @@ export function EventTicketSalesSummary() {
 }
 
 export function EventTicketDataReport() {
-    const { eventTickets } = useContext(EventTicketsReportContext);
+    const { eventTickets, eventNames } = useContext(EventTicketsReportContext);
     const [ displayData, setDisplayData ] = useState(eventTickets);
     const [ fromDate, setFromDate ] = useState(null);
     const [ toDate, setToDate ] = useState(null);
+    const [ eventFilter, setEventFilter ] = useState(null);
 
     const applyFilters = useCallback(() => {
-        console.log(fromDate);
         let newData = eventTickets;
         if (fromDate && !isNaN(fromDate.getTime())) {
             newData = newData.filter((item) => new Date(item.Bought) > fromDate);
@@ -84,8 +94,11 @@ export function EventTicketDataReport() {
         if (toDate && !isNaN(toDate.getTime())) {
             newData = newData.filter((item) => new Date(item.Bought) <= toDate);
         }
+        if (eventFilter && eventFilter !== 'none') {
+            newData = newData.filter((item) => item.EventName === eventFilter);
+        }
         setDisplayData(newData);
-    }, [eventTickets, fromDate, toDate]);
+    }, [eventTickets, fromDate, toDate, eventFilter]);
 
     const handleFromChange = useCallback((event) => {
         setFromDate(new Date(event.target.value));
@@ -95,16 +108,29 @@ export function EventTicketDataReport() {
         setToDate(new Date(event.target.value));
     }, []);
 
+    const handleEventFilterChange = useCallback((event) => {
+        setEventFilter(event.target.value);
+    }, []);
+
     useEffect(() => {
         applyFilters();
-    }, [fromDate, toDate, applyFilters]);
+    }, [fromDate, toDate, eventFilter, applyFilters]);
 
     return (
         <>
             <div className="d-flex flex-row justify-content-center">
                 <div className="d-flex flex-column justify-content-center mx-4">
+                    <label style={{textAlign: "center"}}>Filter by event:</label>
+                    <select style={{width: 200}} onChange={handleEventFilterChange} name="event-filter" id="efilter">
+                        <option value="none">Select event</option>
+                        {eventNames.map((name, i) => (
+                            <option value={name} key={i}>{name}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className="d-flex flex-column justify-content-center mx-4">
                     <label style={{textAlign: "center"}}>Purchase date from:</label>
-                    <input style={{width: 200}} onChange={handleFromChange} type="date" id="fromdate"/>
+                    <input style={{width: 200}} onChange={handleFromChange} type="date" id="todate"/>
                 </div>
                 <div className="d-flex flex-column justify-content-center mx-4">
                     <label style={{textAlign: "center"}}>Purchase date to:</label>
