@@ -5,6 +5,9 @@ This is a basic script for automating deployment. You should move this folder ou
 ## Configuration
 Edit `deploySettings.json` to set pre-pull, post-pull, and deployment actions.
 
+### Target
+The `target` field specifies the path to the root of your local repository where deployment actions will be executed. 
+
 ### Actions
 
 #### pre-pull
