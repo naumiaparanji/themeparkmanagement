@@ -1,15 +1,7 @@
 // Themepark auth code
 
 const sodium = require("libsodium-wrappers-sumo");
-const keystoreDB = require("knex")({
-    client: "mysql2",
-    connection: {
-        host: process.env.MYSQL_ADDR,
-        user: process.env.MYSQL_USER,
-        password: process.env.MYSQL_PASS,
-        database: process.env.MYSQL_KEYSTORE_DB,
-    },
-});
+const keystoreDB = require("./db").themeparkDB;
 
 let initialized = false;
 
