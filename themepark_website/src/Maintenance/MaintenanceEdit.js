@@ -5,6 +5,7 @@ import { RandomBGImg, MessageBox, FancyButton } from "../Auth/AuthComponents";
 import { api } from "../App";
 import MaintenanceModal, { MaintenanceEditBox } from "./MaintenanceTicketEdit";
 import { MaintenanceInfoBox } from "./Maintenance";
+import ReactPaginate from "react-paginate";
 
 export function MaintenanceDataBox(props) {
   const [maintenanceData, setMaintenanceData] = useState([]);
@@ -17,13 +18,17 @@ export function MaintenanceDataBox(props) {
   const [searchRideId, setSearchRideId] = useState("");
   const [searchCategory, setSearchCategory] = useState("");
   const [searchResolve, setSearchResolve] = useState("");
-  const [searchResolveDate, setSearchResolveDate] = useState("");
   const [resolveTicket, setResolveTicket] = useState([]);
-  const [resolveDate, setResolveDate] = useState([]);
   const [categories, setCategories] = useState([]);
   const [rideNames, setRideNames] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+
+  // For pages
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 7;
+  // End for pages
 
   useEffect(() => {
     async function fetchData() {
@@ -33,7 +38,6 @@ export function MaintenanceDataBox(props) {
           .then((maintenanceData) => {
             let maintenanceTicketItems = [];
             let maintenanceArray = maintenanceData["data"]["data"];
-            console.log(maintenanceArray);
 
             for (let i = 0; i < maintenanceArray.length; i++) {
               let ticket = {
@@ -45,7 +49,6 @@ export function MaintenanceDataBox(props) {
                 description: maintenanceArray[i].Description,
                 status: maintenanceArray[i].Status,
                 resolveTicket: maintenanceArray[i].Resolved,
-                resolveDate: maintenanceArray[i].ResolvedDate,
               };
               maintenanceTicketItems.push(ticket);
             }
@@ -58,9 +61,7 @@ export function MaintenanceDataBox(props) {
         let nameData = await api
           .get("/maintenance/data/allRideNames")
           .then((nameData) => {
-            console.log(nameData["data"]["data"].length);
             let nameArrayData = nameData["data"]["data"];
-            console.log(nameArrayData);
             for (let i = 0; i < nameArrayData.length; i++) {
               rideNameItems.push(
                 <option
@@ -106,12 +107,12 @@ export function MaintenanceDataBox(props) {
             for (let i = 0; i < resolveArrayData.length; i++) {
               resolveItems.push(
                 <option
-                  key={resolveArrayData[i].Resolved == 1 ? "Resolved" : "Open"}
+                  key={resolveArrayData[i].Resolved === 1 ? "Resolved" : "Open"}
                   value={
-                    resolveArrayData[i].Resolved == 1 ? "Resolved" : "Open"
+                    resolveArrayData[i].Resolved === 1 ? "Resolved" : "Open"
                   }
                 >
-                  {resolveArrayData[i].Resolved == 1 ? "Resolved" : "Open"}
+                  {resolveArrayData[i].Resolved === 1 ? "Resolved" : "Open"}
                 </option>
               );
             }
@@ -187,6 +188,11 @@ export function MaintenanceDataBox(props) {
       );
     });
     setFilteredData(filtered);
+    setCurrentPage(0);
+  };
+
+  const handlePageClick = (event) => {
+    setCurrentPage(event.selected);
   };
 
   const handleClose = () => {
@@ -222,6 +228,9 @@ export function MaintenanceDataBox(props) {
       }
     }
   };
+
+  const offset = currentPage * itemsPerPage;
+  const currentItems = filteredData.slice(offset, offset + itemsPerPage);
 
   return (
     <div
@@ -413,64 +422,99 @@ export function MaintenanceDataBox(props) {
             </tr>
           </thead>
           <tbody>
-            {filteredData.length > 0 ? (
-              filteredData.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.maintenanceId}</td>
-                  <td>{item.rideName}</td>
-                  {props.isReport ? (
-                    <>
-                      <td>{item.category}</td>
-                    </>
-                  ) : null}
-                  <td>{new Date(item.date).toLocaleString()}</td>
-                  <td>{item.status === 1 ? "Operational" : "Out of Order"}</td>
-                  <td>{item.resolveTicket === 1 ? "Resolved" : "Open"}</td>
-                  {!props.isReport ? (
-                    <>
-                      <td>{item.description}</td>
-                      <td>
-                        <div>
-                          <button
-                            type="button"
-                            className="btn btn-primary"
-                            onClick={() => handleEdit(item)}
-                          >
-                            Edit
-                          </button>
-                          {open && selectedItem && (
-                            <MaintenanceModal
-                              isOpen={open}
-                              onClose={handleClose}
+            {
+              /*filteredData.length > 0 ? (
+              filteredData.map((item, index)*/ currentItems.length > 0 ? (
+                currentItems.map((item, index) => (
+                  <tr key={index}>
+                    <td>{item.maintenanceId}</td>
+                    <td>{item.rideName}</td>
+                    {props.isReport ? (
+                      <>
+                        <td>{item.category}</td>
+                      </>
+                    ) : null}
+                    <td>{new Date(item.date).toLocaleString()}</td>
+                    <td>
+                      {item.status === 1 ? "Operational" : "Out of Order"}
+                    </td>
+                    <td>{item.resolveTicket === 1 ? "Resolved" : "Open"}</td>
+                    {!props.isReport ? (
+                      <>
+                        <td>{item.description}</td>
+                        <td>
+                          <div>
+                            <button
+                              type="button"
+                              className="btn btn-primary"
+                              onClick={() => handleEdit(item)}
                             >
-                              <MaintenanceEditBox
-                                maintenanceData={selectedItem}
-                              />
-                            </MaintenanceModal>
-                          )}
-                        </div>
-                      </td>
-                      <td>
-                        <button
-                          className="btn btn-danger"
-                          onClick={() => handleDelete(item)}
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </>
-                  ) : null}
+                              Edit
+                            </button>
+                            {open && selectedItem && (
+                              <MaintenanceModal
+                                isOpen={open}
+                                onClose={handleClose}
+                              >
+                                <MaintenanceEditBox
+                                  title={
+                                    "Maintenance Ticket Update For Ticket Number: " +
+                                    selectedItem.maintenanceId
+                                  }
+                                  maintenanceData={selectedItem}
+                                />
+                              </MaintenanceModal>
+                            )}
+                          </div>
+                        </td>
+                        <td>
+                          <button
+                            className="btn btn-danger"
+                            onClick={() => handleDelete(item)}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </>
+                    ) : null}
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="8" style={{ textAlign: "center" }}>
+                    No maintenance records found
+                  </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="8" style={{ textAlign: "center" }}>
-                  No maintenance records found
-                </td>
-              </tr>
-            )}
+              )
+            }
           </tbody>
         </table>
+      </div>
+
+      <div
+        className={styles.pagination}
+        style={{
+          marginTop: "20px",
+        }}
+      >
+        <div>
+          <ReactPaginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            breakLabel={"..."}
+            breakClassName={"break-me"}
+            pageCount={Math.ceil(filteredData.length / itemsPerPage)}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination"}
+            disabledClassName={"disabled"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            subContainerClassName={"pages pagination"}
+            activeClassName={"active"}
+          />
+        </div>
       </div>
 
       {!props.isReport ? (

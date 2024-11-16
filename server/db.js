@@ -163,7 +163,6 @@ async function editMaintenanceTicket(fields) {
       Date: new Date(fields.date),
       Description: fields.description,
       Resolved: fields.resolveTicket,
-      ResolvedDate: new Date(),
     })
     .where("MaintenanceID", fields.maintenanceID);
   let rideStatusID = await db("M_STATUS")

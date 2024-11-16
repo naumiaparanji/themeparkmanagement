@@ -35,8 +35,7 @@ export const MaintenanceModal = ({ isOpen, onClose, children }) => {
           border: "2px solid #000",
           borderRadius: "10px",
           boxShadow: "2px solid black",
-          maxHeight: "calc(100vh - 40px)", 
-          overflowY: "auto",
+          maxHeight: "calc(100vh - 40px)",
           width: "90%",
           maxWidth: "600px",
         }}
@@ -64,6 +63,7 @@ export function MaintenanceEditBox(props) {
       setDate(formatDate(props.maintenanceData.date) || "");
       setDescription(props.maintenanceData.description, "");
       setStatus(props.maintenanceData.status, "");
+      setResolveTicket(props.maintenanceData.resolveTicket, "");
     }
   }, [props.maintenanceData]);
 
@@ -83,6 +83,8 @@ export function MaintenanceEditBox(props) {
       });
   }, []);
 
+  useEffect(() => {}, [message]);
+
   function formatDate(inputDate) {
     if (!inputDate) return "";
     const dateObj = new Date(inputDate);
@@ -100,8 +102,15 @@ export function MaintenanceEditBox(props) {
       setMessage("All fields are required");
       return;
     }
-    await api
-      .put(
+    try {
+      setMessage("Maintenance ticket updated successfully");
+      setDate("");
+      setDescription("");
+      setStatus("");
+      setRideName("");
+      setResolveTicket(false);
+      
+      let test = await api.put(
         props.apiPath ||
           `/maintenance/edit/${props.maintenanceData.maintenanceId}`,
         {
@@ -111,28 +120,21 @@ export function MaintenanceEditBox(props) {
             date: date,
             description: description,
             status: status === "Operational" ? 1 : 0,
-            resolveTicket: resolveTicket, // Include resolve ticket state
+            resolveTicket: resolveTicket,
           },
         }
-      )
-      .then(() => {
-        setMessage("Maintenance info submitted successfully");
-        setDate("");
-        setDescription("");
-        setStatus("");
-        setRideName("");
-        setResolveTicket(false);
-      })
-      .catch((e) => {
-        if (e.response) {
-          if (e.response.status === 500) setMessage("Server error");
-          else if (e.response.status === 503)
-            setMessage("Ride not found in database");
-          else if (e.response.data && !e.response.data.success)
-            setMessage("Submission failed");
-          else setMessage("Unknown error");
-        } else if (e.request) setMessage("Failed to connect to server");
-      });
+      );
+      
+    } catch (e) {
+      if (e.response) {
+        if (e.response.status === 500) setMessage("Server error");
+        else if (e.response.status === 503)
+          setMessage("Ride not found in database");
+        else if (e.response.data && !e.response.data.success)
+          setMessage("Submission failed");
+        else setMessage("Unknown error");
+      } else if (e.request) setMessage("Failed to connect to server");
+    }
   };
 
   return (
@@ -207,7 +209,9 @@ export function MaintenanceEditBox(props) {
               <input
                 type="radio"
                 value="Operational"
-                checked={status === "Operational"}
+                checked={
+                  status === 1 || status === "Operational" ? true : false
+                }
                 onChange={(e) => setStatus(e.target.value)}
                 style={{ marginRight: "8px" }}
               />
@@ -217,7 +221,9 @@ export function MaintenanceEditBox(props) {
               <input
                 type="radio"
                 value="Out of Order"
-                checked={status === "Out of Order"}
+                checked={
+                  status === 0 || status === "Out of Order" ? true : false
+                }
                 onChange={(e) => setStatus(e.target.value)}
                 style={{ marginRight: "8px" }}
               />
@@ -227,12 +233,18 @@ export function MaintenanceEditBox(props) {
         </div>
       </div>
 
-      {/* New Resolve Ticket checkbox */}
       <div style={{ margin: "12px 12px" }}>
-        <label style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: "150px" }}  >
+        <label
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            minWidth: "150px",
+          }}
+        >
           <input
             type="checkbox"
-            checked={resolveTicket}
+            checked={resolveTicket === 1 || resolveTicket ? true : false}
             onChange={(e) => setResolveTicket(e.target.checked)}
             style={{ marginRight: "8px" }}
           />
@@ -240,19 +252,19 @@ export function MaintenanceEditBox(props) {
         </label>
       </div>
 
-      <FancyButton text="Submit" action={maintenanceEdit} />
+      <FancyButton text="Submit" action={maintenanceEdit}/>
     </div>
   );
 }
 
-export function MaintenanceEdit(props) {
-  return (
-    <div className="container">
-      <RandomBGImg />
-      <MaintenanceEditBox
-        title={props.title || "Maintenance Info Submission"} //Edit to display maintenanceID
-        apiPath={props.apiPath || "/maintenance/edit"}
-      />
-    </div>
-  );
-}
+// export function MaintenanceEdit(props) {
+//   return (
+//     <div className="container">
+//       <RandomBGImg />
+//       <MaintenanceEditBox
+//         title={props.title || "Maintenance Info Submission"} //Edit to display maintenanceID
+//         apiPath={props.apiPath || "/maintenance/edit"}
+//       />
+//     </div>
+//   );
+// }
