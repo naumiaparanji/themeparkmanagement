@@ -4,7 +4,6 @@ cd %~dp0
 
 set MYSQL_ADDR=172.16.0.2
 set MYSQL_DB=themepark_db
-set MYSQL_KEYSTORE_DB=keystore_db
 set MYSQL_USER=admin
 set MYSQL_PASS=Ckq2Pd4VwytKZjLv
 set APP_ADMIN_USER=root
