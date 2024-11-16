@@ -85,11 +85,19 @@ async function getEventCategories() {
 }
 
 async function getPassCategories() {
-  return await db("PASSES").select("PassType").where("Deleted", 0).distinct().orderBy("PassType");
+  return await db("PASSES")
+    .select("PassType")
+    .where("Deleted", 0)
+    .distinct()
+    .orderBy("PassType");
 }
 
 async function getPassCategories() {
-  return await db("PASSES").select("PassType").where("Deleted", 0).distinct().orderBy("PassType");
+  return await db("PASSES")
+    .select("PassType")
+    .where("Deleted", 0)
+    .distinct()
+    .orderBy("PassType");
 }
 
 async function setMaintenanceRequest(fields, isEmployee) {
@@ -157,9 +165,13 @@ async function getMaintenanceTicket() {
 }
 
 async function editMaintenanceTicket(fields) {
+  const updatedRideID = (await getRides()).filter(
+    (ride) => ride.RideName == fields.rideName
+  )[0].RideID;
+
   const editMaintenance = await db("MAINTENANCE")
     .update({
-      RideID: fields.rideID,
+      RideID: updatedRideID,
       Date: new Date(fields.date),
       Description: fields.description,
       Resolved: fields.resolveTicket,
@@ -208,21 +220,21 @@ async function setRuns(fields, isEmployee) {
 }
 
 async function getRidePopularityInfo() {
-    let target = "RIDE_POPULARITY_INFO";
-    return db(target).select();
+  let target = "RIDE_POPULARITY_INFO";
+  return db(target).select();
 }
 
 async function getRidePopularitySummary() {
-    let target = "RIDE_POPULARITY_SUMMARY";
-    return db(target).select();
+  let target = "RIDE_POPULARITY_SUMMARY";
+  return db(target).select();
 }
 
 async function getCategoryPopularitySummary() {
-    let target = "CATEGORY_POPULARITY_SUMMARY";
-    return db(target).select();
+  let target = "CATEGORY_POPULARITY_SUMMARY";
+  return db(target).select();
 }
 
-async function setRides(fields, isEmployee) { 
+async function setRides(fields, isEmployee) {
   if (!isEmployee) return false;
 
   let target = "RIDES";
@@ -253,5 +265,5 @@ module.exports = {
   getRidePopularityInfo,
   getRidePopularitySummary,
   getCategoryPopularitySummary,
-  setRides
+  setRides,
 };

@@ -27,113 +27,10 @@ export function MaintenanceDataBox(props) {
   // For pages
   // Pagination state
   const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 7;
+  const itemsPerPage = 5;
   // End for pages
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        let maintenanceData = await api
-          .get("/maintenance/data/searchReturn")
-          .then((maintenanceData) => {
-            let maintenanceTicketItems = [];
-            let maintenanceArray = maintenanceData["data"]["data"];
-
-            for (let i = 0; i < maintenanceArray.length; i++) {
-              let ticket = {
-                maintenanceId: maintenanceArray[i].MaintenanceID,
-                rideId: maintenanceArray[i].RideID,
-                rideName: maintenanceArray[i].RideName,
-                category: maintenanceArray[i].Category,
-                date: maintenanceArray[i].Date,
-                description: maintenanceArray[i].Description,
-                status: maintenanceArray[i].Status,
-                resolveTicket: maintenanceArray[i].Resolved,
-              };
-              maintenanceTicketItems.push(ticket);
-            }
-            setMaintenanceData(maintenanceTicketItems);
-
-            setFilteredData(maintenanceTicketItems);
-          });
-
-        let rideNameItems = [];
-        let nameData = await api
-          .get("/maintenance/data/allRideNames")
-          .then((nameData) => {
-            let nameArrayData = nameData["data"]["data"];
-            for (let i = 0; i < nameArrayData.length; i++) {
-              rideNameItems.push(
-                <option
-                  key={nameArrayData[i].RideName}
-                  value={nameArrayData[i].RideName}
-                >
-                  {nameArrayData[i].RideName}
-                </option>
-              );
-            }
-            setRideNames([
-              { key: "Select Ride Name", value: "Select Ride Name" },
-              ...rideNameItems,
-            ]);
-          });
-
-        let categoryItems = [];
-        let categoryData = await api
-          .get("/maintenance/data/allCategories")
-          .then((categoryData) => {
-            let categoryArrayData = categoryData["data"]["data"];
-            for (let i = 0; i < categoryArrayData.length; i++) {
-              categoryItems.push(
-                <option
-                  key={categoryArrayData[i].Category}
-                  value={categoryArrayData[i].Category}
-                >
-                  {categoryArrayData[i].Category}
-                </option>
-              );
-            }
-            setCategories([
-              { key: "Select Category", value: "Select Category" },
-              ...categoryItems,
-            ]);
-          });
-
-        let resolveItems = [];
-        let resolveData = await api
-          .get("/maintenance/data/allResolveTickets")
-          .then((resolveData) => {
-            let resolveArrayData = resolveData["data"]["data"];
-            for (let i = 0; i < resolveArrayData.length; i++) {
-              resolveItems.push(
-                <option
-                  key={resolveArrayData[i].Resolved === 1 ? "Resolved" : "Open"}
-                  value={
-                    resolveArrayData[i].Resolved === 1 ? "Resolved" : "Open"
-                  }
-                >
-                  {resolveArrayData[i].Resolved === 1 ? "Resolved" : "Open"}
-                </option>
-              );
-            }
-            setResolveTicket([
-              { key: "Select Ticket Status", value: "Select Ticket Status" },
-              ...resolveItems,
-            ]);
-          });
-      } catch (error) {
-        console.log(error);
-        if (error.response) {
-          setMessage("Failed to load data: Server error");
-        } else if (error.request) {
-          console.log(error.request);
-          setMessage("Failed to connect to server");
-        } else {
-          console.log(error);
-          setMessage("Unknown error");
-        }
-      }
-    }
     fetchData();
   }, [props.apiPath]);
 
@@ -147,6 +44,108 @@ export function MaintenanceDataBox(props) {
     searchDateTo,
     searchResolve,
   ]);
+
+  const fetchData = async () => {
+    try {
+      let maintenanceData = await api
+        .get("/maintenance/data/searchReturn")
+        .then((maintenanceData) => {
+          let maintenanceTicketItems = [];
+          let maintenanceArray = maintenanceData["data"]["data"];
+
+          for (let i = 0; i < maintenanceArray.length; i++) {
+            let ticket = {
+              maintenanceId: maintenanceArray[i].MaintenanceID,
+              rideId: maintenanceArray[i].RideID,
+              rideName: maintenanceArray[i].RideName,
+              category: maintenanceArray[i].Category,
+              date: maintenanceArray[i].Date,
+              description: maintenanceArray[i].Description,
+              status: maintenanceArray[i].Status,
+              resolveTicket: maintenanceArray[i].Resolved,
+            };
+            maintenanceTicketItems.push(ticket);
+          }
+          setMaintenanceData(maintenanceTicketItems);
+
+          setFilteredData(maintenanceTicketItems);
+        });
+
+      let rideNameItems = [];
+      let nameData = await api
+        .get("/maintenance/data/allRideNames")
+        .then((nameData) => {
+          let nameArrayData = nameData["data"]["data"];
+          for (let i = 0; i < nameArrayData.length; i++) {
+            rideNameItems.push(
+              <option
+                key={nameArrayData[i].RideName}
+                value={nameArrayData[i].RideName}
+              >
+                {nameArrayData[i].RideName}
+              </option>
+            );
+          }
+          setRideNames([
+            { key: "Select Ride Name", value: "Select Ride Name" },
+            ...rideNameItems,
+          ]);
+        });
+
+      let categoryItems = [];
+      let categoryData = await api
+        .get("/maintenance/data/allCategories")
+        .then((categoryData) => {
+          let categoryArrayData = categoryData["data"]["data"];
+          for (let i = 0; i < categoryArrayData.length; i++) {
+            categoryItems.push(
+              <option
+                key={categoryArrayData[i].Category}
+                value={categoryArrayData[i].Category}
+              >
+                {categoryArrayData[i].Category}
+              </option>
+            );
+          }
+          setCategories([
+            { key: "Select Category", value: "Select Category" },
+            ...categoryItems,
+          ]);
+        });
+
+      let resolveItems = [];
+      let resolveData = await api
+        .get("/maintenance/data/allResolveTickets")
+        .then((resolveData) => {
+          let resolveArrayData = resolveData["data"]["data"];
+          for (let i = 0; i < resolveArrayData.length; i++) {
+            resolveItems.push(
+              <option
+                key={resolveArrayData[i].Resolved === 1 ? "Resolved" : "Open"}
+                value={resolveArrayData[i].Resolved === 1 ? "Resolved" : "Open"}
+              >
+                {resolveArrayData[i].Resolved === 1 ? "Resolved" : "Open"}
+              </option>
+            );
+          }
+          setResolveTicket([
+            { key: "Select Ticket Status", value: "Select Ticket Status" },
+            ...resolveItems,
+          ]);
+        });
+    } catch (error) {
+      console.log(error);
+      if (error.response) {
+        setMessage("Failed to load data: Server error");
+      } else if (error.request) {
+        console.log(error.request);
+        setMessage("Failed to connect to server");
+      } else {
+        console.log(error);
+        setMessage("Unknown error");
+      }
+    }
+  };
 
   const handleSearch = () => {
     const filtered = maintenanceData.filter((item) => {
@@ -198,6 +197,7 @@ export function MaintenanceDataBox(props) {
   const handleClose = () => {
     setOpen(false);
     setSelectedItem(null);
+    fetchData();
   };
 
   const handleEdit = (item) => {
@@ -516,12 +516,6 @@ export function MaintenanceDataBox(props) {
           />
         </div>
       </div>
-
-      {!props.isReport ? (
-        <>
-          <FancyButton text="Refresh" action={() => window.location.reload()} />
-        </>
-      ) : null}
     </div>
   );
 }

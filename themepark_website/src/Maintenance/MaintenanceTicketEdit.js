@@ -98,18 +98,21 @@ export function MaintenanceEditBox(props) {
   }
 
   const maintenanceEdit = async () => {
-    if (!rideName || !date || !description || !status) {
+    if (
+      !rideName ||
+      !date ||
+      !description ||
+      status === undefined ||
+      status === null
+    ) {
       setMessage("All fields are required");
       return;
     }
     try {
-      setMessage("Maintenance ticket updated successfully");
-      setDate("");
-      setDescription("");
-      setStatus("");
-      setRideName("");
-      setResolveTicket(false);
-      
+      setMessage(
+        "Maintenance ticket updated successfully.\n Click grey area to close the update form"
+      );
+
       let test = await api.put(
         props.apiPath ||
           `/maintenance/edit/${props.maintenanceData.maintenanceId}`,
@@ -124,7 +127,6 @@ export function MaintenanceEditBox(props) {
           },
         }
       );
-      
     } catch (e) {
       if (e.response) {
         if (e.response.status === 500) setMessage("Server error");
@@ -156,7 +158,9 @@ export function MaintenanceEditBox(props) {
         {props.title}
       </div>
       <hr style={{ color: "lightgrey", margin: "0px 8px 16px 8px" }} />
-      <MessageBox message={message} />
+      <div style={{ whiteSpace: "pre-line" }}>
+        <MessageBox message={message} />
+      </div>
 
       <div style={{ margin: "12px 12px" }}>
         <select
@@ -252,7 +256,7 @@ export function MaintenanceEditBox(props) {
         </label>
       </div>
 
-      <FancyButton text="Submit" action={maintenanceEdit}/>
+      <FancyButton text="Submit" action={maintenanceEdit} />
     </div>
   );
 }
