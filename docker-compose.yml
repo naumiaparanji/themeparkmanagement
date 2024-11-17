@@ -18,7 +18,7 @@ services:
     restart: on-failure:10
     env_file: ".env"
     volumes:
-      - ./server_root:/usr/src/app
+      - ./server/build:/usr/src/app
     working_dir: /usr/src/app
     command: /bin/sh -c "npm install && node main.js"
     ports:
