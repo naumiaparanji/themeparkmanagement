@@ -351,19 +351,31 @@ module.exports = (app) => {
         }
     );
 
-    app.put('/employee/mod/:id', (req, res) => {
-        const sql = "UPDATE student SET Name = ?, Email = ? WHERE ID = ?";
-        const values = [
-            req.body.name,
-            req.body.email
-        ];
+// Check here please v
+
+    app.get('/employee/edit/:id', 
+        checkSessionForEmployee,
+        getRequestingEmployee,
+        getEmployeeAccessPerms,
+        requirePerms('datamanage'),
+        async (req, res) => {
+        let query = db.themeparkDB("EMPLOYEE").where('EmployeeID', req.params.id);
+        db.query(sql,[id], (err, result) => {
+            if(err) return res.json({Error: err});
+            return res.json(result);
+        })
+    })
+
+    app.put('/customer/update/:id', (req, res) => {
+        const sql = "UPDATE employee SET `FirstName` = ?, `LastName` = ?, `Email`= ? Where ID = ?";
         const id = req.params.id;
+        db.query(sql, [req.body.firstname, req.body.lastname, req.body.email, id], (err, result) => {
+            if(err) return res.json("Error");
+            return res.json({updated: true})
+        })
+    })
     
-        db.query(sql, [...values, id], (err, data) => {
-            if (err) return res.json("Error");
-            return res.json(data);
-        });
-    });
+// Check here please ^
 
     app.post("/employee/logout", async (req, res) => {
         if (req.session.employeeUser == undefined) {

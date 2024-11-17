@@ -44,7 +44,6 @@ export function EmployeeEditNav() {
     }, [])
 
 
-
     const handleDelete = (EmployeeID) => {
         const confirm = window.confirm("Would you like to Delete?");
         if (confirm) {
