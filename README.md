@@ -60,7 +60,7 @@ A full-stack project for Database Systems (COSC3380) course at the University of
 ### Built With
 
 - [![React][React.js]][React-url]
-- [![Express][Express.js]][Express-url]
+- [![Node][Node.js]][Node-url]
 - [![MySQL][MySQL]][MySQL-url]
 - [![Bootstrap][Bootstrap.com]][Bootstrap-url]
 
@@ -227,8 +227,8 @@ README Template: [https://github.com/othneildrew/Best-README-Template](https://g
 [product-screenshot]: src\images\LiveWebsiteScreenShot.png
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
-[Express.js]: https://img.shields.io/badge/Express%20js-000000?style=for-the-badge&logo=express&logoColor=white
-[Express-url]: https://expressjs.com/
+[Node.js]: https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=Node.js&logoColor=white
+[Node-url]: https://nodejs.org/en
 [MySQL]: https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white
 [MySQL-url]: https://www.mysql.com/
 [Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
