@@ -11,7 +11,7 @@ console.log("Preparing server for deployment...");
 console.log("Preparing build directory...");
 if (fs.existsSync("./build")) {
     fs.readdirSync("./build").forEach((item) => {
-        const itemPath = path.join(buildPath, item);
+        const itemPath = path.join("./build", item);
         if (item === "node_modules") return;
         try {
             if (fs.statSync(itemPath).isDirectory()) {
