@@ -1,5 +1,18 @@
 // Environment
-require('dotenv').config({path: '../.env'});
+if (process.env.SERVER_ENV === 'production') {
+    var http = require("https");
+    var secure_cookies = true;
+
+    // Server config
+    var options = {
+        key: fs.readFileSync('server-key.pem'),
+        cert: fs.readFileSync('server-cert.pem')
+    };
+} else {
+    require('dotenv').config({path: '../.env'});
+    var http = require("http");
+    var secure_cookies = false;
+}
 
 // Themepark modules
 const auth = require("./utils/auth");
@@ -19,20 +32,6 @@ app.use(cors({
     optionsSuccessStatus: 200,
     credentials: true
 }));
-
-if (process.env.SERVER_ENV === 'production') {
-    var http = require("https");
-    var secure_cookies = true;
-
-    // Server config
-    var options = {
-        key: fs.readFileSync('server-key.pem'),
-        cert: fs.readFileSync('server-cert.pem')
-    };
-} else {
-    var http = require("http");
-    var secure_cookies = false;
-}
 
 const session = require("express-session");
 const MySQLStore = require('express-mysql-session')(session);
