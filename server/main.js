@@ -1,3 +1,5 @@
+const fs = require("fs");
+
 // Environment
 if (process.env.API_SERVER_ENV === 'production') {
 
@@ -21,7 +23,6 @@ const db = require("./utils/db");
 
 // Server modules
 const express = require("express");
-const fs = require("fs");
 const app = express();
 const port = Number(process.env.API_SERVER_PORT);
 const cors = require('cors');
