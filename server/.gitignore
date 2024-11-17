@@ -5,7 +5,8 @@
 !routes/*.js
 !utils
 !utils/*.js
-!gen_keys.sh
+!scripts
+!scripts/*.js
 !README.md
 !docker-compose.yml
 !package.json
