@@ -17,7 +17,7 @@ import axios from "axios";
 import ProfilePage from './ProfilePage'; 
 
 
-export const apiUrl = 'http://localhost:8080';
+export const apiUrl = process.env.API_SERVER_ADDRESS;
 
 export const api = axios.create({
     withCredentials: true,
