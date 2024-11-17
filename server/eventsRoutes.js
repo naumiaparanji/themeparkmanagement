@@ -34,7 +34,8 @@ module.exports = (app) => {
     app.put('/events/:id',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
-        employee.setMinEmployeeAccessLevel(2),
+        employee.getEmployeeAccessPerms,
+        employee.requirePerms('events'),
         (req, res) => {
             req.body.EventDateTime = new Date(req.body.EventDateTime);
             db.themeparkDB("EVENTS").update(req.body).where('EventID', req.params.id)
@@ -49,7 +50,8 @@ module.exports = (app) => {
     app.delete('/events/:id',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
-        employee.setMinEmployeeAccessLevel(2),
+        employee.getEmployeeAccessPerms,
+        employee.requirePerms('events'),
         (req, res) => {
             req.body.EventDateTime = new Date(req.body.EventDateTime);
             let query = db.themeparkDB("EVENTS").where('EventID', req.params.id);
@@ -68,7 +70,8 @@ module.exports = (app) => {
     app.post('/events',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
-        employee.setMinEmployeeAccessLevel(2),
+        employee.getEmployeeAccessPerms,
+        employee.requirePerms('events'),
         (req, res) => {
             req.body.EventDateTime = new Date(req.body.EventDateTime);
             db.themeparkDB("EVENTS").insert((req.body))
@@ -83,7 +86,8 @@ module.exports = (app) => {
     app.get('/events/tickets', 
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
-        employee.setMinEmployeeAccessLevel(1),
+        employee.getEmployeeAccessPerms,
+        employee.requirePerms('reports'),
         (req, res) => {
             db.themeparkDB("EVENT_TICKETS_INFO")
             .then((tickets) => res.status(200).json({success: true, tickets: tickets}))
@@ -97,7 +101,8 @@ module.exports = (app) => {
     app.get('/events/tickets/summary', 
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
-        employee.setMinEmployeeAccessLevel(1),
+        employee.getEmployeeAccessPerms,
+        employee.requirePerms('reports'),
         (req, res) => {
             db.themeparkDB("EVENT_SALES_SUMMARY")
             .then((tickets) => res.status(200).json({success: true, tickets: tickets}))
@@ -109,9 +114,6 @@ module.exports = (app) => {
     );
 
     app.get('/events/names', 
-        employee.checkSessionForEmployee,
-        employee.getRequestingEmployee,
-        employee.setMinEmployeeAccessLevel(1),
         (req, res) => {
             db.themeparkDB("EVENTS").select("EventName").distinct()
             .then((names) => res.status(200).json({success: true, names: names.map((n) => n.EventName)}))

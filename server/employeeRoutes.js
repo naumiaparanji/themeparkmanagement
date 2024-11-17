@@ -49,14 +49,6 @@ const getRequestingEmployee = async (req, res, next) => {
     return next();
 }
 
-const compareAccessLevels = async (req, res, next) => {
-    const requesterLevel = employeeRanks[req.requestingEmployee.AccessLevel];
-    const requestedLevel = employeeRanks[req.requestedEmployee.AccessLevel];
-    if (req.requestingEmployee.AccessLevel !== SUPERUSER_ROLE && requesterLevel <= requestedLevel)
-        return res.status(403).json({success: false, error: 'Restricted'});
-    return next();
-}
-
 const getRequestedEmployee = async (req, res, next) => {
     if (!req.requestingEmployee)
         throw new Error("req.requestingEmployee does not exist");
@@ -73,6 +65,30 @@ const getRequestedEmployee = async (req, res, next) => {
     if (!req.requestedEmployee)
         return res.status(404).json({success: false, error: 'UserDoesNotExist'});
     return next();
+}
+
+const getEmployeeAccessPerms = (req, res, next) => {
+    if (!req.requestingEmployee)
+        throw new Error("req.requestingEmployee does not exist");
+    req.roleRank = employeeRanks[req.requestingEmployee.AccessLevel];
+    req.roleName = employeeNames[req.requestingEmployee.AccessLevel];
+    req.canAccess = ['maintenance', 'runs'];
+    if (req.roleRank > 0)
+        req.canAccess.push('reports');
+    if (req.roleRank > 1)
+        req.canAccess.push('attractions', 'events', 'datamanage', 'passes', 'rides');
+    return next();
+}
+
+const requirePerms = (...perms) => {
+    return (req, res, next) => {
+        if (!req.requestingEmployee)
+            throw new Error("req.requestingEmployee does not exist");
+        const existingPerms = new Set(req.canAccess);
+        if(!perms.every((value) => existingPerms.has(value)))
+            return res.status(403).json({success: false, error: 'Restricted'});
+        return next();
+    }
 }
 
 const returnEmployeeData = (req, res, next) => {
@@ -109,30 +125,6 @@ const returnRequestedEmployee = (req, res, next) => {
     });
 }
 
-const setMinEmployeeAccessLevel = (accessLevel) => {
-    return (req, res, next) => {
-        if (!req.requestingEmployee)
-            throw new Error("req.requestingEmployee does not exist");
-        const requesterLevel = employeeRanks[req.requestingEmployee.AccessLevel];
-        if (requesterLevel < accessLevel) {
-            return res.status(403).json({success: false, error: 'Restricted'});
-        }
-        return next();
-    }
-}
-
-const setExactEmployeeAccessLevel = (accessLevel) => {
-    return (req, res, next) => {
-        if (!req.requestingEmployee)
-            throw new Error("req.requestingEmployee does not exist");
-        const requesterLevel = employeeRanks[req.requestingEmployee.AccessLevel];
-        if (requesterLevel !== accessLevel) {
-            return res.status(403).json({success: false, error: 'Restricted'});
-        }
-        return next();
-    }
-}
-
 // App routes
 module.exports = (app) => {
 
@@ -166,14 +158,8 @@ module.exports = (app) => {
     app.get("/employee/info", 
         checkSessionForEmployee,
         getRequestingEmployee, 
+        getEmployeeAccessPerms,
         async (req, res) => {
-            const roleRank = employeeRanks[req.requestingEmployee.AccessLevel];
-            const roleName = employeeNames[req.requestingEmployee.AccessLevel];
-            let canAccess = ['maintenance', 'runs'];
-            if (roleRank > 0)
-                canAccess.push('reports');
-            if (roleRank > 1)
-                canAccess.push('attractions', 'events', 'datamanage', 'passes', 'rides');
             res.status(200).json({success: true, 
                 user: req.session.employeeUser,
                 firstName: req.requestingEmployee.FirstName,
@@ -181,8 +167,8 @@ module.exports = (app) => {
                 accessLevel: req.requestingEmployee.AccessLevel,
                 role: roleName,
                 rank: roleRank,
-                canModify: employeeRoles.slice(0, roleRank),
-                canAccess: canAccess
+                canModify: employeeRoles.slice(0, req.roleRank),
+                canAccess: req.canAccess
             });
         }
     );
@@ -197,7 +183,8 @@ module.exports = (app) => {
     app.get("/employee/data/info",
         checkSessionForEmployee,
         getRequestingEmployee,
-        setMinEmployeeAccessLevel(2), // 2 is admin
+        getEmployeeAccessPerms,
+        requirePerms('datamanage'),
         (req, res) => {
             db.themeparkDB('EMPLOYEE').where('Deleted', 0).whereNot("EmployeeID", 1)
             .then((employees) => res.status(200).json(employees))
@@ -209,6 +196,9 @@ module.exports = (app) => {
 
     app.get("/customer/data/info",
         checkSessionForEmployee,
+        getRequestedEmployee,
+        getEmployeeAccessPerms,
+        requirePerms('datamanage'),
         (req, res) => {
             db.themeparkDB('CUSTOMER').where('Deleted', 0).whereNot("CustomerID", 1)
             .then((employees) => res.status(200).json(employees))
@@ -222,7 +212,7 @@ module.exports = (app) => {
     app.delete('/employee/data/:id',
         checkSessionForEmployee,
         getRequestingEmployee,
-        setMinEmployeeAccessLevel(2),
+        requirePerms('datamanage'),
         (req, res) => {
             let query = db.themeparkDB("EMPLOYEE").where('EmployeeID', req.params.id);
             if (req.query.permanent)
@@ -241,7 +231,8 @@ module.exports = (app) => {
     app.get("/employee/data/:user", 
         checkSessionForEmployee,
         getRequestingEmployee, 
-        setMinEmployeeAccessLevel(2), // 2 is admin
+        getEmployeeAccessPerms,
+        requirePerms('datamanage'),
         getRequestedEmployee,
         returnRequestedEmployee
     );
@@ -249,7 +240,8 @@ module.exports = (app) => {
     app.get("/employee/data/all/:part",
         checkSessionForEmployee,
         getRequestingEmployee,
-        setMinEmployeeAccessLevel(2), // 2 is admin
+        getEmployeeAccessPerms,
+        requirePerms('datamanage'),
         async (req, res) => {
             if (!req.params.part || isNaN(req.params.part) || Number(req.params.part) < 0) {
                 res.status(400).json({success: false, error:"BadParams"});
@@ -279,7 +271,8 @@ module.exports = (app) => {
     app.post("/employee/register", 
         checkSessionForEmployee,
         getRequestingEmployee, 
-        setMinEmployeeAccessLevel(2), // 2 is admin
+        getEmployeeAccessPerms,
+        requirePerms('datamanage'),
         async (req, res) => {
             // Differs from customer registration in that the session needs to be authorized
             // Needs additional logic for checking registration permissions per employee
@@ -372,3 +365,5 @@ module.exports.checkSessionForEmployee = checkSessionForEmployee;
 module.exports.getRequestingEmployee = getRequestingEmployee;
 module.exports.setMinEmployeeAccessLevel = setMinEmployeeAccessLevel;
 module.exports.setExactEmployeeAccessLevel = setExactEmployeeAccessLevel;
+module.exports.getEmployeeAccessPerms = getEmployeeAccessPerms;
+module.exports.requirePerms = requirePerms;

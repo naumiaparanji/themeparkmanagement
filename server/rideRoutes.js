@@ -1,7 +1,7 @@
 // Themepark modules
 const auth = require("./auth");
 const db = require("./db");
-const { checkSessionForEmployee, getRequestingEmployee } = require("./employeeRoutes");
+const employee = require("./employeeRoutes");
 const getCurrentTime = require("./currentTime");
 
 // App routes
@@ -49,7 +49,12 @@ module.exports = (app) => {
         })
     });
 
-    app.post("/rides/input", checkSessionForEmployee, getRequestingEmployee, async (req, res) => {
+    app.post("/rides/input", 
+        employee.checkSessionForEmployee, 
+        employee.getRequestingEmployee, 
+        employee.getEmployeeAccessPerms,
+        employee.requirePerms('rides'),
+        async (req, res) => {
         const numericRideAgeLimit = Number(req.body.ageLimit);
         const numericCapacity = Number(req.body.capacity);
         if (!Number.isInteger(numericRideAgeLimit) || numericRideAgeLimit < 0) {

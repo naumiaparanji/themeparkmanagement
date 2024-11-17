@@ -33,7 +33,8 @@ module.exports = (app) => {
     app.put('/passes/:id',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
-        employee.setMinEmployeeAccessLevel(2),
+        employee.getEmployeeAccessPerms,
+        employee.requirePerms('passes'),
         (req, res) => {
             req.body.PassDateTime = new Date(req.body.PassDateTime);
             db.themeparkDB("PASSES").update(req.body).where('PassID', req.params.id)
@@ -48,7 +49,8 @@ module.exports = (app) => {
     app.delete('/passes/:id',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
-        employee.setMinEmployeeAccessLevel(2),
+        employee.getEmployeeAccessPerms,
+        employee.requirePerms('passes'),
         (req, res) => {
             req.body.PassDateTime = new Date(req.body.PassDateTime);
             let query = db.themeparkDB("PASSES").where('PassID', req.params.id);
@@ -67,7 +69,8 @@ module.exports = (app) => {
     app.post('/passes',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
-        employee.setMinEmployeeAccessLevel(2),
+        employee.getEmployeeAccessPerms,
+        employee.requirePerms('passes'),
         (req, res) => {
             req.body.PassDateTime = new Date(req.body.PassDateTime);
             db.themeparkDB("PASSES").insert((req.body))
@@ -82,7 +85,8 @@ module.exports = (app) => {
     app.get('/passes/tickets', 
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
-        employee.setMinEmployeeAccessLevel(1),
+        employee.getEmployeeAccessPerms,
+        employee.requirePerms('reports'),
         (req, res) => {
             db.themeparkDB("PASSES_TICKETS_INFO")
             .then((passes) => res.status(200).json({success: true, passes: passes}))
@@ -96,7 +100,8 @@ module.exports = (app) => {
     app.get('/passes/names', 
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
-        employee.setMinEmployeeAccessLevel(1),
+        employee.getEmployeeAccessPerms,
+        employee.requirePerms('reports'),
         (req, res) => {
             db.themeparkDB("PASSES").select("PassName").distinct()
             .then((passnames) => res.status(200).json({success: true, names: names.map((n) => n.PassName)}))

@@ -1,14 +1,16 @@
 // Themepark modules
 const auth = require("./auth");
 const db = require("./db");
-const {
-  checkSessionForEmployee,
-  getRequestingEmployee,
-} = require("./employeeRoutes");
+const employee = require("./employeeRoutes");
 
 // App routes
 module.exports = (app) => {
-  app.get("/maintenance/data/allCategories", async (req, res) => {
+  app.get("/maintenance/data/allCategories", 
+    employee.checkSessionForEmployee,
+    employee.getRequestingEmployee,
+    employee.getEmployeeAccessPerms,
+    employee.requirePerms('maintenance'),
+    async (req, res) => {
     const categoriesData = await db.getRidesCategories().catch((e) => {
       console.log(e);
       res.status(500).json({ success: false, error: "SQLError" });
@@ -20,7 +22,12 @@ module.exports = (app) => {
     });
   });
 
-  app.get("/maintenance/data/allRideNames", async (req, res) => {
+  app.get("/maintenance/data/allRideNames",
+    employee.checkSessionForEmployee,
+    employee.getRequestingEmployee,
+    employee.getEmployeeAccessPerms,
+    employee.requirePerms('maintenance'),
+    async (req, res) => {
     const rideNameData = await db.getRidesNames().catch((e) => {
       console.log(e);
       res.status(500).json({ success: false, error: "SQLError" });
@@ -32,7 +39,12 @@ module.exports = (app) => {
     });
   });
 
-  app.get("/maintenance/data/allCategories", async (req, res) => {
+  app.get("/maintenance/data/allCategories", 
+    employee.checkSessionForEmployee,
+    employee.getRequestingEmployee,
+    employee.getEmployeeAccessPerms,
+    employee.requirePerms('maintenance'),
+    async (req, res) => {
     const categoryData = await db.getRidesCategories().catch((e) => {
       console.log(e);
       res.status(500).json({ success: false, error: "SQLError" });
@@ -44,7 +56,12 @@ module.exports = (app) => {
     });
   });
 
-  app.get("/maintenance/data/allResolveTickets", async (req, res) => {
+  app.get("/maintenance/data/allResolveTickets", 
+    employee.checkSessionForEmployee,
+    employee.getRequestingEmployee,
+    employee.getEmployeeAccessPerms,
+    employee.requirePerms('maintenance'),
+    async (req, res) => {
     const resolveData = await db.getResolveData().catch((e) => {
       console.log(e);
       res.status(500).json({ success: false, error: "SQLError" });
@@ -57,7 +74,12 @@ module.exports = (app) => {
   });
 
 
-  app.get("/maintenance/data/searchReturn", async (req, res) => {
+  app.get("/maintenance/data/searchReturn", 
+    employee.checkSessionForEmployee,
+    employee.getRequestingEmployee,
+    employee.getEmployeeAccessPerms,
+    employee.requirePerms('maintenance'),
+    async (req, res) => {
     const maintenanceTicket = await db.getMaintenanceTicket().catch((e) => {
       console.log(e);
       res.status(500).json({ success: false, error: "SQLError" });
@@ -70,7 +92,12 @@ module.exports = (app) => {
   });
 
   // for update
-  app.put("/maintenance/edit/:maintenanceID",  async (req, res) => {
+  app.put("/maintenance/edit/:maintenanceID",  
+    employee.checkSessionForEmployee,
+    employee.getRequestingEmployee,
+    employee.getEmployeeAccessPerms,
+    employee.requirePerms('maintenance'),
+    async (req, res) => {
     try {
       return await db.editMaintenanceTicket(req.body.fields);
       res
@@ -85,7 +112,12 @@ module.exports = (app) => {
   });
 
   // for delete
-  app.delete("/maintenance/data/delete/:maintenanceID", async (req, res) => {
+  app.delete("/maintenance/data/delete/:maintenanceID", 
+    employee.checkSessionForEmployee,
+    employee.getRequestingEmployee,
+    employee.getEmployeeAccessPerms,
+    employee.requirePerms('maintenance'),
+    async (req, res) => {
     const {maintenanceID} = req.params;
     try {
       return await db.deleteMaintenanceTicket(maintenanceID);
@@ -101,10 +133,11 @@ module.exports = (app) => {
     }
   });
 
-  app.post(
-    "/employee/maintenance",
-    checkSessionForEmployee,
-    getRequestingEmployee,
+  app.post("/employee/maintenance",
+    employee.checkSessionForEmployee,
+    employee.getRequestingEmployee,
+    employee.getEmployeeAccessPerms,
+    employee.requirePerms('maintenance'),
     async (req, res) => {
       res.status(200).json({
         success: true,
@@ -116,7 +149,12 @@ module.exports = (app) => {
     }
   );
 
-  app.post("/maintenance/input", async (req, res) => {
+  app.post("/maintenance/input", 
+    employee.checkSessionForEmployee,
+    employee.getRequestingEmployee,
+    employee.getEmployeeAccessPerms,
+    employee.requirePerms('maintenance'),
+    async (req, res) => {
     const rideData = await db.getRides().catch((e) => {
       console.log(e);
       res.status(500).json({ success: false, error: "SQLError" });

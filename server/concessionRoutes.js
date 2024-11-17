@@ -20,7 +20,8 @@ module.exports = (app) => {
     app.put('/concessions/:id',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
-        employee.setMinEmployeeAccessLevel(2),
+        employee.getEmployeeAccessPerms,
+        employee.requirePerms('attractions'),
         (req, res) => {
             db.themeparkDB("CONCESSION_STALL").update(req.body).where('ConcessionID', req.params.id)
             .then(() => res.status(200).json({success: true}))
@@ -34,7 +35,8 @@ module.exports = (app) => {
     app.delete('/concessions/:id',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
-        employee.setMinEmployeeAccessLevel(2),
+        employee.getEmployeeAccessPerms,
+        employee.requirePerms('attractions'),
         (req, res) => {
             let query = db.themeparkDB("CONCESSION_STALL").where('ConcessionID', req.params.id);
             if (req.query.permanent)
@@ -52,7 +54,8 @@ module.exports = (app) => {
     app.post('/concessions',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
-        employee.setMinEmployeeAccessLevel(2),
+        employee.getEmployeeAccessPerms,
+        employee.requirePerms('attractions'),
         (req, res) => {
             db.themeparkDB("CONCESSION_STALL").insert((req.body))
             .then(() => res.status(200).json({success: true}))
