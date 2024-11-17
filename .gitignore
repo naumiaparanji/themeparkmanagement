@@ -12,9 +12,7 @@
 !public
 !public/**
 !public/**/*
-!nginx
-!nginx/**
-!nginx/**/*.conf
+!default.conf
 !docker-compose.yml
 !package.json
 !package-lock.json
