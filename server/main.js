@@ -1,18 +1,21 @@
+// Environment
+require('dotenv').config({path: '../.env'});
+
 // Themepark modules
-const auth = require("./auth");
-const db = require("./db");
+const auth = require("./utils/auth");
+const db = require("./utils/db");
 
 // Server modules
 const express = require("express");
 const fs = require("fs");
 const app = express();
-const port = Number(process.env.SERVER_PORT);
+const port = Number(process.env.API_SERVER_PORT);
 const cors = require('cors');
 app.use(express.json());
 app.set('trust proxy', 1);
 
 app.use(cors({
-    origin: process.env.CLIENT_ORIGIN,
+    origin: process.env.API_CLIENT_ORIGIN,
     optionsSuccessStatus: 200,
     credentials: true
 }));
@@ -36,8 +39,8 @@ const MySQLStore = require('express-mysql-session')(session);
 const sessionStore = new MySQLStore({
     host: process.env.MYSQL_ADDR,
     user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASS,
-    database: process.env.MYSQL_DB,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE,
     createDatabaseTable: true,
     charset: 'utf8mb4_bin',
 	schema: {
@@ -64,7 +67,8 @@ setInterval(async () => {
         LastName: process.env.APP_ADMIN_USER,
         DOB: new Date(0),
         Address: 'SomeAddress',
-        Password: await auth.hashpw(process.env.APP_ADMIN_PASS)
+        Password: await auth.hashpw(process.env.APP_ADMIN_PASS),
+        Deleted: process.env.APP_ENABLE_SU && process.env.APP_ENABLE_SU !== 'true'
     });
     await db.setUser(`${process.env.APP_ADMIN_USER}@themepark.net`, {
         FirstName: process.env.APP_ADMIN_USER,
@@ -73,9 +77,10 @@ setInterval(async () => {
         Address: 'SomeAddress',
         PhoneNumber: '555-555-5555',
         Password: await auth.hashpw(process.env.APP_ADMIN_PASS),
-        AccessLevel: require('./employeeRoutes').employeeRoles.slice(-1).pop().value,
+        AccessLevel: require('./routes/employeeRoutes').employeeRoles.slice(-1).pop().value,
         StartDate: new Date(0),
-        EndDate: new Date(2147483647 * 1000)
+        EndDate: new Date(2147483647 * 1000),
+        Deleted: process.env.APP_ENABLE_SU && process.env.APP_ENABLE_SU !== 'true'
     }, true);
 
     // Update session secrets in database
@@ -110,18 +115,18 @@ setInterval(async () => {
     app.options('*', cors());
 
 // API routes for server
-require('./customerRoutes')(app);
-require('./employeeRoutes')(app);
-require('./eventsRoutes')(app);
-require('./passRoutes')(app);
-require('./rideRoutes')(app);
-require('./maintenanceRoutes')(app);
-require('./runsRoutes')(app);
-require('./restaurantRoutes')(app);
-require('./concessionRoutes')(app);
-require('./giftshopRoutes')(app);
-require('./miscRoutes')(app);
-require('./ridePopularityReportRoutes')(app);
+require('./routes/customerRoutes')(app);
+require('./routes/employeeRoutes')(app);
+require('./routes/eventsRoutes')(app);
+require('./routes/passRoutes')(app);
+require('./routes/rideRoutes')(app);
+require('./routes/maintenanceRoutes')(app);
+require('./routes/runsRoutes')(app);
+require('./routes/restaurantRoutes')(app);
+require('./routes/concessionRoutes')(app);
+require('./routes/giftshopRoutes')(app);
+require('./routes/miscRoutes')(app);
+require('./routes/ridePopularityReportRoutes')(app);
 
     http.createServer(options, app).listen(port, () => {
         console.log(`Listening on port ${port}`);

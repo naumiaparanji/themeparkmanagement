@@ -1,18 +1,17 @@
 // Themepark modules
-const auth = require("./auth");
+const auth = require("../utils/auth");
 const employee = require("./employeeRoutes");
-const db = require("./db");
+const db = require("../utils/db");
 
 // App routes
 module.exports = (app) => {
 
-    // Event registration route
-    app.get('/events', (req, res) => {
-        let query = db.themeparkDB("EVENTS").orderBy("EventID");
+    app.get('/passes', (req, res) => {
+        let query = db.themeparkDB("PASSES").orderBy("PassID");
         if (!req.query.deleted)
             query = query.where("Deleted", 0);
-        query.then((events) => {
-            res.status(200).json({success: true, events: events});
+        query.then((passes) => {
+            res.status(200).json({success: true, passes: passes});
         })
         .catch((e) => {
             console.error(e);
@@ -20,10 +19,10 @@ module.exports = (app) => {
         })
     });
 
-    app.get('/events/categories', (req, res) => {
-        db.getEventCategories()
+    app.get('/passes/types', (req, res) => {
+        db.getPassCategories()
         .then((items) => {
-            res.status(200).json({success: true, categories: items.map((cat) => cat.EventType)});
+            res.status(200).json({success: true, categories: items.map((cat) => cat.PassType)});
         })
         .catch((e) => {
             console.error(e);
@@ -31,14 +30,14 @@ module.exports = (app) => {
         });
     })
     
-    app.put('/events/:id',
+    app.put('/passes/:id',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
         employee.getEmployeeAccessPerms,
-        employee.requirePerms('events'),
+        employee.requirePerms('passes'),
         (req, res) => {
-            req.body.EventDateTime = new Date(req.body.EventDateTime);
-            db.themeparkDB("EVENTS").update(req.body).where('EventID', req.params.id)
+            req.body.PassDateTime = new Date(req.body.PassDateTime);
+            db.themeparkDB("PASSES").update(req.body).where('PassID', req.params.id)
             .then(() => res.status(200).json({success: true}))
             .catch((e) => {
                 console.error(e);
@@ -47,14 +46,14 @@ module.exports = (app) => {
         }
     )
 
-    app.delete('/events/:id',
+    app.delete('/passes/:id',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
         employee.getEmployeeAccessPerms,
-        employee.requirePerms('events'),
+        employee.requirePerms('passes'),
         (req, res) => {
-            req.body.EventDateTime = new Date(req.body.EventDateTime);
-            let query = db.themeparkDB("EVENTS").where('EventID', req.params.id);
+            req.body.PassDateTime = new Date(req.body.PassDateTime);
+            let query = db.themeparkDB("PASSES").where('PassID', req.params.id);
             if (req.query.permanent)
                 query = query.delete();
             else
@@ -67,14 +66,14 @@ module.exports = (app) => {
         }
     )
 
-    app.post('/events',
+    app.post('/passes',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
         employee.getEmployeeAccessPerms,
-        employee.requirePerms('events'),
+        employee.requirePerms('passes'),
         (req, res) => {
-            req.body.EventDateTime = new Date(req.body.EventDateTime);
-            db.themeparkDB("EVENTS").insert((req.body))
+            req.body.PassDateTime = new Date(req.body.PassDateTime);
+            db.themeparkDB("PASSES").insert((req.body))
             .then(() => res.status(200).json({success: true}))
             .catch((e) => {
                 console.error(e);
@@ -83,14 +82,14 @@ module.exports = (app) => {
         }
     )
 
-    app.get('/events/tickets', 
+    app.get('/passes/tickets', 
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
         employee.getEmployeeAccessPerms,
         employee.requirePerms('reports'),
         (req, res) => {
-            db.themeparkDB("EVENT_TICKETS_INFO")
-            .then((tickets) => res.status(200).json({success: true, tickets: tickets}))
+            db.themeparkDB("PASSES_TICKETS_INFO")
+            .then((passes) => res.status(200).json({success: true, passes: passes}))
             .catch((e) => {
                 console.error(e);
                 res.status(500).json({success: false, error: "SQLError"});
@@ -98,25 +97,14 @@ module.exports = (app) => {
         }
     );
 
-    app.get('/events/tickets/summary', 
+    app.get('/passes/names', 
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
         employee.getEmployeeAccessPerms,
         employee.requirePerms('reports'),
         (req, res) => {
-            db.themeparkDB("EVENT_SALES_SUMMARY")
-            .then((tickets) => res.status(200).json({success: true, tickets: tickets}))
-            .catch((e) => {
-                console.error(e);
-                res.status(500).json({success: false, error: "SQLError"});
-            });
-        }
-    );
-
-    app.get('/events/names', 
-        (req, res) => {
-            db.themeparkDB("EVENTS").select("EventName").distinct()
-            .then((names) => res.status(200).json({success: true, names: names.map((n) => n.EventName)}))
+            db.themeparkDB("PASSES").select("PassName").distinct()
+            .then((passnames) => res.status(200).json({success: true, names: names.map((n) => n.PassName)}))
             .catch((e) => {
                 console.error(e);
                 res.status(500).json({success: false, error: "SQLError"});

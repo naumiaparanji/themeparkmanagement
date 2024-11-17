@@ -1,10 +1,11 @@
 *
 !.gitignore
-!*.js
+!main.js
+!routes
+!routes/*.js
+!utils
+!utils/*.js
 !gen_keys.sh
-!deploy.sh
-!test.sh
-!test.bat
 !README.md
 !docker-compose.yml
 !package.json

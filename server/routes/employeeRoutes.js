@@ -1,7 +1,7 @@
 // Themepark modules
-const auth = require("./auth");
-const db = require("./db");
-const reqChecks = require("./reqChecks");
+const auth = require("../utils/auth");
+const db = require("../utils/db");
+const reqChecks = require("../utils/reqChecks");
 
 // Constants
 const employeeRoles = [ // Order by least to most privileged, with superuser last.

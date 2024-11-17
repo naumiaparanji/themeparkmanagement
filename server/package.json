@@ -9,11 +9,11 @@
         "express-mysql-session": "*",
         "mysql2": "*",
         "knex": "*",
-        "cors": "*"
+        "cors": "*",
+        "dotenv": "*"
     },
     "scripts": {
         "deploy": "./deploy.sh",
-        "test-win": ".\\test.bat",
-        "test-linux": "./test.sh"
+        "start": "npm install && node main.js"
     }
 }

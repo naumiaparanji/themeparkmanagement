@@ -1,15 +1,20 @@
-const db = require("./db");
+const db = require("../utils/db");
 const employee = require("./employeeRoutes");
 
 // App routes
 module.exports = (app) => {
     
-    app.get('/concessions', (req, res) => {
-        let query = db.themeparkDB("CONCESSION_STALL").orderBy("ConcessionID");
+    app.get('/giftshops', 
+        employee.checkSessionForEmployee,
+        employee.getRequestingEmployee,
+        employee.getEmployeeAccessPerms,
+        employee.requirePerms('attractions'),
+        (req, res) => {
+        let query = db.themeparkDB("GIFTSHOP").orderBy("GiftshopID")
         if (!req.query.deleted)
             query = query.where("Deleted", 0);
         query.then((items) => {
-            res.status(200).json({success: true, concessions: items});
+            res.status(200).json({success: true, giftshops: items});
         })
         .catch((e) => {
             console.error(e);
@@ -17,13 +22,13 @@ module.exports = (app) => {
         })
     });
 
-    app.put('/concessions/:id',
+    app.put('/giftshops/:id',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
         employee.getEmployeeAccessPerms,
         employee.requirePerms('attractions'),
         (req, res) => {
-            db.themeparkDB("CONCESSION_STALL").update(req.body).where('ConcessionID', req.params.id)
+            db.themeparkDB("GIFTSHOP").update(req.body).where('GiftshopID', req.params.id)
             .then(() => res.status(200).json({success: true}))
             .catch((e) => {
                 console.error(e);
@@ -32,13 +37,13 @@ module.exports = (app) => {
         }
     );
 
-    app.delete('/concessions/:id',
+    app.delete('/giftshops/:id',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
         employee.getEmployeeAccessPerms,
         employee.requirePerms('attractions'),
         (req, res) => {
-            let query = db.themeparkDB("CONCESSION_STALL").where('ConcessionID', req.params.id);
+            let query = db.themeparkDB("GIFTSHOP").where('GiftshopID', req.params.id)
             if (req.query.permanent)
                 query = query.delete();
             else
@@ -51,13 +56,13 @@ module.exports = (app) => {
         }
     )
 
-    app.post('/concessions',
+    app.post('/giftshops',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
         employee.getEmployeeAccessPerms,
         employee.requirePerms('attractions'),
         (req, res) => {
-            db.themeparkDB("CONCESSION_STALL").insert((req.body))
+            db.themeparkDB("GIFTSHOP").insert((req.body))
             .then(() => res.status(200).json({success: true}))
             .catch((e) => {
                 console.error(e);
