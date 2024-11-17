@@ -1,6 +1,3 @@
-# In case anything happens, like the server (or ssd) crashing, catching fire, etc.
-# Ideally we'd have a backup, but this can be used to deploy a new instance of the db.
-
 version: '3.1'
 
 services:
@@ -9,54 +6,8 @@ services:
     image: mysql
     container_name: mysql-db
     restart: always
-    environment:
-      - MYSQL_ROOT_PASSWORD=<ROOT_PASS_HERE>
-      - MYSQL_DATABASE=themepark_db
-      - MYSQL_USER=admin
-      - MYSQL_PASSWORD=<ADMIN_PASS_HERE>
+    env_file: "../.env"
     ports:
       - 3306:3306/tcp
     volumes:
       - ./mysql_data:/var/lib/mysql
-
-  cloudbeaver:
-    image: dbeaver/cloudbeaver:latest
-    container_name: cloudbeaver
-    restart: always
-    ports:
-      - 8978:8978/tcp
-    volumes:
-      - ./dbeaver-data:/opt/cloudbeaver/workspace
-
-# VPN server + admin panel
-  wireguard:
-    image: ghcr.io/wg-easy/wg-easy
-    container_name: wg-easy
-    restart: always
-    environment:
-      - LANG=en
-      - WG_HOST=<HOST_WAN_ADDRESS>
-      - PASSWORD_HASH=<HASHED_WG_EASY_PASS>
-      - PORT=2051
-      - WG_PORT=2050
-      - WG_POST_UP=
-          iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE;
-          iptables -A INPUT -p udp -m udp --dport 2050 -j ACCEPT;
-          iptables -A FORWARD -i wg0 -d <ROUTER_GATEWAY_ADDR> -p tcp --dport 80 -j REJECT;
-          iptables -A FORWARD -i wg0 -d <ROUTER_GATEWAY_ADDR> -p tcp --dport 443 -j REJECT;
-          iptables -A FORWARD -i wg0 -d <WG_EASY_DOCKER_VLAN_ADDR> -j REJECT;
-          iptables -A FORWARD -i wg0 -d <ROUTER_GATEWAY_ADDR> -j ACCEPT;
-          iptables -A FORWARD -i wg0 -d <ROUTER_SUBNET> -j REJECT;
-          iptables -A FORWARD -i wg0 -j ACCEPT;
-          iptables -A FORWARD -o wg0 -j ACCEPT;
-    ports:
-      - 2051:2051/tcp
-      - 2050:2050/udp
-    volumes:
-      - ./wg-easy:/etc/wireguard
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
-    sysctls:
-      - net.ipv4.conf.all.src_valid_mark=1
-      - net.ipv4.ip_forward=1
