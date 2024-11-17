@@ -363,7 +363,5 @@ module.exports.employeeRanks = employeeRanks;
 module.exports.employeeNames = employeeNames;
 module.exports.checkSessionForEmployee = checkSessionForEmployee;
 module.exports.getRequestingEmployee = getRequestingEmployee;
-module.exports.setMinEmployeeAccessLevel = setMinEmployeeAccessLevel;
-module.exports.setExactEmployeeAccessLevel = setExactEmployeeAccessLevel;
 module.exports.getEmployeeAccessPerms = getEmployeeAccessPerms;
 module.exports.requirePerms = requirePerms;
