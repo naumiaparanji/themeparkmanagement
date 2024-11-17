@@ -23,9 +23,7 @@ This project is organized into three main components:
         -   NGINX configuration files for serving the React application.
 
 ## Configuration
-The `.env` file allows you to customize various settings for the database, API server, and web application.
-
-Supported environment variables:
+__<ins>All values must be placed in the `.env` file.</ins>__
 ### Database Configuration
 - `MYSQL_ROOT_PASSWORD` - Sets the root password for the MySQL Docker image.
 - `MYSQL_DATABASE` - Specifies the target schema for the API server and the default schema for the MySQL image.
