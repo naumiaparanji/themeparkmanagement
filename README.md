@@ -222,7 +222,7 @@ README Template: [https://github.com/othneildrew/Best-README-Template](https://g
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/naumiaparanji/themeparkmanagement.svg?style=for-the-badge
 [contributors-url]: https://github.com/naumiaparanji/themeparkmanagement/graphs/contributors
 [product-screenshot]: src\images\LiveWebsiteScreenShot.png
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
