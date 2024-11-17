@@ -1,14 +1,14 @@
 <a id="readme-top"></a>
 
 <!-- PROJECT SHIELDS -->
-[![Contributors][contributors-shield]][contributors-url]
 
+[![Contributors][contributors-shield]][contributors-url]
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
   <a href="https://github.com/naumiaparanji/themeparkmanagement">
-    <img src="./themepark_website/src/images/flagslogo.png" alt="Logo" width="100%" height="100%">
+    <img src="src\images\flagslogo.png" alt="Logo" width="100%" height="100%">
   </a>
 
 <h3 align="center">Seven Flags Theme Park Management System</h3>
@@ -47,9 +47,8 @@
   </ol>
 </details>
 
-
-
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
 [![Seven Flags][product-screenshot]](https://notflag6.com/)
@@ -58,20 +57,17 @@ A full-stack project for Database Systems (COSC3380) course at the University of
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 ### Built With
 
-* [![React][React.js]][React-url]
-* [![Express][Express.js]][Express-url]
-* [![MySQL][MySQL]][MySQL-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
+- [![React][React.js]][React-url]
+- [![Express][Express.js]][Express-url]
+- [![MySQL][MySQL]][MySQL-url]
+- [![Bootstrap][Bootstrap.com]][Bootstrap-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- GETTING STARTED -->
+
 ## Getting Started
 
 To get a local copy up and running follow these simple example steps.
@@ -79,7 +75,8 @@ To get a local copy up and running follow these simple example steps.
 ### Prerequisites
 
 <!-- TODO IAN start -->
-* npm
+
+- npm
   ```sh
   npm install npm@latest -g
   ```
@@ -97,7 +94,7 @@ To get a local copy up and running follow these simple example steps.
    ```
 4. Enter your API in `config.js`
    ```js
-   const API_KEY = 'ENTER YOUR API';
+   const API_KEY = "ENTER YOUR API";
    ```
 5. Change git remote url to avoid accidental pushes to base project
    ```sh
@@ -108,8 +105,11 @@ To get a local copy up and running follow these simple example steps.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Configuration
-__<ins>All values must be placed in the `.env` file.</ins>__
+
+**<ins>All values must be placed in the `.env` file.</ins>**
+
 ### Database Configuration
+
 - `MYSQL_ROOT_PASSWORD` - Sets the root password for the MySQL Docker image.
 - `MYSQL_DATABASE` - Specifies the target schema for the API server and the default schema for the MySQL image.
 - `MYSQL_ADDR` - Sets the address of the MySQL server to be used by the API server.
@@ -117,6 +117,7 @@ __<ins>All values must be placed in the `.env` file.</ins>__
 - `MYSQL_PASSWORD` - Defines the MySQL password for both the API server and the MySQL image.
 
 ### API Server Configuration
+
 - `APP_ADMIN_USER` - Sets the superuser account name for the `CUSTOMER` and `EMPLOYEE` tables.
 - `APP_ADMIN_PASS` - Sets the superuser password for the `CUSTOMER` and `EMPLOYEE` tables.
 - `APP_ENABLE_SU` - Enables the superuser accounts when set to `true`.
@@ -125,9 +126,11 @@ __<ins>All values must be placed in the `.env` file.</ins>__
 - `APP_SSL_COMMON_NAME` - Sets the domain name for the SSL certificate generated during API server builds.
 
 ### Web App Configuration
+
 - `REACT_APP_API_SERVER_ADDRESS` - Defines the base HTTP URL of the API server.
 
 ### Example `.env` File
+
 ```
 MYSQL_ROOT_PASSWORD = <ROOT_PASS_HERE>
 MYSQL_DATABASE = themepark_db
@@ -148,41 +151,43 @@ APP_SSL_COMMON_NAME = themepark.net
 
 <!-- TODO IAN end -->
 
-
 <!-- USAGE -->
+
 ## Usage
 
 The Theme Park Management System is our solution to manage data related to Seven Flags' operations. This all-in-one website offers the ability for customers to purchase tickets and sign up for our exclusive events, as well as allowing our wonderful employees to work with data pertaining to rides, ride maintenance, and events while providing detailed reports on them.
 
 #### User Roles and Data Management
-* Customer: Can sign up for an account, purchase tickets, and sign up for events as well as view all the amentities Seven Flags has to offer. 
-* Employee:  Can submit, modify, or delete maintenance requests and submit ride runs.
-* Manager: Have the same priviledges as employees on top of the ability to view reports.
-* Admin: Have the same priviledges as managers as well as the following capabilities:
-    * Add, modify, and delete Customers and Employees information
-    * Add, modify, and delete Rides
-    * Add, modify, and delete Attractions
-    * Add, modify, and delete Events
+
+- Customer: Can sign up for an account, purchase tickets, and sign up for events as well as view all the amentities Seven Flags has to offer.
+- Employee: Can submit, modify, or delete maintenance requests and submit ride runs.
+- Manager: Have the same priviledges as employees on top of the ability to view reports.
+- Admin: Have the same priviledges as managers as well as the following capabilities:
+  - Add, modify, and delete Customers and Employees information
+  - Add, modify, and delete Rides
+  - Add, modify, and delete Attractions
+  - Add, modify, and delete Events
 
 #### Queries/Reports
-* Maintenance Status: A report of all maintenance requests that allows for filtering by ride name, ride category, maintenance ticket status, and the dates between which the ticket was submitted. 
-* Event Sales:
-    * Summary: Report of the total sales from each Event.
-    * Individual Sales: Report of each single sale that includes information on who purchased the pass and whether they have checked in for the event; allows for filtering by event name, and the dates between which the event pass was purchased.
-* Ride Popularity:
-    * Category Popularity Summary and Ride Popularity Summary: Reports that indicate how popular a ride is based on the occupancy versus capacity of the ride.
-    * Individual Runs: Detailed log of each time a ride is operated on; allows for filtering by dates between which the rides were run.
+
+- Maintenance Status: A report of all maintenance requests that allows for filtering by ride name, ride category, maintenance ticket status, and the dates between which the ticket was submitted.
+- Event Sales:
+  - Summary: Report of the total sales from each Event.
+  - Individual Sales: Report of each single sale that includes information on who purchased the pass and whether they have checked in for the event; allows for filtering by event name, and the dates between which the event pass was purchased.
+- Ride Popularity:
+  - Category Popularity Summary and Ride Popularity Summary: Reports that indicate how popular a ride is based on the occupancy versus capacity of the ride.
+  - Individual Runs: Detailed log of each time a ride is operated on; allows for filtering by dates between which the rides were run.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
 <!-- TODO NAUMI start -->
+
 ## Semantic Constraints and Triggers
 
 - [ ] Feature 1
 - [ ] Feature 2
 - [ ] Feature 3
-    - [ ] Nested Feature
+  - [ ] Nested Feature
 
 <!-- TODO NAUMI end -->
 
@@ -191,10 +196,11 @@ The Theme Park Management System is our solution to manage data related to Seven
 ## Contributors:
 
 <a href="https://github.com/naumiaparanji/themeparkmanagement/graphs/contributors">
-  <img src="./themepark_website/src/images/Contributors.png" alt="Contributors.png image" width="100%" height="100%" />
+  <img src="src\images\Contributors.png" alt="Contributors.png image" width="100%" height="100%" />
 </a>
 
 <!-- CONTACT -->
+
 ### Contact
 
 Project GitHub: [Link](https://github.com/naumiaparanji/themeparkmanagement)
@@ -204,6 +210,7 @@ Live Website: [Link](https://notflag6.com/)
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ACKNOWLEDGMENTS -->
+
 ## Acknowledgments
 
 Our amazing TAs
@@ -212,17 +219,17 @@ README Template: [https://github.com/othneildrew/Best-README-Template](https://g
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
 [contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
 [contributors-url]: https://github.com/naumiaparanji/themeparkmanagement/graphs/contributors
-[product-screenshot]: ./themepark_website/src/images/LiveWebsiteScreenShot.png
+[product-screenshot]: src\images\LiveWebsiteScreenShot.png
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
-[Express.js]:https://img.shields.io/badge/Express%20js-000000?style=for-the-badge&logo=express&logoColor=white
-[Express-url]:https://expressjs.com/
-[MySQL]:https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white
-[MySQL-url]:https://www.mysql.com/
+[Express.js]: https://img.shields.io/badge/Express%20js-000000?style=for-the-badge&logo=express&logoColor=white
+[Express-url]: https://expressjs.com/
+[MySQL]: https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white
+[MySQL-url]: https://www.mysql.com/
 [Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
 [Bootstrap-url]: https://getbootstrap.com
