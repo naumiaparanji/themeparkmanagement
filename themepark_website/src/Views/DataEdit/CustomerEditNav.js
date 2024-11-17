@@ -1,4 +1,5 @@
 import { useContext, useState, useCallback, useEffect } from "react";
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Navbar, Container, Form, InputGroup, Button } from "react-bootstrap";
 import { EmployeeModalFormContainer, StaffManagerContext } from "../Staff";
 import { api } from "../../App";
@@ -34,12 +35,26 @@ export function CustomerEditNav() {
     }
 
     const [data, setData] = useState([])
+    const navigate = useNavigate();
 
     useEffect(()=> {
     api.get('/customer/data/info')
         .then(res => setData(res.data))
         .catch(err => console.log(err));
   }, [])
+
+
+  const handleDelete = (CustomerID) => {
+    const confirm = window.confirm("Would you like to Delete?");
+    if (confirm) {
+        api.delete(`/customer/data/${CustomerID}`)
+            .then(() => {
+                alert("Customer deleted successfully.");
+                navigate('/employee/access/datamanage');
+            })
+            .catch((err) => console.log(err));
+    }
+};
 
     return (
         <>
@@ -48,7 +63,6 @@ export function CustomerEditNav() {
                 <Form className="w-100">
                     <InputGroup className="d-flex">
                         <Form.Control placeholder="Search" className="m-0" value={search} />
-                        <Button onClick={() => setShowForm(true)} className="Create">Add User</Button>
                     </InputGroup>
                 </Form>
             </Container>
@@ -78,7 +92,7 @@ export function CustomerEditNav() {
                                                 <td>{d.Email}</td>
                                                 <td>  
                                                     <button className="btn btn-sm btn-primary me-2">Edit</button>
-                                                    <button className="btn btn-sm btn-danger">Delete</button>
+                                                    <button onClick={e => {handleDelete(d.CustomerID); window.location.reload();}} className="btn btn-sm btn-danger">Delete</button>
                                                 </td>
                                             </tr>
                                     ))}

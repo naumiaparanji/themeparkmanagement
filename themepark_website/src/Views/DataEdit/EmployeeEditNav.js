@@ -98,7 +98,7 @@ export function EmployeeEditNav() {
                                                 <td>  
 
                                                     <button className="btn btn-sm btn-primary me-2">Edit</button>
-                                                    <button onClick={e => handleDelete(d.EmployeeID)} className="btn btn-sm btn-danger">Delete</button>
+                                                    <button onClick={e => {handleDelete(d.EmployeeID); window.location.reload();}} className="btn btn-sm btn-danger">Delete</button>
                                                 </td>
                                             </tr>
                                     ))}

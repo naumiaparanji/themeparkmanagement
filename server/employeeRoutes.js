@@ -228,6 +228,25 @@ module.exports = (app) => {
         }
     )
 
+    app.delete('/customer/data/:id',
+        checkSessionForEmployee,
+        getRequestingEmployee,
+        getEmployeeAccessPerms,
+        requirePerms('datamanage'),
+        (req, res) => {
+            let query = db.themeparkDB("CUSTOMER").where('CustomerID', req.params.id);
+            if (req.query.permanent)
+                query = query.delete();
+            else
+                query = query.update("Deleted", 1);
+            query.then(() => res.status(200).json({success: true}))
+            .catch((e) => {
+                console.error(e);
+                res.status(500).json({success: false, error: "SQLError"});
+            });
+        }
+    )
+
     // Get info about other employees
     app.get("/employee/data/:user", 
         checkSessionForEmployee,
@@ -331,6 +350,20 @@ module.exports = (app) => {
             res.status(200).json({success: true});
         }
     );
+
+    app.put('/employee/mod/:id', (req, res) => {
+        const sql = "UPDATE student SET Name = ?, Email = ? WHERE ID = ?";
+        const values = [
+            req.body.name,
+            req.body.email
+        ];
+        const id = req.params.id;
+    
+        db.query(sql, [...values, id], (err, data) => {
+            if (err) return res.json("Error");
+            return res.json(data);
+        });
+    });
 
     app.post("/employee/logout", async (req, res) => {
         if (req.session.employeeUser == undefined) {
