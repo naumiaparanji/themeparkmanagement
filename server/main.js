@@ -32,6 +32,7 @@ app.use(cors({
     optionsSuccessStatus: 200,
     credentials: true
 }));
+console.log(`Client origin set to '${process.env.API_SERVER_PORT}'`);
 
 const session = require("express-session");
 const MySQLStore = require('express-mysql-session')(session);
