@@ -1,8 +1,9 @@
 import { useContext, useState, useCallback, useEffect } from "react";
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Navbar, Container, Form, InputGroup, Button } from "react-bootstrap";
 import { EmployeeModalFormContainer, StaffManagerContext } from "../Staff";
 import { api } from "../../App";
+
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './DataManage.css';
@@ -15,7 +16,6 @@ export function EmployeeEditNav() {
     const handleAddEvent = useCallback(() => setCreateState(true), []);
 
     const {setShowForm} = useContext(StaffManagerContext);
-    const [returnedData, setReturnedData] = useState(['hello']); 
     const [employee, SetEmployee] = useState({EmployeeID: 0, FirstName: '', LastName: '', Age: 0, Gender: ''})
 
     const setInput = (e) => {
@@ -34,8 +34,8 @@ export function EmployeeEditNav() {
         }));
     }
 
-    const [query, setQuery] = useState("");
     const [data, setData] = useState([])
+    const navigate = useNavigate();
 
     useEffect(()=> {
     api.get('/employee/data/info')
@@ -43,6 +43,19 @@ export function EmployeeEditNav() {
         .catch(err => console.log(err));
     }, [])
 
+
+
+    const handleDelete = (EmployeeID) => {
+        const confirm = window.confirm("Would you like to Delete?");
+        if (confirm) {
+            api.delete(`/employee/data/${EmployeeID}`)
+                .then(() => {
+                    alert("Employee deleted successfully.");
+                    navigate('/employee/access/datamanage');
+                })
+                .catch((err) => console.log(err));
+        }
+    };
 
 
     return (
@@ -57,8 +70,8 @@ export function EmployeeEditNav() {
                 </Form>
             </Container>
         </Navbar>
-                    <div className='flex-column align-items-center bg-white p-4 m-0'>
-                    <table>
+                    <div className='d-flex flex-column align-items-center bg-white p-1'>
+                    <table id="my-table">
                             <thead>
                                     <tr>
                                         <th>ID</th>
@@ -83,8 +96,9 @@ export function EmployeeEditNav() {
                                                 <td>{d.PhoneNumber}</td>
                                                 <td>{d.Email}</td>
                                                 <td>  
+
                                                     <button className="btn btn-sm btn-primary me-2">Edit</button>
-                                                    <button className="btn btn-sm btn-danger">Delete</button>
+                                                    <button onClick={e => {handleDelete(d.EmployeeID); window.location.reload();}} className="btn btn-sm btn-danger">Delete</button>
                                                 </td>
                                             </tr>
                                     ))}
@@ -92,11 +106,10 @@ export function EmployeeEditNav() {
                         </tbody>
                     </table>
                     </div>
+                    
         <EmployeeModalFormContainer/>
         </>
     );
 }
 
-/*
-                                                   /* <Link to={`./viewemployee/${d.EmployeeID}`}>Read</Link>
-                                                   */
+export default EmployeeEditNav

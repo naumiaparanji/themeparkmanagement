@@ -20,7 +20,8 @@ module.exports = (app) => {
     app.put('/restaurants/:id',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
-        employee.setMinEmployeeAccessLevel(2),
+        employee.getEmployeeAccessPerms,
+        employee.requirePerms('attractions'),
         (req, res) => {
             db.themeparkDB("RESTAURANT").update(req.body).where('RestaurantID', req.params.id)
             .then(() => res.status(200).json({success: true}))
@@ -34,7 +35,8 @@ module.exports = (app) => {
     app.delete('/restaurants/:id',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
-        employee.setMinEmployeeAccessLevel(2),
+        employee.getEmployeeAccessPerms,
+        employee.requirePerms('attractions'),
         (req, res) => {
             let query = db.themeparkDB("RESTAURANT").where('RestaurantID', req.params.id);
             if (req.query.permanent)
@@ -52,7 +54,8 @@ module.exports = (app) => {
     app.post('/restaurants',
         employee.checkSessionForEmployee,
         employee.getRequestingEmployee,
-        employee.setMinEmployeeAccessLevel(2),
+        employee.getEmployeeAccessPerms,
+        employee.requirePerms('attractions'),
         (req, res) => {
             db.themeparkDB("RESTAURANT").insert((req.body))
             .then(() => res.status(200).json({success: true}))

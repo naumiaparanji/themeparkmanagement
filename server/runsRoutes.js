@@ -1,10 +1,15 @@
 const db = require("./db");
 const getCurrentTime = require("./currentTime");
-const { checkSessionForEmployee, getRequestingEmployee } = require("./employeeRoutes");
+const employee = require("./employeeRoutes");
 
 // App routes
 module.exports = (app) => {
-    app.post("/runs/input", checkSessionForEmployee, getRequestingEmployee, async (req, res) => {
+    app.post("/runs/input", 
+        employee.checkSessionForEmployee, 
+        employee.getRequestingEmployee, 
+        employee.getEmployeeAccessPerms,
+        employee.requirePerms('runs'),
+        async (req, res) => {
         const rideData = await db.getRides().catch((e) => {
             console.log(e);
             res.status(500).json({ success: false, error: "SQLError" });

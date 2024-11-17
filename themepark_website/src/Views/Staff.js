@@ -162,7 +162,7 @@ export function EmployeeModalFormContainer() {
                 <EmployeeForm/>
             </Modal.Body>
             <Modal.Footer>
-                <Button disabled={!(canSubmit && submitEnabled)} onClick={handleSubmit} variant={failed? "danger" : "primary"}>
+                <Button disabled={!(canSubmit && submitEnabled)}   onClick={() => {handleSubmit(); window.location.reload();}}  variant={failed? "danger" : "primary"}>
                     {inProgress? 
                     (<Spinner
                         animation="border"
