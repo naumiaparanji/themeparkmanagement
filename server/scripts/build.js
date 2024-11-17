@@ -10,9 +10,22 @@ console.log("Preparing server for deployment...");
 
 console.log("Preparing build directory...");
 if (fs.existsSync("./build")) {
-    fs.rmSync("./build", {recursive:true, force:true});
+    fs.readdirSync("./build").forEach((item) => {
+        const itemPath = path.join(buildPath, item);
+        if (item === "node_modules") return;
+        try {
+            if (fs.statSync(itemPath).isDirectory()) {
+                fs.rmSync(itemPath, { recursive: true, force: true });
+            } else {
+                fs.unlinkSync(itemPath);
+            }
+        } catch (err) {
+            console.error(`Error removing ${itemPath}:`, err.message);
+        }
+    });
+} else {
+    fs.mkdirSync("./build");
 }
-fs.mkdirSync("./build");
 
 console.log('Generating RSA key pair for SSL...');
 pem.createPrivateKey(2048, (err, key) => {
