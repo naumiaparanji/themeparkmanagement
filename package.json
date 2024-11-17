@@ -23,13 +23,18 @@
     "react-tabs": "^6.0.2",
     "web-vitals": "^2.1.4"
   },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+  },
   "scripts": {
     "api": "json-server db.json -p 3333 --delay 1500",
     "start": "react-scripts start",
     "server": "nodemon server.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build-all": "npm run build && npm --prefix ./server run build",
+    "deploy": "npm run build-all && docker compose up -d"
   },
   "eslintConfig": {
     "extends": [
