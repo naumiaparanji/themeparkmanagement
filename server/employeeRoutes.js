@@ -165,8 +165,8 @@ module.exports = (app) => {
                 firstName: req.requestingEmployee.FirstName,
                 lastName: req.requestingEmployee.LastName,
                 accessLevel: req.requestingEmployee.AccessLevel,
-                role: roleName,
-                rank: roleRank,
+                role: req.roleName,
+                rank: req.roleRank,
                 canModify: employeeRoles.slice(0, req.roleRank),
                 canAccess: req.canAccess
             });
