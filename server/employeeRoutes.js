@@ -212,13 +212,14 @@ module.exports = (app) => {
     app.delete('/employee/data/:id',
         checkSessionForEmployee,
         getRequestingEmployee,
+        getEmployeeAccessPerms,
         requirePerms('datamanage'),
         (req, res) => {
             let query = db.themeparkDB("EMPLOYEE").where('EmployeeID', req.params.id);
             if (req.query.permanent)
                 query = query.delete();
             else
-                query = query.update("Deleted", 1)
+                query = query.update("Deleted", 1);
             query.then(() => res.status(200).json({success: true}))
             .catch((e) => {
                 console.error(e);

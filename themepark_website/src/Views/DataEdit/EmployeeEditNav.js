@@ -51,7 +51,7 @@ export function EmployeeEditNav() {
             api.delete(`/employee/data/${EmployeeID}`)
                 .then(() => {
                     alert("Employee deleted successfully.");
-                    navigate('/EmployeeEditNav');
+                    navigate('/employee/access/datamanage');
                 })
                 .catch((err) => console.log(err));
         }
