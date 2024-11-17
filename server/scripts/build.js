@@ -1,4 +1,3 @@
-const pem = require('pem');
 const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
