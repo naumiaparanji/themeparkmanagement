@@ -6,12 +6,12 @@ import Navbar from './Navbar';
 import {api} from '../App';
 import './ProfilePage.css'
 
-//
 const ProfileDisplay = () => {
     const { data } = useContext(ApiContext);
     const [tickets, setTickets] = useState([]);
     const [passes, setPasses] = useState([]);
     const [notifications, setNotifications] = useState([]);
+    const [isNotificationsVisible, setIsNotificationsVisible] = useState(true); // New state for toggling notifications
 
     const refreshTickets = useCallback(() => {
         api.get("/customer/tickets")
@@ -66,20 +66,30 @@ const ProfileDisplay = () => {
 
                 {/* Notifications Section */}
                 <div className="profile-notifications">
-                    <h3>Notifications</h3>
-                    {notifications.length > 0 ? (
-                        <ul>
-                            {notifications.map((note, i) => (
-                                <li key={i}>
-                                    <div>{note.Message}</div>
-                                    <div className="notification-date">
-                                        {new Date(note.CreatedAt).toLocaleString()}
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p>No notifications available.</p>
+                    <h3>
+                        Notifications
+                        <button 
+                            className="toggle-button" 
+                            onClick={() => setIsNotificationsVisible(!isNotificationsVisible)}
+                        >
+                            {isNotificationsVisible ? "Hide" : "Show"}
+                        </button>
+                    </h3>
+                    {isNotificationsVisible && (
+                        notifications.length > 0 ? (
+                            <ul>
+                                {notifications.map((note, i) => (
+                                    <li key={i}>
+                                        <div>{note.Message}</div>
+                                        <div className="notification-date">
+                                            {new Date(note.CreatedAt).toLocaleString()}
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No notifications available.</p>
+                        )
                     )}
                 </div>
 

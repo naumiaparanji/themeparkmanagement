@@ -84,4 +84,15 @@
     color: #555;
 }
 
-  
+.toggle-button {
+    background: none;
+    border: none;
+    color: blue;
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+.toggle-button:hover {
+    text-decoration: underline;
+}
