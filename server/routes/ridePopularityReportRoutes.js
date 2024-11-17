@@ -1,6 +1,6 @@
 // Themepark modules
-const auth = require("./auth");
-const db = require("./db");
+const auth = require("../utils/auth");
+const db = require("../utils/db");
 const employee = require("./employeeRoutes");
 
 // App routes

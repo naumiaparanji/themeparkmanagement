@@ -3,17 +3,21 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
-        "libsodium-wrappers-sumo": "*",
-        "express": "*",
-        "express-session": "*",
-        "express-mysql-session": "*",
-        "mysql2": "*",
-        "knex": "*",
-        "cors": "*"
+        "libsodium-wrappers-sumo": "0.7.15",
+        "express": "4.21.1",
+        "express-session": "1.18.1",
+        "express-mysql-session": "3.0.3",
+        "mysql2": "3.11.4",
+        "knex": "3.1.0",
+        "cors": "2.8.5"
+    },
+    "devDependencies": {
+        "dotenv": "16.4.5",
+        "pem": "1.14.8",
+        "glob": "11.0.0"
     },
     "scripts": {
-        "deploy": "./deploy.sh",
-        "test-win": ".\\test.bat",
-        "test-linux": "./test.sh"
+        "build": "npm install && node scripts/build.js",
+        "start": "npm install && node main.js"
     }
 }

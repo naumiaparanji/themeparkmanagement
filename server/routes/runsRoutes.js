@@ -1,5 +1,5 @@
-const db = require("./db");
-const getCurrentTime = require("./currentTime");
+const db = require("../utils/db");
+const getCurrentTime = require("../utils/currentTime");
 const employee = require("./employeeRoutes");
 
 // App routes
