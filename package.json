@@ -30,7 +30,7 @@
     "api": "json-server db.json -p 3333 --delay 1500",
     "start": "react-scripts start",
     "server": "nodemon server.js",
-    "build": "react-scripts build",
+    "build": "npm install && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "build-all": "npm run build && npm --prefix ./server run build",
