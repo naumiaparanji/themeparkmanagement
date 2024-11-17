@@ -159,6 +159,7 @@ The Theme Park Management System is our solution to manage data related to Seven
 ### Contact
 
 Project GitHub: [Link](https://github.com/naumiaparanji/themeparkmanagement)
+
 Live Website: [Link](https://notflag6.com/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
