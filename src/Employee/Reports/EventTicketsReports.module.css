@@ -1,0 +1,23 @@
+.reportstable {
+    table-layout: auto;
+    width: 90%;
+    margin: auto;
+}
+
+.reportstable > thead > tr > th {
+    font-size: small;
+}
+
+.reportstable > tbody > tr > td {
+    font-size: small;
+}
+
+.scroll {
+    height: 80vh;
+    overflow-y: scroll;
+}
+
+.divider {
+    margin: 0px auto;
+    width: 96%;
+}

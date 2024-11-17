@@ -1,0 +1,86 @@
+/* Add to your existing CSS */
+.profile-container {
+    padding: 20px;
+    max-width: auto;
+    margin: auto;
+    background: #f8f8f8;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    overflow-y: auto; /* Allow vertical scrolling */
+    height: auto;
+    min-height: calc(100vh - 200px); /* Adjust height to fill viewport, minus fixed header/footer height */
+}
+
+.ppnotificationbar {
+    position: static;
+    background-color: yellow;
+    padding: .1%;
+    width: 100vw;
+    padding: 0;
+    margin-top: -100px;
+    margin-bottom: auto;
+    border-bottom: 1px solid goldenrod;
+    display: inline-block;
+}
+
+.profile-tickets h3 {
+    font-size: 24px; /* Adjust font size */
+    margin-bottom: 15px;
+    font-weight: bold; /* Make the heading bold */
+    text-align: left; /* Left-align the heading */
+    border-bottom: 2px solid #ddd; /* Add a subtle underline */
+    padding-bottom: 5px; /* Space between text and underline */
+}
+
+.profile-container h3 {
+    font-size: 24px; /* Adjust font size */
+    margin-bottom: 15px;
+    font-weight: bold; /* Make the heading bold */
+    text-align: left; /* Left-align the heading */
+    border-bottom: 2px solid #ddd; /* Add a subtle underline */
+    padding-bottom: 5px; /* Space between text and underline */
+}
+
+.profile-info {
+    margin-bottom: 20px;
+}
+
+.profile-info p {
+    font-size: 16px;
+}
+
+.profile-tickets {
+    margin-top: 20px;
+}
+
+.profile-tickets ul {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 4 columns */
+    grid-template-rows: repeat(2, auto); /* 2 rows */
+    gap: 10px; /* Adds space between grid items */
+    list-style-type: none;
+    padding-left: 0;
+
+}
+
+.profile-tickets li {
+    background: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
+
+}
+
+
+.profile-tickets li strong {
+    display: block;
+    font-size: 18px;
+}
+
+.profile-tickets li div {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #555;
+}
+  
+  

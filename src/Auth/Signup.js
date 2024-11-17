@@ -1,8 +1,8 @@
 import './Auth.css'
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import MainLogo from '../images/flagslogo.png';
-import { RandomBGImg, MessageBox, InputField, FancyButton, Validation, defaultButtonStyle } from './AuthComponents';
-import { api } from '../App';
+import {defaultButtonStyle, FancyButton, InputField, MessageBox, RandomBGImg, Validation} from './AuthComponents';
+import {api} from '../App';
 
 export function SignUpBox(props) {
     // Added new states for the additional fields
@@ -30,7 +30,7 @@ export function SignUpBox(props) {
             return;
         }
         // Send the additional fields as part of the registration request
-        api.post(props.apiPath || '/customer/register', 
+        api.post(props.apiPath || '/customer/register',
             {
                 firstName: firstName,
                 lastName: lastName,
@@ -40,22 +40,21 @@ export function SignUpBox(props) {
                 password: password
             }
         )
-        .then(() => window.location.pathname = props.redirect)
-        .catch((e) => {
-            if (e.response) {
-                if (e.response.status === 500) setMessage('Server error');
-                else if (e.response.status === 409) setMessage('An account with this email already exists');
-                else if (!e.response.data) setMessage('Unknown error');
-                else setMessage('Sign-up failed');
-            }
-            else if (e.request) setMessage('Failed to connect to server');
-        });
+            .then(() => window.location.pathname = props.redirect)
+            .catch((e) => {
+                if (e.response) {
+                    if (e.response.status === 500) setMessage('Server error');
+                    else if (e.response.status === 409) setMessage('An account with this email already exists');
+                    else if (!e.response.data) setMessage('Unknown error');
+                    else setMessage('Sign-up failed');
+                } else if (e.request) setMessage('Failed to connect to server');
+            });
     }
 
     return (
         <div className='loginbox'>
             <a href="/">
-                <img src={MainLogo} alt="Main Logo" />
+                <img src={MainLogo} alt="Main Logo"/>
             </a>
             <div style={{
                 fontSize: "20px",
@@ -63,61 +62,61 @@ export function SignUpBox(props) {
             }}>{props.title}</div>
             <hr style={{
                 color: "lightgrey",
-                margin:"0px 8px 16px 8px"
-            }} />
-            <MessageBox message={message} />
+                margin: "0px 8px 16px 8px"
+            }}/>
+            <MessageBox message={message}/>
 
-            <InputField 
-                name="First Name" 
+            <InputField
+                name="First Name"
                 containerStyle={{margin: "12px 12px"}}
-                value={firstName} 
+                value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
             />
-            <InputField 
-                name="Last Name" 
+            <InputField
+                name="Last Name"
                 containerStyle={{margin: "12px 12px"}}
-                value={lastName} 
+                value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
             />
-            <InputField 
-                name="Date of Birth" 
-                type="date" 
+            <InputField
+                name="Date of Birth"
+                type="date"
                 containerStyle={{margin: "12px 12px"}}
-                value={dob} 
+                value={dob}
                 onChange={(e) => setDob(e.target.value)}
             />
-            <InputField 
-                name="Address" 
+            <InputField
+                name="Address"
                 containerStyle={{margin: "12px 12px"}}
-                value={address} 
+                value={address}
                 onChange={(e) => setAddress(e.target.value)}
             />
 
-            <InputField 
-                name="Email" 
+            <InputField
+                name="Email"
                 containerStyle={{margin: "12px 12px"}}
-                value={email} 
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
             />
-            <InputField 
-                name="Password" 
-                type="password" 
+            <InputField
+                name="Password"
+                type="password"
                 containerStyle={{margin: "12px 12px"}}
-                value={password} 
+                value={password}
                 onChange={(e) => setPassword(e.target.value)}
             />
-            <InputField 
-                name="Confirm Password" 
-                type="password" 
+            <InputField
+                name="Confirm Password"
+                type="password"
                 containerStyle={{margin: "12px 12px"}}
-                value={confirmPassword} 
+                value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            <FancyButton text='Sign Up' action={signUpSubmit} />
+            <FancyButton text='Sign Up' action={signUpSubmit}/>
             <div><p>Already have an account?</p></div>
-            <FancyButton text='Login' 
-                action={() => window.location.pathname = props.login} 
-                style={{ ...defaultButtonStyle, backgroundColor: "#55ACEE" }}
+            <FancyButton text='Login'
+                         action={() => window.location.pathname = props.login}
+                         style={{...defaultButtonStyle, backgroundColor: "#55ACEE"}}
             />
         </div>
     );
@@ -125,15 +124,15 @@ export function SignUpBox(props) {
 
 export function SignUp(props) {
     return (
-    <div className='container'>
-        <RandomBGImg />
-        <SignUpBox 
-            title={props.title || 'Customer Sign-Up'}
-            redirect={props.redirect || '/login'} 
-            login={props.login || '/login'}
-            apiPath={props.apiPath}
-        />
-    </div>
+        <div className='container'>
+            <RandomBGImg/>
+            <SignUpBox
+                title={props.title || 'Customer Sign-Up'}
+                redirect={props.redirect || '/login'}
+                login={props.login || '/login'}
+                apiPath={props.apiPath}
+            />
+        </div>
     );
 };
 
@@ -143,7 +142,7 @@ export function EmployeeSignup(props) {
     return (
         <SignUp
             title={props.title || 'Employee Sign-Up'}
-            redirect={props.redirect || '/employee/login'} 
+            redirect={props.redirect || '/employee/login'}
             login={props.login || '/employee/login'}
             apiPath={props.apiPath || '/employee/register'}
         />

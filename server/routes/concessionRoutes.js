@@ -3,7 +3,7 @@ const employee = require("./employeeRoutes");
 
 // App routes
 module.exports = (app) => {
-    
+
     app.get('/concessions', (req, res) => {
         let query = db.themeparkDB("CONCESSION_STALL").orderBy("ConcessionID");
         if (!req.query.deleted)
@@ -11,10 +11,10 @@ module.exports = (app) => {
         query.then((items) => {
             res.status(200).json({success: true, concessions: items});
         })
-        .catch((e) => {
-            console.error(e);
-            res.status(500).json({success: false, error: "SQLError"});
-        })
+            .catch((e) => {
+                console.error(e);
+                res.status(500).json({success: false, error: "SQLError"});
+            })
     });
 
     app.put('/concessions/:id',
@@ -24,11 +24,11 @@ module.exports = (app) => {
         employee.requirePerms('attractions'),
         (req, res) => {
             db.themeparkDB("CONCESSION_STALL").update(req.body).where('ConcessionID', req.params.id)
-            .then(() => res.status(200).json({success: true}))
-            .catch((e) => {
-                console.error(e);
-                res.status(500).json({success: false, error: "SQLError"});
-            });
+                .then(() => res.status(200).json({success: true}))
+                .catch((e) => {
+                    console.error(e);
+                    res.status(500).json({success: false, error: "SQLError"});
+                });
         }
     );
 
@@ -44,10 +44,10 @@ module.exports = (app) => {
             else
                 query = query.update("Deleted", 1)
             query.then(() => res.status(200).json({success: true}))
-            .catch((e) => {
-                console.error(e);
-                res.status(500).json({success: false, error: "SQLError"});
-            });
+                .catch((e) => {
+                    console.error(e);
+                    res.status(500).json({success: false, error: "SQLError"});
+                });
         }
     )
 
@@ -58,11 +58,11 @@ module.exports = (app) => {
         employee.requirePerms('attractions'),
         (req, res) => {
             db.themeparkDB("CONCESSION_STALL").insert((req.body))
-            .then(() => res.status(200).json({success: true}))
-            .catch((e) => {
-                console.error(e);
-                res.status(500).json({success: false, error: "SQLError"});
-            });
+                .then(() => res.status(200).json({success: true}))
+                .catch((e) => {
+                    console.error(e);
+                    res.status(500).json({success: false, error: "SQLError"});
+                });
         }
     )
 

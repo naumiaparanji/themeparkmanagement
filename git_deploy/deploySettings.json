@@ -1,51 +1,51 @@
 {
-    "target": "../",
-    "pre_pull": {
-        "commands": [
-            "git stash"
-        ]
-    },
-    "post_pull": {
-        "yaml": [
-            {
-                "path": "server/docker-compose.yml",
-                "overrides": [
-                    {
-                        "docpath": "services:themepark-server:environment:CLIENT_ORIGIN",
-                        "value": "ADD_SERVER_URL_HERE"
-                    }
-                ]
-            }
-        ],
-        "patterns": [
-            {
-                "path": "themepark_website/src/App.js",
-                "overrides": [
-                    {
-                        "pattern": "const apiUrl = ",
-                        "replacement": "const apiUrl = 'ADD_SERVER_API_URL_HERE';\n"
-                    }
-                ]
-            }
-        ]
-    },
-    "deploy": [
-        {
-            "working_dir": "server",
-            "commands": [
-                "mkdir -p server_root",
-                "cp *.js server-cert.pem server-key.pem server_root",
-                "docker compose up -d --force-recreate"
-            ]
-        },
-        {
-            "working_dir": "themepark_website",
-            "commands": [
-                "mkdir -p build",
-                "npm install",
-                "npm run build",
-                "docker compose up -d --force-recreate"
-            ]
-        }
+  "target": "../",
+  "pre_pull": {
+    "commands": [
+      "git stash"
     ]
+  },
+  "post_pull": {
+    "yaml": [
+      {
+        "path": "server/docker-compose.yml",
+        "overrides": [
+          {
+            "docpath": "services:themepark-server:environment:CLIENT_ORIGIN",
+            "value": "ADD_SERVER_URL_HERE"
+          }
+        ]
+      }
+    ],
+    "patterns": [
+      {
+        "path": "themepark_website/src/App.js",
+        "overrides": [
+          {
+            "pattern": "const apiUrl = ",
+            "replacement": "const apiUrl = 'ADD_SERVER_API_URL_HERE';\n"
+          }
+        ]
+      }
+    ]
+  },
+  "deploy": [
+    {
+      "working_dir": "server",
+      "commands": [
+        "mkdir -p server_root",
+        "cp *.js server-cert.pem server-key.pem server_root",
+        "docker compose up -d --force-recreate"
+      ]
+    },
+    {
+      "working_dir": "themepark_website",
+      "commands": [
+        "mkdir -p build",
+        "npm install",
+        "npm run build",
+        "docker compose up -d --force-recreate"
+      ]
+    }
+  ]
 }

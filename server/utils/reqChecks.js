@@ -1,5 +1,4 @@
-
-function matchKeys(obj, keys, exact=false) {
+function matchKeys(obj, keys, exact = false) {
     const objKeys = Object.keys(obj);
     if (exact && keys.length != objKeys.length) return false;
     const objKeySet = new Set(objKeys);

@@ -42,14 +42,14 @@ const sessionStore = new MySQLStore({
     database: process.env.MYSQL_DATABASE,
     createDatabaseTable: true,
     charset: 'utf8mb4_bin',
-	schema: {
-		tableName: 'SESSIONS',
-		columnNames: {
-			session_id: 'session_id',
-			expires: 'expires',
-			data: 'data'
-		}
-	}
+    schema: {
+        tableName: 'SESSIONS',
+        columnNames: {
+            session_id: 'session_id',
+            expires: 'expires',
+            data: 'data'
+        }
+    }
 });
 
 var sessionSecrets = new Array();
@@ -87,7 +87,7 @@ setInterval(async () => {
 
     // Enable session manager middleware
     app.use(session({
-        secret: sessionSecrets, 
+        secret: sessionSecrets,
         resave: false,
         saveUninitialized: false,
         cookie: {
@@ -114,18 +114,18 @@ setInterval(async () => {
     app.options('*', cors());
 
 // API routes for server
-require('./routes/customerRoutes')(app);
-require('./routes/employeeRoutes')(app);
-require('./routes/eventsRoutes')(app);
-require('./routes/passRoutes')(app);
-require('./routes/rideRoutes')(app);
-require('./routes/maintenanceRoutes')(app);
-require('./routes/runsRoutes')(app);
-require('./routes/restaurantRoutes')(app);
-require('./routes/concessionRoutes')(app);
-require('./routes/giftshopRoutes')(app);
-require('./routes/miscRoutes')(app);
-require('./routes/ridePopularityReportRoutes')(app);
+    require('./routes/customerRoutes')(app);
+    require('./routes/employeeRoutes')(app);
+    require('./routes/eventsRoutes')(app);
+    require('./routes/passRoutes')(app);
+    require('./routes/rideRoutes')(app);
+    require('./routes/maintenanceRoutes')(app);
+    require('./routes/runsRoutes')(app);
+    require('./routes/restaurantRoutes')(app);
+    require('./routes/concessionRoutes')(app);
+    require('./routes/giftshopRoutes')(app);
+    require('./routes/miscRoutes')(app);
+    require('./routes/ridePopularityReportRoutes')(app);
 
     http.createServer(options, app).listen(port, () => {
         console.log(`Listening on port ${port}`);

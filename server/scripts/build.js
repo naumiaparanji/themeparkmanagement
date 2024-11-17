@@ -15,7 +15,7 @@ if (fs.existsSync("./build")) {
         if (item === "node_modules") return;
         try {
             if (fs.statSync(itemPath).isDirectory()) {
-                fs.rmSync(itemPath, { recursive: true, force: true });
+                fs.rmSync(itemPath, {recursive: true, force: true});
             } else {
                 fs.unlinkSync(itemPath);
             }
@@ -33,19 +33,19 @@ pem.createPrivateKey(2048, (err, key) => {
         console.error('Error generating private key:', err);
         return;
     }
-    pem.createCSR({ key: key.key, commonName: process.env.APP_SSL_COMMON_NAME }, (err, csr) => {
+    pem.createCSR({key: key.key, commonName: process.env.APP_SSL_COMMON_NAME}, (err, csr) => {
         if (err) {
             console.error('Error generating CSR:', err);
             return;
         }
-        pem.createCertificate({ csr: csr.csr, key: key.key, days: 365 }, (err, cert) => {
-        if (err) {
-            console.error('Error generating certificate:', err);
-            return;
-        }
-        fs.writeFileSync('./build/server-key.pem', key.key);
-        fs.writeFileSync('./build/server-csr.pem', csr.csr);
-        fs.writeFileSync('./build/server-cert.pem', cert.certificate);
+        pem.createCertificate({csr: csr.csr, key: key.key, days: 365}, (err, cert) => {
+            if (err) {
+                console.error('Error generating certificate:', err);
+                return;
+            }
+            fs.writeFileSync('./build/server-key.pem', key.key);
+            fs.writeFileSync('./build/server-csr.pem', csr.csr);
+            fs.writeFileSync('./build/server-cert.pem', cert.certificate);
         });
     });
 });
@@ -57,7 +57,7 @@ function copyFiles(srcPattern, destDir) {
     files.forEach(file => {
         const destPath = path.join(destDir, path.basename(file));
         if (!fs.existsSync(destPath)) {
-            fs.mkdirSync(path.dirname(destPath), { recursive: true });
+            fs.mkdirSync(path.dirname(destPath), {recursive: true});
             fs.copyFile(file, destPath, (err) => {
                 if (err) console.error('Error copying file:', err);
             });

@@ -1,0 +1,71 @@
+.about-us-container {
+    padding: 20px;
+    background-color: #f0f0f0; /* Light background */
+    text-align: center;
+    height: 90vh; /* Adjust based on your navbar height */
+    max-width: 100vw;
+    overflow-y: auto; /* Allow vertical scrolling */
+    background-image: url('../images/login-c.jpg');
+    background-size: cover; /* Scale the image to cover the entire container */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Prevent repeating of the image */
+}
+
+.abnotificationbar {
+    position: static;
+    background-color: yellow;
+    padding: .1%;
+    margin-top: 15px;
+    width: 100vw;
+    min-height: 30px;
+    border-bottom: 1px solid goldenrod;
+    display: inline-block;
+}
+
+/* Title style */
+.about-us-title {
+    font-size: 46px;
+    margin-bottom: 30px;
+    text-shadow: -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 2px 2px 0 white, 5px 5px 0 black;
+    padding-top: 30px;
+    border-bottom: 2px solid white;
+}
+
+/* Cards container using Flexbox for horizontal alignment */
+.about-us-cards {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    gap: 20px;
+}
+
+/* Individual card styling */
+.about-us-card {
+    background-color: #fff; /* White background for the cards */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+    width: 300px; /* Fixed width for each card */
+    height: 230px;
+    transition: transform 0.3s ease; /* Smooth hover effect */
+}
+
+.about-us-card h3 {
+    font-size: 30px; /* Change this value to your desired size */
+    color: #333; /* Optional: Set a color for the heading */
+    margin-bottom: 25px; /* Optional: Add some space below the heading */
+}
+
+
+/* Hover effect for cards */
+.about-us-card:hover {
+    transform: scale(1.05);
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .about-us-cards {
+        flex-direction: column; /* Stack cards vertically */
+        align-items: center;
+    }
+}

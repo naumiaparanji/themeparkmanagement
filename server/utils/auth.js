@@ -35,6 +35,7 @@ async function hashpwModerate(password) {
     const memlimitMB = Math.floor(sodium.crypto_pwhash_MEMLIMIT_MODERATE / (1024 * 1024));
     return await hashpw(password, 'argon2id', memlimitMB, sodium.crypto_pwhash_OPSLIMIT_MODERATE);
 }
+
 async function hashpwSecure(password) {
     await init();
     const memlimitMB = Math.floor(sodium.crypto_pwhash_MEMLIMIT_SENSITIVE / (1024 * 1024));
@@ -47,7 +48,7 @@ async function checkpw(password, hash) {
     return sodium.memcmp(hashObj.hash, newHash);
 }
 
-async function splithash(hash){
+async function splithash(hash) {
     await init();
     const hashElements = hash.split("$");
     return {
@@ -63,7 +64,7 @@ async function splithash(hash){
 
 // Secrets are random keys used to sign session ids. They are added periodically to the database.
 // This function is scheduled to run at predefined intervals in main.js
-async function updateSessionSecrets(secrets, renewAfter=7, discardAfter=30) {
+async function updateSessionSecrets(secrets, renewAfter = 7, discardAfter = 30) {
     const curTime = new Date();
     const discardDate = new Date();
     discardDate.setTime(curTime.getTime() - discardAfter * 24 * 60 * 60 * 1000);
@@ -85,13 +86,13 @@ async function updateSessionSecrets(secrets, renewAfter=7, discardAfter=30) {
 /**
  * Function to be used as middleware for express.
  * Returns a function that can process a login request and determine whether the request was valid.
- * 
+ *
  * If valid, req.authorized = true
- * 
+ *
  * If invalid, req.authorized = false
- * 
+ *
  * @param {(user: String) => String | undefined} getPassFunc Callback function to use as the user lookup method.
- * @returns 
+ * @returns
  */
 function authenticate(getPassFunc) {
     return async function (req, res, next) {
@@ -113,20 +114,20 @@ function authenticate(getPassFunc) {
 
 // Predef query used to delete excess sessions from the database.
 // maxSessions defines the limit. Oldest sessions get deleted first.
-async function pruneSessions(user, maxSessions, isEmployee=false) {
-    await keystoreDB('SESSIONS').whereNotIn('session_id', function() {
+async function pruneSessions(user, maxSessions, isEmployee = false) {
+    await keystoreDB('SESSIONS').whereNotIn('session_id', function () {
         this.select('session_id')
-        .from(function() {
-            this.select('session_id')
-            .from('SESSIONS')
-            .where(keystoreDB.raw(`JSON_EXTRACT(data, '$.${isEmployee ? 'employeeUser' : 'user'}') = '${user}'`))
-            .orderBy('created', 'desc')
-            .limit(maxSessions)
-            .as('latest_sessions')
-        });
+            .from(function () {
+                this.select('session_id')
+                    .from('SESSIONS')
+                    .where(keystoreDB.raw(`JSON_EXTRACT(data, '$.${isEmployee ? 'employeeUser' : 'user'}') = '${user}'`))
+                    .orderBy('created', 'desc')
+                    .limit(maxSessions)
+                    .as('latest_sessions')
+            });
     })
-    .andWhere(keystoreDB.raw(`JSON_EXTRACT(data, '$.${isEmployee ? 'employeeUser' : 'user'}') = '${user}'`))
-    .del();
+        .andWhere(keystoreDB.raw(`JSON_EXTRACT(data, '$.${isEmployee ? 'employeeUser' : 'user'}') = '${user}'`))
+        .del();
 }
 
 module.exports = {

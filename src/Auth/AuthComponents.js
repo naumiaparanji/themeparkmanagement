@@ -10,7 +10,7 @@ export const defaultInputStyle = {
     fontSize: "14px",
     margin: "0px",
     width: "100%",
-    borderRadius: "8px", 
+    borderRadius: "8px",
     border: "grey 1px solid"
 };
 
@@ -21,7 +21,7 @@ export const defaultButtonStyle = {
     padding: "10px 60px",
     color: "white",
     margin: "0px",
-    borderRadius: "6px", 
+    borderRadius: "6px",
     fontSize: "18px",
     cursor: "pointer",
     width: "100%"
@@ -40,22 +40,22 @@ export const BgImgs = [BgA, BgB, BgC, BgD];
 export function RandomBGImg() {
     const currentImageIndex = Math.floor(Math.random() * BgImgs.length);
     return (
-      <div
-        id="login-bg"
-        style={{ backgroundImage: `url(${BgImgs[currentImageIndex]})` }}
-      ></div>
+        <div
+            id="login-bg"
+            style={{backgroundImage: `url(${BgImgs[currentImageIndex]})`}}
+        ></div>
     );
-  }
+}
 
-  export function InputField(props) {
+export function InputField(props) {
     return (
         <div style={props.containerStyle || defaultContainerStyle}>
             <input
-              style={props.style || defaultInputStyle}
-              onChange={props.onChange}
-              type={props.type || 'text'}
-              placeholder={props.name || ''}
-              value={props.value}
+                style={props.style || defaultInputStyle}
+                onChange={props.onChange}
+                type={props.type || 'text'}
+                placeholder={props.name || ''}
+                value={props.value}
             />
         </div>
     );
@@ -64,22 +64,22 @@ export function RandomBGImg() {
 export function FancyButton(props) {
     return (
         <div style={props.containerStyle || defaultContainerStyle}>
-            <button 
-              style={props.style || defaultButtonStyle}
-              onClick={props.action}>{props.text}
+            <button
+                style={props.style || defaultButtonStyle}
+                onClick={props.action}>{props.text}
             </button>
         </div>
     );
 }
 
-export function MessageBox(props) {    
-    return (props.message?
-        <div style={props.containerStyle || defaultContainerStyle}>
-            <p style={props.style || defaultMessageStyle}>
-                {props.message}
-            </p>
-        </div>
-        : (null)
+export function MessageBox(props) {
+    return (props.message ?
+            <div style={props.containerStyle || defaultContainerStyle}>
+                <p style={props.style || defaultMessageStyle}>
+                    {props.message}
+                </p>
+            </div>
+            : (null)
     );
 };
 
@@ -91,7 +91,7 @@ export function Validation(values) {
     if (values.email === "") error.email = "Email cannot be empty";
     else if (!email_pattern.test(values.email)) error.email = "Must be a valid email address";
 
-    if(values.password === "") error.password = "Password cannot be empty";
+    if (values.password === "") error.password = "Password cannot be empty";
     else if (values.password.length < 8) error.password = "Password must be at least 8 characters long";
     else if (!/[A-Z]/.test(values.password)) error.password = "Password must have at least one uppercase letter";
     else if (!/[a-z]/.test(values.password)) error.password = "Password must have at least one lowercase letter";

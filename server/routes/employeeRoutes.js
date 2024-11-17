@@ -15,11 +15,11 @@ const SUPERUSER_ROLE = employeeRoles.slice(-1).pop().value;
 const DEFAULT_ROLE = employeeRoles[0].value;
 
 const employeeRanks = employeeRoles.reduce((obj, cur, i) => {
-    return {...obj, [cur.value]:i}
+    return {...obj, [cur.value]: i}
 }, {});
 
 const employeeNames = employeeRoles.reduce((obj, cur) => {
-    return {...obj, [cur.value]:cur.name}
+    return {...obj, [cur.value]: cur.name}
 }, {});
 
 // Middleware
@@ -85,7 +85,7 @@ const requirePerms = (...perms) => {
         if (!req.requestingEmployee)
             throw new Error("req.requestingEmployee does not exist");
         const existingPerms = new Set(req.canAccess);
-        if(!perms.every((value) => existingPerms.has(value)))
+        if (!perms.every((value) => existingPerms.has(value)))
             return res.status(403).json({success: false, error: 'Restricted'});
         return next();
     }
@@ -94,7 +94,8 @@ const requirePerms = (...perms) => {
 const returnEmployeeData = (req, res, next) => {
     if (!req.requestingEmployee)
         throw new Error("req.requestingEmployee does not exist");
-    return res.status(200).json({success: true, 
+    return res.status(200).json({
+        success: true,
         firstName: req.requestingEmployee.FirstName,
         lastName: req.requestingEmployee.LastName,
         dob: req.requestingEmployee.DOB,
@@ -111,7 +112,8 @@ const returnEmployeeData = (req, res, next) => {
 const returnRequestedEmployee = (req, res, next) => {
     if (!req.requestedEmployee)
         throw new Error("req.requestedEmployee does not exist");
-    return res.status(200).json({success: true, 
+    return res.status(200).json({
+        success: true,
         firstName: req.requestedEmployee.FirstName,
         lastName: req.requestedEmployee.LastName,
         dob: req.requestedEmployee.DOB,
@@ -155,12 +157,13 @@ module.exports = (app) => {
     });
 
     // Session info, sensitive information withheld
-    app.get("/employee/info", 
+    app.get("/employee/info",
         checkSessionForEmployee,
-        getRequestingEmployee, 
+        getRequestingEmployee,
         getEmployeeAccessPerms,
         async (req, res) => {
-            res.status(200).json({success: true, 
+            res.status(200).json({
+                success: true,
                 user: req.session.employeeUser,
                 firstName: req.requestingEmployee.FirstName,
                 lastName: req.requestingEmployee.LastName,
@@ -187,12 +190,12 @@ module.exports = (app) => {
         requirePerms('datamanage'),
         (req, res) => {
             db.themeparkDB('EMPLOYEE').where('Deleted', 0).whereNot("EmployeeID", 1)
-            .then((employees) => res.status(200).json(employees))
-            .catch((e) => {
-                console.log(e);
-                res.status(500).json({message: "Server error"})
+                .then((employees) => res.status(200).json(employees))
+                .catch((e) => {
+                    console.log(e);
+                    res.status(500).json({message: "Server error"})
+                });
         });
-    });
 
     app.get("/customer/data/info",
         checkSessionForEmployee,
@@ -201,14 +204,14 @@ module.exports = (app) => {
         requirePerms('datamanage'),
         (req, res) => {
             db.themeparkDB('CUSTOMER').where('Deleted', 0).whereNot("CustomerID", 1)
-            .then((employees) => res.status(200).json(employees))
-            .catch((e) => {
-                console.log(e);
-                res.status(500).json({message: "Server error"})
+                .then((employees) => res.status(200).json(employees))
+                .catch((e) => {
+                    console.log(e);
+                    res.status(500).json({message: "Server error"})
+                });
         });
-    });
 
-    
+
     app.delete('/employee/data/:id',
         checkSessionForEmployee,
         getRequestingEmployee,
@@ -221,10 +224,10 @@ module.exports = (app) => {
             else
                 query = query.update("Deleted", 1);
             query.then(() => res.status(200).json({success: true}))
-            .catch((e) => {
-                console.error(e);
-                res.status(500).json({success: false, error: "SQLError"});
-            });
+                .catch((e) => {
+                    console.error(e);
+                    res.status(500).json({success: false, error: "SQLError"});
+                });
         }
     )
 
@@ -240,17 +243,17 @@ module.exports = (app) => {
             else
                 query = query.update("Deleted", 1);
             query.then(() => res.status(200).json({success: true}))
-            .catch((e) => {
-                console.error(e);
-                res.status(500).json({success: false, error: "SQLError"});
-            });
+                .catch((e) => {
+                    console.error(e);
+                    res.status(500).json({success: false, error: "SQLError"});
+                });
         }
     )
 
     // Get info about other employees
-    app.get("/employee/data/:user", 
+    app.get("/employee/data/:user",
         checkSessionForEmployee,
-        getRequestingEmployee, 
+        getRequestingEmployee,
         getEmployeeAccessPerms,
         requirePerms('datamanage'),
         getRequestedEmployee,
@@ -264,33 +267,37 @@ module.exports = (app) => {
         requirePerms('datamanage'),
         async (req, res) => {
             if (!req.params.part || isNaN(req.params.part) || Number(req.params.part) < 0) {
-                res.status(400).json({success: false, error:"BadParams"});
+                res.status(400).json({success: false, error: "BadParams"});
                 return;
             }
             const dbData = await db.getUsers(50, Number(req.params.part), true)
-            .catch((e) => {
-                console.log(e);
-                res.status(500).json({success: false, error: "SQLError"});
-                return;
+                .catch((e) => {
+                    console.log(e);
+                    res.status(500).json({success: false, error: "SQLError"});
+                    return;
+                });
+            res.status(200).json({
+                success: true, data: dbData.map((obj) => {
+                    return {
+                        firstName: obj.FirstName,
+                        lastName: obj.LastName,
+                        dob: obj.DOB,
+                        address: obj.Address,
+                        phoneNumber: obj.PhoneNumber,
+                        email: obj.Email,
+                        accessLevel: obj.AccessLevel,
+                        startDate: obj.StartDate,
+                        endDate: obj.EndDate,
+                        created: obj.Created
+                    }
+                })
             });
-            res.status(200).json({success: true, data: dbData.map((obj) => {return {
-                firstName: obj.FirstName,
-                lastName: obj.LastName,
-                dob: obj.DOB,
-                address: obj.Address,
-                phoneNumber: obj.PhoneNumber,
-                email: obj.Email,
-                accessLevel: obj.AccessLevel,
-                startDate: obj.StartDate,
-                endDate: obj.EndDate,
-                created: obj.Created
-            }})});
         }
     );
 
-    app.post("/employee/register", 
+    app.post("/employee/register",
         checkSessionForEmployee,
-        getRequestingEmployee, 
+        getRequestingEmployee,
         getEmployeeAccessPerms,
         requirePerms('datamanage'),
         async (req, res) => {
@@ -309,7 +316,7 @@ module.exports = (app) => {
                 "endDate"
             ];
             if (!req.body || !reqChecks.matchKeys(req.body, requiredKeys)) {
-                res.status(400).json({success: false, error:"MissingParams"});
+                res.status(400).json({success: false, error: "MissingParams"});
                 return;
             }
             let newEmplyee = {
@@ -326,11 +333,11 @@ module.exports = (app) => {
             if (req.body.accessLevel) {
                 let newLevel = allLevels.indexOf(req.body.accessLevel);
                 if (newLevel === -1) {
-                    res.status(400).json({success: false, error:"BadParams"});
+                    res.status(400).json({success: false, error: "BadParams"});
                     return;
                 }
                 let reqLevel = allLevels.indexOf(req.requestingEmployee.AccessLevel);
-                if(reqLevel <= newLevel) {
+                if (reqLevel <= newLevel) {
                     res.status(401).json({success: false, error: "InsufficientPermissions"});
                     return;
                 }
@@ -338,12 +345,12 @@ module.exports = (app) => {
             }
             if (req.body.created != undefined) newEmplyee.Created = req.body.created;
             const success = await db.setUser(req.body.email, newEmplyee, true, false)
-            .catch((e) => {
-                console.log(e);
-                res.status(500).json({success: false, error: "SQLError"});
-                return;
-            });
-            if(!success) {
+                .catch((e) => {
+                    console.log(e);
+                    res.status(500).json({success: false, error: "SQLError"});
+                    return;
+                });
+            if (!success) {
                 res.status(409).json({success: false, error: "UserExists"});
                 return;
             }
@@ -353,28 +360,28 @@ module.exports = (app) => {
 
 // Check here please v
 
-    app.get('/employee/edit/:id', 
+    app.get('/employee/edit/:id',
         checkSessionForEmployee,
         getRequestingEmployee,
         getEmployeeAccessPerms,
         requirePerms('datamanage'),
         async (req, res) => {
-        let query = db.themeparkDB("EMPLOYEE").where('EmployeeID', req.params.id);
-        db.query(sql,[id], (err, result) => {
-            if(err) return res.json({Error: err});
-            return res.json(result);
+            let query = db.themeparkDB("EMPLOYEE").where('EmployeeID', req.params.id);
+            db.query(sql, [id], (err, result) => {
+                if (err) return res.json({Error: err});
+                return res.json(result);
+            })
         })
-    })
 
     app.put('/customer/update/:id', (req, res) => {
         const sql = "UPDATE employee SET `FirstName` = ?, `LastName` = ?, `Email`= ? Where ID = ?";
         const id = req.params.id;
         db.query(sql, [req.body.firstname, req.body.lastname, req.body.email, id], (err, result) => {
-            if(err) return res.json("Error");
+            if (err) return res.json("Error");
             return res.json({updated: true})
         })
     })
-    
+
 // Check here please ^
 
     app.post("/employee/logout", async (req, res) => {

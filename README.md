@@ -53,7 +53,8 @@
 
 [![Seven Flags][product-screenshot]](https://notflag6.com/)
 
-A full-stack project for Database Systems (COSC3380) course at the University of Houston. This project highlights data collection to provide reports on rides and events of a theme park, as well as providing tools for managing them.
+A full-stack project for Database Systems (COSC3380) course at the University of Houston. This project highlights data
+collection to provide reports on rides and events of a theme park, as well as providing tools for managing them.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -155,28 +156,37 @@ APP_SSL_COMMON_NAME = themepark.net
 
 ## Usage
 
-The Theme Park Management System is our solution to manage data related to Seven Flags' operations. This all-in-one website offers the ability for customers to purchase tickets and sign up for our exclusive events, as well as allowing our wonderful employees to work with data pertaining to rides, ride maintenance, and events while providing detailed reports on them.
+The Theme Park Management System is our solution to manage data related to Seven Flags' operations. This all-in-one
+website offers the ability for customers to purchase tickets and sign up for our exclusive events, as well as allowing
+our wonderful employees to work with data pertaining to rides, ride maintenance, and events while providing detailed
+reports on them.
 
 #### User Roles and Data Management
 
-- Customer: Can sign up for an account, purchase tickets, and sign up for events as well as view all the amentities Seven Flags has to offer.
+- Customer: Can sign up for an account, purchase tickets, and sign up for events as well as view all the amentities
+  Seven Flags has to offer.
 - Employee: Can submit, modify, or delete maintenance requests and submit ride runs.
 - Manager: Have the same priviledges as employees on top of the ability to view reports.
 - Admin: Have the same priviledges as managers as well as the following capabilities:
-  - Add, modify, and delete Customers and Employees information
-  - Add, modify, and delete Rides
-  - Add, modify, and delete Attractions
-  - Add, modify, and delete Events
+    - Add, modify, and delete Customers and Employees information
+    - Add, modify, and delete Rides
+    - Add, modify, and delete Attractions
+    - Add, modify, and delete Events
 
 #### Queries/Reports
 
-- Maintenance Status: A report of all maintenance requests that allows for filtering by ride name, ride category, maintenance ticket status, and the dates between which the ticket was submitted.
+- Maintenance Status: A report of all maintenance requests that allows for filtering by ride name, ride category,
+  maintenance ticket status, and the dates between which the ticket was submitted.
 - Event Sales:
-  - Summary: Report of the total sales from each Event.
-  - Individual Sales: Report of each single sale that includes information on who purchased the pass and whether they have checked in for the event; allows for filtering by event name, and the dates between which the event pass was purchased.
+    - Summary: Report of the total sales from each Event.
+    - Individual Sales: Report of each single sale that includes information on who purchased the pass and whether they
+      have checked in for the event; allows for filtering by event name, and the dates between which the event pass was
+      purchased.
 - Ride Popularity:
-  - Category Popularity Summary and Ride Popularity Summary: Reports that indicate how popular a ride is based on the occupancy versus capacity of the ride.
-  - Individual Runs: Detailed log of each time a ride is operated on; allows for filtering by dates between which the rides were run.
+    - Category Popularity Summary and Ride Popularity Summary: Reports that indicate how popular a ride is based on the
+      occupancy versus capacity of the ride.
+    - Individual Runs: Detailed log of each time a ride is operated on; allows for filtering by dates between which the
+      rides were run.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -187,7 +197,7 @@ The Theme Park Management System is our solution to manage data related to Seven
 - [ ] Feature 1
 - [ ] Feature 2
 - [ ] Feature 3
-  - [ ] Nested Feature
+    - [ ] Nested Feature
 
 <!-- TODO NAUMI end -->
 
@@ -215,7 +225,8 @@ Live Website: [Link](https://notflag6.com/)
 
 Our amazing TAs
 
-README Template: [https://github.com/othneildrew/Best-README-Template](https://github.com/othneildrew/Best-README-Template)
+README
+Template: [https://github.com/othneildrew/Best-README-Template](https://github.com/othneildrew/Best-README-Template)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -223,13 +234,23 @@ README Template: [https://github.com/othneildrew/Best-README-Template](https://g
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
 [contributors-shield]: https://img.shields.io/github/contributors/naumiaparanji/themeparkmanagement.svg?style=for-the-badge
+
 [contributors-url]: https://github.com/naumiaparanji/themeparkmanagement/graphs/contributors
+
 [product-screenshot]: src\images\LiveWebsiteScreenShot.png
+
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+
 [React-url]: https://reactjs.org/
+
 [Node.js]: https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=Node.js&logoColor=white
+
 [Node-url]: https://nodejs.org/en
+
 [MySQL]: https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white
+
 [MySQL-url]: https://www.mysql.com/
+
 [Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
+
 [Bootstrap-url]: https://getbootstrap.com
