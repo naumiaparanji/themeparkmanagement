@@ -196,7 +196,7 @@ module.exports = (app) => {
 
     app.get("/customer/data/info",
         checkSessionForEmployee,
-        getRequestedEmployee,
+        getRequestingEmployee,
         getEmployeeAccessPerms,
         requirePerms('datamanage'),
         (req, res) => {
