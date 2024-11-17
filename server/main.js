@@ -1,5 +1,6 @@
 // Environment
-if (process.env.SERVER_ENV === 'production') {
+if (process.env.API_SERVER_ENV === 'production') {
+
     var http = require("https");
     var secure_cookies = true;
 
