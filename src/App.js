@@ -17,7 +17,7 @@ import axios from "axios";
 import ProfilePage from './ProfilePage'; 
 
 
-export const apiUrl = process.env.API_SERVER_ADDRESS;
+export const apiUrl = process.env.REACT_APP_API_SERVER_ADDRESS;
 
 export const api = axios.create({
     withCredentials: true,
