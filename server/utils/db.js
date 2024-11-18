@@ -225,14 +225,70 @@ async function getRidePopularityInfo() {
     return db(target).select();
 }
 
-async function getRidePopularitySummary() {
-    let target = "RIDE_POPULARITY_SUMMARY";
-    return db(target).select();
+async function getRidePopularitySummary(dateRange = ['1000-01-01', '9999-12-31']) {
+    return db("RIDES as R")
+        .leftJoin(
+            db('RUNS')
+                .select('*')
+                .whereBetween('RideTime', dateRange)
+                .as('RU'),
+            'R.RideID',
+            'RU.RideID'
+        )
+        .select({
+            Ride_ID: 'R.RideID',
+            Ride_Name: 'R.RideName',
+            Category: 'R.Category',
+            Number_Of_Runs: db.raw('COUNT(RU.RunID)'),
+            Total_Riders: db.raw('IF(COUNT(RU.RunID) > 0, SUM(RU.NumofRiders), 0)'),
+            AVG_Riders_Per_Run: db.raw(
+                'IF(COUNT(RU.RunID) > 0, ROUND(AVG(RU.NumofRiders), 1), 0)'
+            ),
+            Ride_Capacity: 'R.Capacity',
+            AVG_Percent_Capacity_Filled: db.raw(
+                `CONCAT(ROUND(IF(COUNT(RU.RunID) > 0, 100 * AVG(RU.NumofRiders / R.Capacity), 0), 0), '%')`
+            ),
+            Fewest_Riders_On_Run: db.raw(
+                'IF(COUNT(RU.RunID) > 0, MIN(RU.NumofRiders), 0)'
+            ),
+            Most_Riders_On_Run: db.raw(
+                'IF(COUNT(RU.RunID) > 0, MAX(RU.NumofRiders), 0)'
+            ),
+        })
+        .groupBy('R.RideID')
+        .orderBy([
+            {column: 'Total_Riders', order: 'desc'},
+            {column: 'R.RideID', order: 'asc'},
+        ]);
 }
 
-async function getCategoryPopularitySummary() {
-    let target = "CATEGORY_POPULARITY_SUMMARY";
-    return db(target).select();
+async function getCategoryPopularitySummary(dateRange = ['1000-01-01', '9999-12-31']) {
+    return db('RIDES AS R')
+        .leftJoin(
+            db('RUNS')
+                .select('*')
+                .whereBetween('RideTime', dateRange)
+                .as('RU'),
+            'R.RideID',
+            'RU.RideID'
+        )
+        .select({
+            Category: 'R.Category',
+            Total_Runs: db.raw('COUNT(RU.RunID)'),
+            Total_Riders: db.raw('IF(COUNT(RU.RunID) > 0, SUM(RU.NumofRiders), 0)'),
+            AVG_Riders_Per_Run: db.raw(
+                'IF(COUNT(RU.RunID) > 0, ROUND(AVG(RU.NumofRiders), 1), 0)'
+            ),
+            AVG_Ride_Capacity: db.raw('ROUND(AVG(R.Capacity), 0)'),
+            AVG_Percent_Capacity_Filled: db.raw(
+                `CONCAT(ROUND(IF(COUNT(RU.RunID) > 0, 100 * AVG(RU.NumofRiders / R.Capacity), 0), 0), '%')`
+            ),
+        })
+        .groupBy('R.Category')
+        .orderBy([
+            {column: 'Total_Riders', order: 'desc'},
+            {column: 'R.Category', order: 'asc'},
+        ]);
 }
 
 async function setRides(fields, isEmployee) {
