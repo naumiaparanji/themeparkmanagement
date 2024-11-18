@@ -192,12 +192,13 @@ reports on them.
 
 ## Semantic Constraints and Triggers
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
-
-<!-- TODO NAUMI end -->
+- Trigger 1:
+    - If an event is canceled, all the customers who signed up for it get a notification saying that this event was unfortunately canceled. They are also unregistered from that event by default when the event is deleted. 
+- Trigger 2:
+    - If a ride is currently under maintenance, no ride operator can log it. All rides under maintenance are not removed from the dropdown for ride logging until they are fixed again.
+- Semantic constraints
+    - If an event is at maximum capacity, no customer can sign up for it until someone else cancels their registration.
+    - Similarly, customers also cannot register for a ticket pass if the theme park is at maximum capacity for that particular pass.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
