@@ -96,10 +96,18 @@ To get a local copy up and running follow these steps.
 1. Clone the repo
    ```sh
    git clone https://github.com/naumiaparanji/themeparkmanagement.git
+   cd themeparkmanagement
    ```
 2. Configure MySQL
     - Add a user with the DB Admin role to the system
-    - 
+    - In MySQL Workbench, go to File > Open SQL Script and open `themepark_db.sql` from the database directory
+    - Run the script via the "run all" lightning button
+3. Start the API server
+    - cd to the server directory
+    - Run `npm run start`
+4. Start the Web Application
+    - cd to the root of the repository
+    - Run `npm run start`
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
