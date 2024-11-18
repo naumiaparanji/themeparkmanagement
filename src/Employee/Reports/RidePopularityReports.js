@@ -93,6 +93,7 @@ export function RidePopularitySummary() {
                 <tr>
                     <th>Ride ID</th>
                     <th>Ride Name</th>
+                    <th>Ride Category</th>
                     <th>Number of Runs</th>
                     <th>Number of Riders</th>
                     <th>Average Riders Per Run</th>
@@ -107,6 +108,7 @@ export function RidePopularitySummary() {
                     <tr key={i}>
                         <td>{entry.Ride_ID}</td>
                         <td>{entry.Ride_Name}</td>
+                        <td>{entry.Category}</td>
                         <td>{entry.Number_Of_Runs}</td>
                         <td>{entry.Total_Riders}</td>
                         <td>{entry.AVG_Riders_Per_Run}</td>
