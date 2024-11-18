@@ -196,7 +196,7 @@ reports on them.
 
 #### Queries/Reports
 
-- Queries can be found in server &rarr; utils &rarr; [db.js](server\utils\db.js) as well as various routes files under server &arr; routes
+- Queries can be found in server &rarr; utils &rarr; [db.js](server\utils\db.js) as well as various routes files under server &rarr; routes
 - Maintenance Status: A report of all maintenance requests that allows for filtering by ride name, ride category,
   maintenance ticket status, and the dates between which the ticket was submitted.
 - Event Sales:
