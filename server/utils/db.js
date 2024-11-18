@@ -54,6 +54,53 @@ async function setUser(userEmail, fields, isEmployee = false, merge = true) {
     return result[0] != 0; // Returned id should never be 0 unless there was a conflict
 }
 
+// Function to update an employee's details
+    async function editEmployee(employeeID, updatedFields) {
+    try {
+      // Fetch the existing employee data
+      const employee = await db('EMPLOYEE')
+        .select('*')
+        .where('EmployeeID', employeeID)
+        .first();
+  
+      if (!employee) {
+        throw new Error('Employee not found');
+      }
+  
+      console.log('Current Employee Data:', employee);
+  
+      // Update the EMPLOYEE table
+      await db('EMPLOYEE')
+        .update({
+          FirstName: updatedFields.firstName || employee.FirstName,
+          LastName: updatedFields.lastName || employee.LastName,
+          DOB: updatedFields.dob ? new Date(updatedFields.dob) : employee.DOB,
+          Address: updatedFields.address || employee.Address,
+          PhoneNumber: updatedFields.phoneNumber || employee.PhoneNumber,
+          Email: updatedFields.email || employee.Email,
+          Password: updatedFields.password || employee.Password,
+          AccessLevel: updatedFields.accessLevel || employee.AccessLevel,
+          StartDate: updatedFields.startDate ? new Date(updatedFields.startDate) : employee.StartDate,
+          EndDate: updatedFields.endDate ? new Date(updatedFields.endDate) : employee.EndDate,
+        })
+        .where('EmployeeID', employeeID);
+  
+      console.log('Employee updated successfully.');
+  
+      // Fetch the updated employee data for confirmation
+      const updatedEmployee = await db('EMPLOYEE')
+        .select('*')
+        .where('EmployeeID', employeeID)
+        .first();
+      console.log('Updated Employee Data:', updatedEmployee);
+  
+      return updatedEmployee;
+    } catch (error) {
+      console.error('Error editing employee:', error.message);
+      throw error;
+    }
+  }
+
 async function getRides() {
     return await db("RIDES").where("Deleted", 0).orderBy("RideID");
 }
@@ -255,6 +302,7 @@ async function setRides(fields, isEmployee) {
 
 module.exports = {
     themeparkDB: db,
+    editEmployee,
     getUser,
     setUser,
     getUsers,
