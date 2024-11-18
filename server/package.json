@@ -13,7 +13,6 @@
   },
   "devDependencies": {
     "dotenv": "16.4.5",
-    "pem": "1.14.8",
     "glob": "11.0.0"
   },
   "scripts": {

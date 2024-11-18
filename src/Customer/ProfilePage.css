@@ -2,13 +2,14 @@
 .profile-container {
     padding: 20px;
     max-width: auto;
+    width: 100vw;
     margin: auto;
+    margin-bottom: -10px;
     background: #f8f8f8;
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     overflow-y: auto; /* Allow vertical scrolling */
-    height: auto;
-    min-height: calc(100vh - 200px); /* Adjust height to fill viewport, minus fixed header/footer height */
+    height: 75vh;
 }
 
 .ppnotificationbar {
@@ -82,5 +83,16 @@
     font-size: 14px;
     color: #555;
 }
-  
-  
+
+.toggle-button {
+    background: none;
+    border: none;
+    color: blue;
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+.toggle-button:hover {
+    text-decoration: underline;
+}

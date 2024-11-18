@@ -1,4 +1,3 @@
-const pem = require('pem');
 const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
@@ -27,29 +26,6 @@ if (fs.existsSync("./build")) {
     fs.mkdirSync("./build");
 }
 
-console.log('Generating RSA key pair for SSL...');
-pem.createPrivateKey(2048, (err, key) => {
-    if (err) {
-        console.error('Error generating private key:', err);
-        return;
-    }
-    pem.createCSR({key: key.key, commonName: process.env.APP_SSL_COMMON_NAME}, (err, csr) => {
-        if (err) {
-            console.error('Error generating CSR:', err);
-            return;
-        }
-        pem.createCertificate({csr: csr.csr, key: key.key, days: 365}, (err, cert) => {
-            if (err) {
-                console.error('Error generating certificate:', err);
-                return;
-            }
-            fs.writeFileSync('./build/server-key.pem', key.key);
-            fs.writeFileSync('./build/server-csr.pem', csr.csr);
-            fs.writeFileSync('./build/server-cert.pem', cert.certificate);
-        });
-    });
-});
-
 console.log("Copying server files...");
 
 function copyFiles(srcPattern, destDir) {
@@ -69,6 +45,7 @@ copyFiles("./main.js", "./build");
 copyFiles("./package.json", "./build");
 copyFiles("./routes/*.js", "./build/routes");
 copyFiles("./utils/*.js", "./build/utils");
+copyFiles("./*.pem", "./build");
 
 console.log("Installing production packages...");
 child_process.execSync("npm install --omit=dev", {cwd: path.resolve("./build")});

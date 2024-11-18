@@ -237,7 +237,7 @@ Template: [https://github.com/othneildrew/Best-README-Template](https://github.c
 
 [contributors-url]: https://github.com/naumiaparanji/themeparkmanagement/graphs/contributors
 
-[product-screenshot]: src\images\LiveWebsiteScreenShot.png
+[product-screenshot]: src/images/LiveWebsiteScreenShot.png
 
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 
