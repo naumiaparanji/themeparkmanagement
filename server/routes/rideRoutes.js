@@ -7,6 +7,23 @@ const getCurrentTime = require("../utils/currentTime");
 // App routes
 module.exports = (app) => {
 
+    const { getAvailableRides } = require('../utils/db');
+
+    app.get("/rides/available", (req, res) => {
+        getAvailableRides()
+            .then((rides) => {
+                if (rides.length === 0) {
+                    return res.status(501).json({ success: false, error: "NoFunctioningRides" });
+                }
+    
+                res.status(200).json({ success: true, rideNames: rides.map(ride => ride.RideName) });
+            })
+            .catch((e) => {
+                console.error(e);
+                res.status(500).json({ success: false, error: "SQLError" });
+            });
+    });    
+
     app.get("/rides/names", async (req, res) => {
         const rideData = await db.getRides().catch((e) => {
             console.log(e);

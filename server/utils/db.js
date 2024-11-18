@@ -58,6 +58,13 @@ async function getRides() {
     return await db("RIDES").where("Deleted", 0).orderBy("RideID");
 }
 
+async function getAvailableRides() {
+    return await db("RIDES")
+        .select("RideID", "RideName", "Category", "Capacity")
+        .where({ Functioning: 1, Deleted: 0 })
+        .orderBy("RideID");
+}
+
 async function getRidesNames() {
     let query = db("RIDES")
         .select("RideName")
@@ -251,6 +258,7 @@ module.exports = {
     setUser,
     getUsers,
     getRides,
+    getAvailableRides,
     getRidesNames,
     getRidesCategories,
     getEventCategories,
