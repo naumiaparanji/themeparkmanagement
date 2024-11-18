@@ -359,10 +359,10 @@ module.exports = (app) => {
     );
 
     app.put('/employee/datainfo/:id',
-        employee.checkSessionForEmployee,
-        employee.getRequestingEmployee,
-        employee.getEmployeeAccessPerms,
-        employee.requirePerms('datamanage'),
+        checkSessionForEmployee,
+        getRequestingEmployee,
+        getEmployeeAccessPerms,
+        requirePerms('datamanage'),
         (req, res) => {
             db.themeparkDB("EMPLOYEE").update(req.body).where('EmployeeID', req.params.id)
                 .then(() => res.status(200).json({success: true}))

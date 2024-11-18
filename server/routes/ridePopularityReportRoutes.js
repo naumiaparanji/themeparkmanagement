@@ -11,7 +11,7 @@ module.exports = (app) => {
         employee.getEmployeeAccessPerms,
         employee.requirePerms('reports'),
         (req, res) => {
-            db.getCategoryPopularitySummary()
+            db.getCategoryPopularitySummary(req.query.dateRange)
                 .then((result) => res.status(200).json({success: true, rows: result}))
                 .catch((e) => {
                     console.error(e);
@@ -26,7 +26,7 @@ module.exports = (app) => {
         employee.getEmployeeAccessPerms,
         employee.requirePerms('reports'),
         (req, res) => {
-            db.getRidePopularitySummary()
+            db.getRidePopularitySummary(req.query.dateRange)
                 .then((result) => res.status(200).json({success: true, rows: result}))
                 .catch((e) => {
                     console.error(e);

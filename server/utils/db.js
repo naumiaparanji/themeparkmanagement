@@ -280,7 +280,7 @@ async function getRidePopularityInfo() {
     return db(target).select();
 }
 
-async function getRidePopularitySummary(dateRange = ['1000-01-01', '9999-12-31']) {
+async function getRidePopularitySummary(dateRange) {
     return db("RIDES as R")
         .leftJoin(
             db('RUNS')
@@ -317,7 +317,7 @@ async function getRidePopularitySummary(dateRange = ['1000-01-01', '9999-12-31']
         ]);
 }
 
-async function getCategoryPopularitySummary(dateRange = ['1000-01-01', '9999-12-31']) {
+async function getCategoryPopularitySummary(dateRange) {
     return db('RIDES AS R')
         .leftJoin(
             db('RUNS')

@@ -10,15 +10,17 @@ export function RidePopularityReportContextProvider({children}) {
     const [categoryData, setCategoryData] = useState([]);
     const [rideData, setRideData] = useState([]);
     const [runsData, setRunsData] = useState([]);
+    const [startDate, setStartDate] = useState('1000-01-01');
+    const [endDate, setEndDate] = useState('9999-12-31');
 
     const refreshCategorySummary = useCallback(() => {
-        api.get("/ridePopularity/category")
+        api.get("/ridePopularity/category", { params: { dateRange: [startDate, endDate] } })
             .then((res) => setCategoryData(res.data.rows))
             .catch((e) => console.log(e));
     }, []);
 
     const refreshRideSummary = useCallback(() => {
-        api.get("/ridePopularity/ride")
+        api.get("/ridePopularity/ride", { params: { dateRange: [startDate, endDate] } })
             .then((res) => setRideData(res.data.rows))
             .catch((e) => console.log(e));
     }, []);
@@ -33,7 +35,7 @@ export function RidePopularityReportContextProvider({children}) {
         refreshCategorySummary();
         refreshRideSummary();
         refreshRuns();
-    }, [refreshCategorySummary, refreshRideSummary, refreshRuns]);
+    }, [refreshCategorySummary, refreshRideSummary, refreshRuns, startDate, endDate]);
 
     return (
         <RidePopularityReportContext.Provider value={{
