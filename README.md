@@ -37,10 +37,17 @@
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#back-end-installation">Back-End Installation</a></li>
+        <li><a href="#front-end-installation">Front-End Installation</a></li>
+        <li><a href="#configuration">Configuration</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
+      <ul>
+      <li><a href="#user-roles-and-data-management">User Roles and Data Management</a></li>
+      <li><a href="#queriesreports">Queries/Reports</a></li>
+      <li><a href="#triggers">Triggers</a></li>
+      </ul>
     <li><a href="#contributors">Contributors</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
@@ -53,8 +60,7 @@
 
 [![Seven Flags][product-screenshot]](https://notflag6.com/)
 
-A full-stack project for Database Systems (COSC3380) course at the University of Houston. This project highlights data
-collection to provide reports on rides and events of a theme park, as well as providing tools for managing them.
+A full-stack project for Database Systems (COSC3380) course at the University of Houston. This project highlights data collection to provide reports on rides and events of a theme park, as well as providing tools for managing them.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -75,25 +81,40 @@ To get a local copy up and running follow these steps.
 
 ### Prerequisites
 
-<!-- TODO IAN start -->
+- npm
 
-* ### Node.js version 20 or higher
-  * Windows/macOS: [download link](https://nodejs.org/en/download/prebuilt-installer)
-  * Linux: 
-    ```sh
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-    nvm install 20 && nvm use 20
-    ```
+  ```sh
+  npm install npm@latest -g
+  ```
 
-* ### MySQL version 8 or higher
-  * Windows/macOS: [download link](https://dev.mysql.com/downloads/mysql/)
-  * Linux: [installation guide](https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/linux-installation.html)
+- Clone the repo
+  ```sh
+  git clone https://github.com/naumiaparanji/themeparkmanagement.git
+  ```
 
-* ### [MySQL Workbench](https://dev.mysql.com/downloads/workbench/)
+### Back-End Installation
 
-### Installation
+1. Navigate to server folder
+   ```
+    cd themeparkmanagement\server
+   ```
+2. Install npm packages
+   ```sh
+   npm install
+   ```
+3. Start
+   ```
+   npm run start
+   ```
+   Back-end by default will be listening on port 8080
 
-1. Clone the repo
+### Front-End Installation
+
+1. Navigate to src folder
+   ```
+    cd themeparkmanagement\src
+   ```
+2. Install npm packages
    ```sh
    git clone https://github.com/naumiaparanji/themeparkmanagement.git
    cd themeparkmanagement
@@ -102,10 +123,13 @@ To get a local copy up and running follow these steps.
     - Add a user with the DB Admin role to the system
     - In MySQL Workbench, go to File > Open SQL Script and open `themepark_db.sql` from the database directory
     - Run the script via the "run all" lightning button
-3. Start the API server
+3. Configure the application via `.env`
+    - `MYSQL_USER` - Set to the username for your DB Admin account from step 2.
+    - `MYSQL_PASSWORD` - Set to the password for your DB Admin account from step 2.
+4. Start the API server
     - cd to the server directory
     - Run `npm run start`
-4. Start the Web Application
+5. Start the Web Application
     - cd to the root of the repository
     - Run `npm run start`
 
@@ -117,11 +141,10 @@ To get a local copy up and running follow these steps.
 
 ### Database Configuration
 
-- `MYSQL_ROOT_PASSWORD` - Sets the root password for the MySQL Docker image.
-- `MYSQL_DATABASE` - Specifies the target schema for the API server and the default schema for the MySQL image.
-- `MYSQL_ADDR` - Sets the address of the MySQL server to be used by the API server.
-- `MYSQL_USER` - Specifies the MySQL user for both the API server and the MySQL image.
-- `MYSQL_PASSWORD` - Defines the MySQL password for both the API server and the MySQL image.
+- `MYSQL_DATABASE` - Specifies the target schema for the backend.
+- `MYSQL_ADDR` - Sets the address of the MySQL server to be used by the backend.
+- `MYSQL_USER` - Specifies the MySQL user to be used by the backend.
+- `MYSQL_PASSWORD` - Defines the MySQL password for the backend.
 
 ### API Server Configuration
 
@@ -129,17 +152,16 @@ To get a local copy up and running follow these steps.
 - `APP_ADMIN_PASS` - Sets the superuser password for the `CUSTOMER` and `EMPLOYEE` tables.
 - `APP_ENABLE_SU` - Enables the superuser accounts when set to `true`.
 - `API_CLIENT_ORIGIN` - CORS origin of the web application.
-- `API_SERVER_PORT` - Which port the API server should listen on.
-- `APP_SSL_COMMON_NAME` - Sets the domain name for the SSL certificate generated during API server builds.
+- `API_SERVER_PORT` - Which port the backend server should listen on.
+- `APP_SSL_COMMON_NAME` - Sets the domain name for the SSL certificate generated during backend server builds.
 
 ### Web App Configuration
 
-- `REACT_APP_API_SERVER_ADDRESS` - Defines the base HTTP URL of the API server.
+- `REACT_APP_API_SERVER_ADDRESS` - Defines the base HTTP URL of the backend server.
 
 ### Example `.env` File
 
 ```
-MYSQL_ROOT_PASSWORD = <ROOT_PASS_HERE>
 MYSQL_DATABASE = themepark_db
 MYSQL_ADDR = 127.0.0.1
 MYSQL_USER = <DB_USER_HERE>
@@ -156,8 +178,6 @@ APP_SSL_COMMON_NAME = themepark.net
 # API_SERVER_ENV = production
 ```
 
-<!-- TODO IAN end -->
-
 <!-- USAGE -->
 
 ## Usage
@@ -171,58 +191,58 @@ reports on them.
 
 - Customer: Can sign up for an account, purchase tickets, and sign up for events as well as view all the amenities that Seven Flags has to offer.
 - Employee: Can submit, modify, or delete maintenance requests and submit ride runs.
-- Manager: Have the same privileges as employees on top of the ability to view reports.
-- Admin: Have the same privileges as managers as well as the following capabilities:
-    - Add, modify, and delete Customers and Employees information
-    - Add, modify, and delete Rides
-    - Add, modify, and delete Attractions
-    - Add, modify, and delete Events
+- Manager: Have the same priviledges as employees on top of the ability to view reports.
+- Admin: Have the same priviledges as managers as well as the following capabilities:
+  - Add, modify, and delete Customers and Employees information
+  - Add, modify, and delete Rides
+  - Add, modify, and delete Attractions
+  - Add, modify, and delete Events
 
 #### Queries/Reports
 
+- Queries can be found in server &rarr; utils &rarr; [db.js](server\utils\db.js)
 - Maintenance Status: A report of all maintenance requests that allows for filtering by ride name, ride category,
   maintenance ticket status, and the dates between which the ticket was submitted.
 - Event Sales:
-    - Summary: Report of the total sales from each Event.
-    - Individual Sales: Report of each single sale that includes information on who purchased the pass and whether they
-      have checked in for the event; allows for filtering by event name, and the dates between which the event pass was
-      purchased.
+  - Summary: Report of the total sales from each Event.
+  - Individual Sales: Report of each single sale that includes information on who purchased the pass and whether they
+    have checked in for the event; allows for filtering by event name, and the dates between which the event pass was
+    purchased.
 - Ride Popularity:
-    - Category Popularity Summary and Ride Popularity Summary: Reports that indicate how popular a ride is based on the
-      occupancy versus capacity of the ride.
-    - Individual Runs: Detailed log of each time a ride is operated on; allows for filtering by dates between which the
-      rides were run.
+  - Category Popularity Summary and Ride Popularity Summary: Reports that indicate how popular a ride is based on the
+    occupancy versus capacity of the ride.
+  - Individual Runs: Detailed log of each time a ride is operated on; allows for filtering by dates between which the
+    rides were run.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- TODO NAUMI start -->
+## Triggers
 
 #### Trigger 1
 
-If an event is canceled, all the customers who signed up for it get a notification saying that this event was unfortunately canceled. They are also unregistered from that event by default when the event is deleted. 
+If an event is canceled, all the customers who signed up for it get a notification saying that this event was unfortunately canceled. They are also unregistered from that event by default when the event is deleted.
 
 - How to test this trigger:
-    - Create a dummy event through the Admin portal
-    - Login as a customer and sign up/ register for this event to see the trigger in action
-    - Back in the admin portal, delete the event (implying that for some reason this event was canceled)
-    - Log back into the customer portal and you will see you no longer have the ticket for that event, plus you have an unread notification. This notification has come from the trigger alerting you that the event was canceled.
-    - Alternatively, even if the admin decides to mark this event as _inactive_, the customer still gets a notification saying the event was unfortunately canceled since there are both BEFORE UPDATE and BEFORE DELETE triggers
-    - On making the event active again, the customer would need to re-register for the event.
+  - Create a dummy event through the Admin portal
+  - Login as a customer and sign up/ register for this event to see the trigger in action
+  - Back in the admin portal, delete the event (implying that for some reason this event was canceled)
+  - Log back into the customer portal and you will see you no longer have the ticket for that event, plus you have an unread notification. This notification has come from the trigger alerting you that the event was canceled.
+  - Alternatively, even if the admin decides to mark this event as _inactive_, the customer still gets a notification saying the event was unfortunately canceled since there are both BEFORE UPDATE and BEFORE DELETE triggers
+  - On making the event active again, the customer would need to re-register for the event.
 
 #### Trigger 2
 
 If a ride is currently under maintenance, no ride operator can log it. All rides under maintenance are not removed from the dropdown for ride logging until they are fixed again.
 
 - How to test this trigger:
-    - Accessible through both Employee and Admin portals, navigate to the Maintenance Request tab
-    - Submit an 'Out Of Order' status for any ride(s) of your choice
-    - Once submitted, check in the Ride Operator Portal to see the trigger take action
-    - In the dropdown to log rides, you will only see the rides that are functioning and not the ones that you just submitted as 'Out Of Order'
-    - Check back and submit new requests in the Maintenace portal for the same ride(s) with the status 'Operational' and then these rides will resurface in the dropdown in the Ride Operator Portal. (Will also work if you set those rides operational and resolve the tickets in the Maintenance Update tab since there are both AFTER UPDATE and AFTER INSERT triggers)
+  - Accessible through both Employee and Admin portals, navigate to the Maintenance Request tab
+  - Submit an 'Out Of Order' status for any ride(s) of your choice
+  - Once submitted, check in the Ride Operator Portal to see the trigger take action
+  - In the dropdown to log rides, you will only see the rides that are functioning and not the ones that you just submitted as 'Out Of Order'
+  - Check back and submit new requests in the Maintenace portal for the same ride(s) with the status 'Operational' and then these rides will resurface in the dropdown in the Ride Operator Portal. (Will also work if you set those rides operational and resolve the tickets in the Maintenance Update tab since there are both AFTER UPDATE and AFTER INSERT triggers)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- TODO NAUMI end -->
 
 ## Contributors:
 
@@ -257,23 +277,13 @@ Template: [https://github.com/othneildrew/Best-README-Template](https://github.c
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
 [contributors-shield]: https://img.shields.io/github/contributors/naumiaparanji/themeparkmanagement.svg?style=for-the-badge
-
 [contributors-url]: https://github.com/naumiaparanji/themeparkmanagement/graphs/contributors
-
-[product-screenshot]: src\images\LiveWebsiteScreenShot.png
-
+[product-screenshot]: src/images/LiveWebsiteScreenShot.png
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-
 [React-url]: https://reactjs.org/
-
 [Node.js]: https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=Node.js&logoColor=white
-
 [Node-url]: https://nodejs.org/en
-
 [MySQL]: https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white
-
 [MySQL-url]: https://www.mysql.com/
-
 [Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
-
 [Bootstrap-url]: https://getbootstrap.com
