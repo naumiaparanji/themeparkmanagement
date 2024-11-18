@@ -8,7 +8,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/naumiaparanji/themeparkmanagement">
-    <img src="src\images\flagslogo.png" alt="Logo" width="100%" height="100%">
+    <img src="src\images\flagslogo.png" alt="Logo" width="50%" height="50%">
   </a>
 
 <h3 align="center">Seven Flags Theme Park Management System</h3>
@@ -71,37 +71,43 @@ collection to provide reports on rides and events of a theme park, as well as pr
 
 ## Getting Started
 
-To get a local copy up and running follow these simple example steps.
+To get a local copy up and running follow these steps.
 
 ### Prerequisites
 
 <!-- TODO IAN start -->
 
-- npm
-  ```sh
-  npm install npm@latest -g
-  ```
+* ### Node.js version 20 or higher
+  * Windows/macOS: [download link](https://nodejs.org/en/download/prebuilt-installer)
+  * Linux: 
+    ```sh
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+    nvm install 20 && nvm use 20
+    ```
+
+* ### MySQL version 8 or higher
+  * Windows/macOS: [download link](https://dev.mysql.com/downloads/mysql/)
+  * Linux: [installation guide](https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/linux-installation.html)
+
+* ### [MySQL Workbench](https://dev.mysql.com/downloads/workbench/)
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repo
    ```sh
    git clone https://github.com/naumiaparanji/themeparkmanagement.git
+   cd themeparkmanagement
    ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = "ENTER YOUR API";
-   ```
-5. Change git remote url to avoid accidental pushes to base project
-   ```sh
-   git remote set-url origin github_username/repo_name
-   git remote -v # confirm the changes
-   ```
+2. Configure MySQL
+    - Add a user with the DB Admin role to the system
+    - In MySQL Workbench, go to File > Open SQL Script and open `themepark_db.sql` from the database directory
+    - Run the script via the "run all" lightning button
+3. Start the API server
+    - cd to the server directory
+    - Run `npm run start`
+4. Start the Web Application
+    - cd to the root of the repository
+    - Run `npm run start`
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -163,11 +169,10 @@ reports on them.
 
 #### User Roles and Data Management
 
-- Customer: Can sign up for an account, purchase tickets, and sign up for events as well as view all the amentities
-  Seven Flags has to offer.
+- Customer: Can sign up for an account, purchase tickets, and sign up for events as well as view all the amenities that Seven Flags has to offer.
 - Employee: Can submit, modify, or delete maintenance requests and submit ride runs.
-- Manager: Have the same priviledges as employees on top of the ability to view reports.
-- Admin: Have the same priviledges as managers as well as the following capabilities:
+- Manager: Have the same privileges as employees on top of the ability to view reports.
+- Admin: Have the same privileges as managers as well as the following capabilities:
     - Add, modify, and delete Customers and Employees information
     - Add, modify, and delete Rides
     - Add, modify, and delete Attractions
@@ -192,21 +197,37 @@ reports on them.
 
 <!-- TODO NAUMI start -->
 
-## Semantic Constraints and Triggers
+#### Trigger 1
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
+If an event is canceled, all the customers who signed up for it get a notification saying that this event was unfortunately canceled. They are also unregistered from that event by default when the event is deleted. 
 
-<!-- TODO NAUMI end -->
+- How to test this trigger:
+    - Create a dummy event through the Admin portal
+    - Login as a customer and sign up/ register for this event to see the trigger in action
+    - Back in the admin portal, delete the event (implying that for some reason this event was canceled)
+    - Log back into the customer portal and you will see you no longer have the ticket for that event, plus you have an unread notification. This notification has come from the trigger alerting you that the event was canceled.
+    - Alternatively, even if the admin decides to mark this event as _inactive_, the customer still gets a notification saying the event was unfortunately canceled since there are both BEFORE UPDATE and BEFORE DELETE triggers
+    - On making the event active again, the customer would need to re-register for the event.
+
+#### Trigger 2
+
+If a ride is currently under maintenance, no ride operator can log it. All rides under maintenance are not removed from the dropdown for ride logging until they are fixed again.
+
+- How to test this trigger:
+    - Accessible through both Employee and Admin portals, navigate to the Maintenance Request tab
+    - Submit an 'Out Of Order' status for any ride(s) of your choice
+    - Once submitted, check in the Ride Operator Portal to see the trigger take action
+    - In the dropdown to log rides, you will only see the rides that are functioning and not the ones that you just submitted as 'Out Of Order'
+    - Check back and submit new requests in the Maintenace portal for the same ride(s) with the status 'Operational' and then these rides will resurface in the dropdown in the Ride Operator Portal. (Will also work if you set those rides operational and resolve the tickets in the Maintenance Update tab since there are both AFTER UPDATE and AFTER INSERT triggers)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- TODO NAUMI end -->
 
 ## Contributors:
 
 <a href="https://github.com/naumiaparanji/themeparkmanagement/graphs/contributors">
-  <img src="src\images\Contributors.png" alt="Contributors.png image" width="100%" height="100%" />
+  <img src="src\images\Contributors.png" alt="Contributors.png image" width="30%" height="30%" />
 </a>
 
 <!-- CONTACT -->
@@ -223,6 +244,8 @@ Live Website: [Link](https://notflag6.com/)
 
 ## Acknowledgments
 
+Dr. Uma Ramamurthy
+
 Our amazing TAs
 
 README
@@ -237,7 +260,7 @@ Template: [https://github.com/othneildrew/Best-README-Template](https://github.c
 
 [contributors-url]: https://github.com/naumiaparanji/themeparkmanagement/graphs/contributors
 
-[product-screenshot]: src/images/LiveWebsiteScreenShot.png
+[product-screenshot]: src\images\LiveWebsiteScreenShot.png
 
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 

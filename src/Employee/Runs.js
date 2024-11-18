@@ -11,22 +11,23 @@ export function RunsInfoBox(props) {
     const [rideOptions, setRideOptions] = useState([]);
 
     useEffect(() => {
-        api.get("/rides/names")
+        //haha dynamic dropdown woooo
+        api.get("/rides/available")
             .then((res) => setRideOptions(res.data.rideNames))
             .catch((e) => {
                 if (e.response) {
                     if (e.response.status === 500)
                         setMessage("Database error");
                     else if (e.response.status === 501)
-                        setMessage("No rides in database");
-                    else if (e.response.data && !e.response.data.success)
-                        setMessage("Submission failed. Error Code: " + e.response.status);
+                        setMessage("No functioning rides available");
                     else
-                        setMessage("Unknown error");
-                } else if (e.request)
+                        setMessage(`Unexpected error. Code: ${e.response.status}`);
+                } else if (e.request) {
                     setMessage("Failed to connect to server");
+                }
             });
     }, []);
+    
 
     //trigger 
     const runsSubmit = async () => {
