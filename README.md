@@ -154,7 +154,6 @@ To get a local copy up and running follow these steps.
 - `APP_ENABLE_SU` - Enables the superuser accounts when set to `true`.
 - `API_CLIENT_ORIGIN` - CORS origin of the web application.
 - `API_SERVER_PORT` - Which port the backend server should listen on.
-- `APP_SSL_COMMON_NAME` - Sets the domain name for the SSL certificate generated during backend server builds.
 
 ### Web App Configuration
 
@@ -173,10 +172,6 @@ APP_ENABLE_SU = true
 API_CLIENT_ORIGIN = http://localhost:3000
 REACT_APP_API_SERVER_ADDRESS = http://localhost:8080
 API_SERVER_PORT = 8080
-APP_SSL_COMMON_NAME = themepark.net
-
-# Uncomment to enable https on the API server
-# API_SERVER_ENV = production
 ```
 
 <!-- USAGE -->
