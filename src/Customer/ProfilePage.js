@@ -7,7 +7,7 @@ import {api} from '../App';
 import './ProfilePage.css'
 
 const ProfileDisplay = () => {
-    const { data } = useContext(ApiContext);
+    const {data} = useContext(ApiContext);
     const [tickets, setTickets] = useState([]);
     const [passes, setPasses] = useState([]);
     const [notifications, setNotifications] = useState([]);
@@ -53,7 +53,7 @@ const ProfileDisplay = () => {
                     </a>
                 </section>
             </div>
-            <Navbar />
+            <Navbar/>
             <div className="profile-container">
                 <h3>Profile Page</h3>
 
@@ -68,8 +68,8 @@ const ProfileDisplay = () => {
                 <div className="profile-notifications">
                     <h3>
                         Notifications
-                        <button 
-                            className="toggle-button" 
+                        <button
+                            className="toggle-button"
                             onClick={() => setIsNotificationsVisible(!isNotificationsVisible)}
                         >
                             {isNotificationsVisible ? "Hide" : "Show"}
