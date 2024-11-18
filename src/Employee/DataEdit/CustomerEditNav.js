@@ -97,7 +97,10 @@ export function CustomerEditNav() {
                                 <td>{d.Address}</td>
                                 <td>{d.Email}</td>
                                 <td>
-                                    <button className="btn btn-sm btn-primary me-2">Edit</button>
+                                    <button className="btn btn-sm btn-primary me-2" onClick={() => alert (
+                                    "The 'Customer Edit' function is currently unavailable. Please contact the Database Administrator for further assistance.")}>
+                                    Edit
+                                    </button>
                                     <button onClick={e => {
                                         handleDelete(d.CustomerID);
                                         window.location.reload();

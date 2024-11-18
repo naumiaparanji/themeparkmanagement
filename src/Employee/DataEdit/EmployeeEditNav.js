@@ -100,7 +100,8 @@ export function EmployeeEditNav() {
                                 <td>{d.PhoneNumber}</td>
                                 <td>{d.Email}</td>
                                 <td>
-                                    <button className="btn btn-sm btn-primary me-2">Edit</button>
+                                    <button className="btn btn-sm btn-primary me-2" onClick={() => alert (
+                                    "The 'Employee Edit' function is currently unavailable. Please contact the Database Administrator for further assistance.")}>Edit</button>
                                     <button
                                         onClick={() => handleDelete(d.EmployeeID)}
                                         className="btn btn-sm btn-danger"
