@@ -7,8 +7,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './DataManage.css';
 
 export function EmployeeEditNav() {
-    const {search, setSearch} = useContext(StaffManagerContext);
     const [createState, setCreateState] = useState(false);
+    const [search, setSearch] = useState('');
 
     const handleHide = useCallback(() => setCreateState(false), []);
     const handleAddEvent = useCallback(() => setCreateState(true), []);
@@ -54,6 +54,13 @@ export function EmployeeEditNav() {
         }
     };
 
+    const filteredData = data.filter((d) => {
+        return Object.values(d).some((value) =>
+            typeof value === 'string' || typeof value === 'number' // Ensure valid type
+                ? value.toString().toLowerCase().includes(search.toLowerCase())
+                : false
+        );
+    });
 
     return (
         <>
@@ -61,7 +68,7 @@ export function EmployeeEditNav() {
                 <Container fluid>
                     <Form className="w-100">
                         <InputGroup className="d-flex">
-                            <Form.Control placeholder="Search" className="m-0" value={search}/>
+                            <Form.Control placeholder="Search" className="m-0" value={search} onChange={(e) => setSearch(e.target.value)}/>
                             <Button onClick={() => setShowForm(true)} className="Create">Add User</Button>
                         </InputGroup>
                     </Form>
@@ -82,8 +89,8 @@ export function EmployeeEditNav() {
                     </tr>
                     </thead>
                     <tbody>
-                    {
-                        data.map((d, i) => (
+                    {filteredData.length > 0 ? (
+                        filteredData.map((d, i) => (
                             <tr key={i}>
                                 <td>{d.EmployeeID}</td>
                                 <td>{d.FirstName}</td>
@@ -93,17 +100,23 @@ export function EmployeeEditNav() {
                                 <td>{d.PhoneNumber}</td>
                                 <td>{d.Email}</td>
                                 <td>
-
                                     <button className="btn btn-sm btn-primary me-2">Edit</button>
-                                    <button onClick={e => {
-                                        handleDelete(d.EmployeeID);
-                                        window.location.reload();
-                                    }} className="btn btn-sm btn-danger">Delete
+                                    <button
+                                        onClick={() => handleDelete(d.EmployeeID)}
+                                        className="btn btn-sm btn-danger"
+                                    >
+                                        Delete
                                     </button>
                                 </td>
                             </tr>
-                        ))}
-
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan="8" className="text-center">
+                                No matching records found.
+                            </td>
+                        </tr>
+                    )}
                     </tbody>
                 </table>
             </div>

@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './DataManage.css';
 
 export function CustomerEditNav() {
-    const {search, setSearch} = useContext(StaffManagerContext);
+    const [search, setSearch] = useState('');
     const [createState, setCreateState] = useState(false);
 
     const handleHide = useCallback(() => setCreateState(false), []);
@@ -42,6 +42,13 @@ export function CustomerEditNav() {
             .catch(err => console.log(err));
     }, [])
 
+    const filteredData = data.filter((d) => {
+        return Object.values(d).some((value) =>
+            typeof value === 'string' || typeof value === 'number' // Ensure valid type
+                ? value.toString().toLowerCase().includes(search.toLowerCase())
+                : false
+        );
+    });
 
     const handleDelete = (CustomerID) => {
         const confirm = window.confirm("Would you like to Delete?");
@@ -61,7 +68,7 @@ export function CustomerEditNav() {
                 <Container fluid>
                     <Form className="w-100">
                         <InputGroup className="d-flex">
-                            <Form.Control placeholder="Search" className="m-0" value={search}/>
+                            <Form.Control placeholder="Search" className="m-0" value={search} onChange={(e) => setSearch(e.target.value)}/>
                         </InputGroup>
                     </Form>
                 </Container>
@@ -80,8 +87,8 @@ export function CustomerEditNav() {
                     </tr>
                     </thead>
                     <tbody>
-                    {
-                        data.map((d, i) => (
+                    {filteredData.length > 0 ? (
+                        filteredData.map((d, i) => (
                             <tr key={i}>
                                 <td>{d.CustomerID}</td>
                                 <td>{d.FirstName}</td>
@@ -98,8 +105,14 @@ export function CustomerEditNav() {
                                     </button>
                                 </td>
                             </tr>
-                        ))}
-
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan="8" className="text-center">
+                                No matching records found.
+                            </td>
+                        </tr>
+                    )}
                     </tbody>
                 </table>
             </div>
