@@ -247,12 +247,6 @@ If a ride is currently under maintenance, no ride operator can log it. All rides
 
 ### Contact
 
-Ian Sloat - icsloat@cougarnet.uh.edu
-Jonathan Falou - jmfalou@cougarnet.uh.edu
-Naumi Aparanji - nsaparan@cougarnet.uh.edu
-Phillip Pineda - ppineda4@cougarnet.uh.edu
-Thu Nguyen - tanguy36@cougarnet.uh.edu
-
 Project GitHub: [Link](https://github.com/naumiaparanji/themeparkmanagement)
 
 Live Website: [Link](https://notflag6.com/)
