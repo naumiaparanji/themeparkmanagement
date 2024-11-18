@@ -29,19 +29,31 @@ const getRequestingCustomer = async (req, res, next) => {
     return next();
 }
 
-const returnCustomerData = (req, res, next) => {
+const returnCustomerData = async (req, res, next) => {
     if (!req.requestingCustomer)
-        throw new Error("req.requestingEmployee does not exist");
-    return res.status(200).json({
-        success: true,
-        firstName: req.requestingCustomer.FirstName,
-        lastName: req.requestingCustomer.LastName,
-        dob: req.requestingCustomer.DOB,
-        address: req.requestingCustomer.Address,
-        email: req.requestingCustomer.Email,
-        created: req.requestingCustomer.Created
-    });
-}
+        throw new Error("req.requestingCustomer does not exist");
+
+    try {
+        // Fetch notifications for the requesting customer
+        const notifications = await db.themeparkDB('NOTIFICATIONS')
+            .where('CustomerID', req.requestingCustomer.CustomerID)
+            .orderBy('CreatedAt', 'desc');
+
+        return res.status(200).json({
+            success: true,
+            firstName: req.requestingCustomer.FirstName,
+            lastName: req.requestingCustomer.LastName,
+            dob: req.requestingCustomer.DOB,
+            address: req.requestingCustomer.Address,
+            email: req.requestingCustomer.Email,
+            created: req.requestingCustomer.Created,
+            notifications: notifications // Include notifications in response
+        });
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({success: false, error: "SQLError"});
+    }
+};
 
 // App routes
 module.exports = (app) => {
@@ -78,6 +90,7 @@ module.exports = (app) => {
         returnCustomerData
     );
 
+    //
     app.get("/customer/info/data",
         checkSessionForCustomer,
         (req, res) => {
