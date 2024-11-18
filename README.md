@@ -197,8 +197,6 @@ reports on them.
 
 <!-- TODO NAUMI start -->
 
-## Triggers
-
 #### Trigger 1
 
 If an event is canceled, all the customers who signed up for it get a notification saying that this event was unfortunately canceled. They are also unregistered from that event by default when the event is deleted. 
@@ -208,7 +206,6 @@ If an event is canceled, all the customers who signed up for it get a notificati
     - Login as a customer and sign up/ register for this event to see the trigger in action
     - Back in the admin portal, delete the event (implying that for some reason this event was canceled)
     - Log back into the customer portal and you will see you no longer have the ticket for that event, plus you have an unread notification. This notification has come from the trigger alerting you that the event was canceled.
-      
     - Alternatively, even if the admin decides to mark this event as _inactive_, the customer still gets a notification saying the event was unfortunately canceled since there are both BEFORE UPDATE and BEFORE DELETE triggers
     - On making the event active again, the customer would need to re-register for the event.
 
@@ -230,7 +227,7 @@ If a ride is currently under maintenance, no ride operator can log it. All rides
 ## Contributors:
 
 <a href="https://github.com/naumiaparanji/themeparkmanagement/graphs/contributors">
-  <img src="src\images\Contributors.png" alt="Contributors.png image" width="50%" height="50%" />
+  <img src="src\images\Contributors.png" alt="Contributors.png image" width="30%" height="30%" />
 </a>
 
 <!-- CONTACT -->
