@@ -116,13 +116,22 @@ To get a local copy up and running follow these steps.
    ```
 2. Install npm packages
    ```sh
-   npm install
+   git clone https://github.com/naumiaparanji/themeparkmanagement.git
+   cd themeparkmanagement
    ```
-3. Start
-   ```
-   npm run start
-   ```
-4. Go to localhost:3000
+2. Configure MySQL
+    - Add a user with the DB Admin role to the system
+    - In MySQL Workbench, go to File > Open SQL Script and open `themepark_db.sql` from the database directory
+    - Run the script via the "run all" lightning button
+3. Configure the application via `.env`
+    - `MYSQL_USER` - Set to the username for your DB Admin account from step 2.
+    - `MYSQL_PASSWORD` - Set to the password for your DB Admin account from step 2.
+4. Start the API server
+    - cd to the server directory
+    - Run `npm run start`
+5. Start the Web Application
+    - cd to the root of the repository
+    - Run `npm run start`
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -132,11 +141,10 @@ To get a local copy up and running follow these steps.
 
 ### Database Configuration
 
-- `MYSQL_ROOT_PASSWORD` - Sets the root password for the MySQL Docker image.
-- `MYSQL_DATABASE` - Specifies the target schema for the API server and the default schema for the MySQL image.
-- `MYSQL_ADDR` - Sets the address of the MySQL server to be used by the API server.
-- `MYSQL_USER` - Specifies the MySQL user for both the API server and the MySQL image.
-- `MYSQL_PASSWORD` - Defines the MySQL password for both the API server and the MySQL image.
+- `MYSQL_DATABASE` - Specifies the target schema for the backend.
+- `MYSQL_ADDR` - Sets the address of the MySQL server to be used by the backend.
+- `MYSQL_USER` - Specifies the MySQL user to be used by the backend.
+- `MYSQL_PASSWORD` - Defines the MySQL password for the backend.
 
 ### API Server Configuration
 
@@ -144,17 +152,16 @@ To get a local copy up and running follow these steps.
 - `APP_ADMIN_PASS` - Sets the superuser password for the `CUSTOMER` and `EMPLOYEE` tables.
 - `APP_ENABLE_SU` - Enables the superuser accounts when set to `true`.
 - `API_CLIENT_ORIGIN` - CORS origin of the web application.
-- `API_SERVER_PORT` - Which port the API server should listen on.
-- `APP_SSL_COMMON_NAME` - Sets the domain name for the SSL certificate generated during API server builds.
+- `API_SERVER_PORT` - Which port the backend server should listen on.
+- `APP_SSL_COMMON_NAME` - Sets the domain name for the SSL certificate generated during backend server builds.
 
 ### Web App Configuration
 
-- `REACT_APP_API_SERVER_ADDRESS` - Defines the base HTTP URL of the API server.
+- `REACT_APP_API_SERVER_ADDRESS` - Defines the base HTTP URL of the backend server.
 
 ### Example `.env` File
 
 ```
-MYSQL_ROOT_PASSWORD = <ROOT_PASS_HERE>
 MYSQL_DATABASE = themepark_db
 MYSQL_ADDR = 127.0.0.1
 MYSQL_USER = <DB_USER_HERE>
