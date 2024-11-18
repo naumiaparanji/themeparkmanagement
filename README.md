@@ -208,7 +208,10 @@ If an event is canceled, all the customers who signed up for it get a notificati
     - Create a dummy event through the Admin portal
     - Login as a customer and sign up/ register for this event to see the trigger in action
     - Back in the admin portal, delete the event (implying that for some reason this event was canceled)
-    - Log back into the customer portal and you will see you no longer have the ticket for that event, plus you have an unread notification. This notification has come from the trigger alerting you that the event was canceled. 
+    - Log back into the customer portal and you will see you no longer have the ticket for that event, plus you have an unread notification. This notification has come from the trigger alerting you that the event was canceled.
+      
+    - Alternatively, even if the admin decides to mark this event as _inactive_, the customer still gets a notification saying the event was unfortunately canceled since there are both BEFORE UPDATE and BEFORE DELETE triggers
+    - On making the event active again, the customer would need to re-register for the event.
 
 #### Trigger 2
 
@@ -219,7 +222,7 @@ If a ride is currently under maintenance, no ride operator can log it. All rides
     - Submit an 'Out Of Order' status for any ride(s) of your choice
     - Once submitted, check in the Ride Operator Portal to see the trigger take action
     - In the dropdown to log rides, you will only see the rides that are functioning and not the ones that you just submitted as 'Out Of Order'
-    - Check back and submit new requests in the Maintenace portal for the same ride(s) with the status 'Operational' and then these rides will resurface in the dropdown in the Ride Operator Portal.
+    - Check back and submit new requests in the Maintenace portal for the same ride(s) with the status 'Operational' and then these rides will resurface in the dropdown in the Ride Operator Portal. (Will also work if you set those rides operational and resolve the tickets in the Maintenance Update tab since there are both AFTER UPDATE and AFTER INSERT triggers)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
