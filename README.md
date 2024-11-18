@@ -8,7 +8,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/naumiaparanji/themeparkmanagement">
-    <img src="src\images\flagslogo.png" alt="Logo" width="100%" height="100%">
+    <img src="src\images\flagslogo.png" alt="Logo" width="50%" height="50%">
   </a>
 
 <h3 align="center">Seven Flags Theme Park Management System</h3>
@@ -169,11 +169,10 @@ reports on them.
 
 #### User Roles and Data Management
 
-- Customer: Can sign up for an account, purchase tickets, and sign up for events as well as view all the amentities
-  Seven Flags has to offer.
+- Customer: Can sign up for an account, purchase tickets, and sign up for events as well as view all the amenities that Seven Flags has to offer.
 - Employee: Can submit, modify, or delete maintenance requests and submit ride runs.
-- Manager: Have the same priviledges as employees on top of the ability to view reports.
-- Admin: Have the same priviledges as managers as well as the following capabilities:
+- Manager: Have the same privileges as employees on top of the ability to view reports.
+- Admin: Have the same privileges as managers as well as the following capabilities:
     - Add, modify, and delete Customers and Employees information
     - Add, modify, and delete Rides
     - Add, modify, and delete Attractions
@@ -226,10 +225,12 @@ If a ride is currently under maintenance, no ride operator can log it. All rides
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- TODO NAUMI end -->
+
 ## Contributors:
 
 <a href="https://github.com/naumiaparanji/themeparkmanagement/graphs/contributors">
-  <img src="src\images\Contributors.png" alt="Contributors.png image" width="100%" height="100%" />
+  <img src="src\images\Contributors.png" alt="Contributors.png image" width="50%" height="50%" />
 </a>
 
 <!-- CONTACT -->
@@ -245,6 +246,8 @@ Live Website: [Link](https://notflag6.com/)
 <!-- ACKNOWLEDGMENTS -->
 
 ## Acknowledgments
+
+Dr. Uma Ramamurthy
 
 Our amazing TAs
 
