@@ -236,7 +236,6 @@ If a ride is currently under maintenance, no ride operator can log it. All rides
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- TODO NAUMI end -->
 
 ## Contributors:
 
@@ -260,7 +259,7 @@ Live Website: [Link](https://notflag6.com/)
 
 Dr. Uma Ramamurthy
 
-Our amazing TAs and Professor
+Our amazing TAs
 
 README
 Template: [https://github.com/othneildrew/Best-README-Template](https://github.com/othneildrew/Best-README-Template)
