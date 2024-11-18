@@ -10,25 +10,35 @@ export function RidePopularityReportContextProvider({children}) {
     const [categoryData, setCategoryData] = useState([]);
     const [rideData, setRideData] = useState([]);
     const [runsData, setRunsData] = useState([]);
-    const [startDate, setStartDate] = useState('1000-01-01');
-    const [endDate, setEndDate] = useState('9999-12-31');
+
+    const currentTime = new Date().toISOString().split("T")[0];
+    const [startDate, setStartDate] = useState(currentTime);
+    const [endDate, setEndDate] = useState(currentTime);
 
     const refreshCategorySummary = useCallback(() => {
         api.get("/ridePopularity/category", { params: { dateRange: [startDate, endDate] } })
             .then((res) => setCategoryData(res.data.rows))
             .catch((e) => console.log(e));
-    }, []);
+    }, [startDate, endDate]);
 
     const refreshRideSummary = useCallback(() => {
         api.get("/ridePopularity/ride", { params: { dateRange: [startDate, endDate] } })
             .then((res) => setRideData(res.data.rows))
             .catch((e) => console.log(e));
-    }, []);
+    }, [startDate, endDate]);
 
     const refreshRuns = useCallback(() => {
         api.get("/ridePopularity/runs")
             .then((res) => setRunsData(res.data.rows))
             .catch((e) => console.log(e));
+    }, []);
+
+    const handleStartChange = useCallback((event) => {
+        setStartDate(new Date(event.target.value).toISOString().split('T')[0]);
+    }, []);
+
+    const handleEndChange = useCallback((event) => {
+        setEndDate(new Date(event.target.value).toISOString().split('T')[0]);
     }, []);
 
     useEffect(() => {
@@ -44,7 +54,11 @@ export function RidePopularityReportContextProvider({children}) {
             runsData,
             refreshCategorySummary,
             refreshRideSummary,
-            refreshRuns
+            refreshRuns,
+            startDate,
+            endDate,
+            handleStartChange,
+            handleEndChange
         }}>
             {children}
         </RidePopularityReportContext.Provider>
@@ -53,10 +67,20 @@ export function RidePopularityReportContextProvider({children}) {
 }
 
 export function CategoryPopularitySummary() {
-    const {categoryData} = useContext(RidePopularityReportContext);
+    const {categoryData, startDate, endDate, handleStartChange, handleEndChange} = useContext(RidePopularityReportContext);
 
     return (
         <>
+            <div className="d-flex flex-row justify-content-center">
+                <div className="d-flex flex-column justify-content-center mx-4">
+                    <label style={{textAlign: "center"}}>Run date from:</label>
+                    <input style={{width: 200}} onChange={handleStartChange} type="date" id="startDate" defaultValue={startDate}/>
+                </div>
+                <div className="d-flex flex-column justify-content-center mx-4">
+                    <label style={{textAlign: "center"}}>Run date to:</label>
+                    <input style={{width: 200}} onChange={handleEndChange} type="date" id="endDate" defaultValue={endDate}/>
+                </div>
+            </div>
             <Table className={styles.reportstable} striped bordered size="sm">
                 <thead>
                 <tr>
@@ -86,10 +110,20 @@ export function CategoryPopularitySummary() {
 }
 
 export function RidePopularitySummary() {
-    const {rideData} = useContext(RidePopularityReportContext);
+    const {rideData, startDate, endDate, handleStartChange, handleEndChange} = useContext(RidePopularityReportContext);
 
     return (
         <>
+            <div className="d-flex flex-row justify-content-center">
+                <div className="d-flex flex-column justify-content-center mx-4">
+                    <label style={{textAlign: "center"}}>Run date from:</label>
+                    <input style={{width: 200}} onChange={handleStartChange} type="date" id="startDate" defaultValue={startDate}/>
+                </div>
+                <div className="d-flex flex-column justify-content-center mx-4">
+                    <label style={{textAlign: "center"}}>Run date to:</label>
+                    <input style={{width: 200}} onChange={handleEndChange} type="date" id="endDate" defaultValue={endDate}/>
+                </div>
+            </div>
             <Table className={styles.reportstable} striped bordered size="sm">
                 <thead>
                 <tr>
@@ -127,45 +161,31 @@ export function RidePopularitySummary() {
 }
 
 export function IndividualRuns() {
-    const {runsData} = useContext(RidePopularityReportContext);
+    const {runsData, startDate, endDate, handleStartChange, handleEndChange} = useContext(RidePopularityReportContext);
     const [displayData, setDisplayData] = useState(runsData);
-    const [fromDate, setFromDate] = useState(null);
-    const [toDate, setToDate] = useState(null);
 
     const applyFilters = useCallback(() => {
-        console.log(fromDate);
+        console.log(startDate);
         let newData = runsData;
-        if (fromDate && !isNaN(fromDate.getTime())) {
-            newData = newData.filter((item) => new Date(item.RideTime) > fromDate);
-        }
-        if (toDate && !isNaN(toDate.getTime())) {
-            newData = newData.filter((item) => new Date(item.RideTime) <= toDate);
-        }
+        newData = newData.filter((item) => new Date(item.RideTime) > new Date(startDate));
+        newData = newData.filter((item) => new Date(item.RideTime) <= new Date(endDate));
         setDisplayData(newData);
-    }, [runsData, fromDate, toDate]);
-
-    const handleFromChange = useCallback((event) => {
-        setFromDate(new Date(event.target.value));
-    }, []);
-
-    const handleToChange = useCallback((event) => {
-        setToDate(new Date(event.target.value));
-    }, []);
+    }, [runsData, startDate, endDate]);
 
     useEffect(() => {
         applyFilters();
-    }, [fromDate, toDate, applyFilters]);
+    }, [startDate, endDate, applyFilters]);
 
     return (
         <>
             <div className="d-flex flex-row justify-content-center">
                 <div className="d-flex flex-column justify-content-center mx-4">
                     <label style={{textAlign: "center"}}>Run date from:</label>
-                    <input style={{width: 200}} onChange={handleFromChange} type="date" id="fromdate"/>
+                    <input style={{width: 200}} onChange={handleStartChange} type="date" id="startDate" defaultValue={startDate}/>
                 </div>
                 <div className="d-flex flex-column justify-content-center mx-4">
                     <label style={{textAlign: "center"}}>Run date to:</label>
-                    <input style={{width: 200}} onChange={handleToChange} type="date" id="todate"/>
+                    <input style={{width: 200}} onChange={handleEndChange} type="date" id="endDate" defaultValue={endDate}/>
                 </div>
             </div>
             <Table className={`${styles.reportstable} mt-4`} striped bordered size="sm">
