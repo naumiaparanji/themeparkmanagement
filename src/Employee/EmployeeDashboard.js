@@ -117,14 +117,14 @@ export function DashUI() {
                             <SideBarLink title="Reports" path="reports" activeIcon="Clipboard2DataFill"
                                          inactiveIcon="Clipboard2Data"/>}
                         {data.canAccess.includes('maintenance') &&
-                            <SideBarLink title="Maintenance" path="maintenance" activeIcon="Hammer"
-                                         inactiveIcon="Hammer"/>}
+                            <SideBarLink title="Maintenance" path="maintenance" activeIcon="GearFill"
+                                         inactiveIcon="Gear"/>}
                         {data.canAccess.includes('runs') &&
-                            <SideBarLink title="Ride Operator Portal" path="runs" activeIcon="Clipboard2DataFill"
-                                         inactiveIcon="Clipboard2Data"/>}
+                            <SideBarLink title="Ride Operator Portal" path="runs" activeIcon="RocketTakeoffFill"
+                                         inactiveIcon="RocketTakeoff"/>}
                         {data.canAccess.includes('rides') &&
-                            <SideBarLink title="Ride Insert" path="rides" activeIcon="Clipboard2DataFill"
-                                         inactiveIcon="Clipboard2Data"/>}
+                            <SideBarLink title="Ride Insert" path="rides" activeIcon="PencilFill"
+                                         inactiveIcon="Pencil"/>}
                         {data.canAccess.includes('datamanage') &&
                             <SideBarLink title="Data Management" path="datamanage" activeIcon="DatabaseFillLock"
                                          inactiveIcon="DatabaseLock"/>}
@@ -133,17 +133,20 @@ export function DashUI() {
                 <div className={`${styles.scrolly} w-100`}>
                     <Routes>
                         <Route path="" element={<WhoAmI/>}/>
-                        {data.canAccess.includes('events') && <Route path="events" element={<EventsEditView/>}/>}
+                        {data.canAccess.includes('events') &&
+                            <Route path="events" element={<EventsEditView/>}/>}
                         {data.canAccess.includes('attractions') &&
                             <Route path="attractions" element={<AttractionsEditView/>}/>}
-                        {data.canAccess.includes('reports') && <Route path="reports" element={<ReportsView/>}/>}
-                        {data.canAccess.includes('rides') && <Route path="rides" element={<AddRide/>}/>}
+                        {data.canAccess.includes('reports') &&
+                            <Route path="reports" element={<ReportsView/>}/>}
+                        {data.canAccess.includes('rides') &&
+                            <Route path="rides" element={<AddRide/>}/>}
                         {data.canAccess.includes('maintenance') &&
                             <Route path="maintenance" element={<MaintenanceInfo/>}/>}
-                        {data.canAccess.includes('runs') && <Route path="runs" element={<Runs/>}/>}
-                        {data.canAccess.includes('maintenance') &&
-                            <Route path="maintenance/data" element={<MaintenanceData/>}/>}
-                        {data.canAccess.includes('datamanage') && <Route path="datamanage" element={<DataManage/>}/>}
+                        {data.canAccess.includes('runs') &&
+                            <Route path="runs" element={<Runs/>}/>}
+                        {data.canAccess.includes('datamanage') &&
+                            <Route path="datamanage" element={<DataManage/>}/>}
                         <Route path='*' element={<PageNotFound/>}/>
                     </Routes>
                 </div>
