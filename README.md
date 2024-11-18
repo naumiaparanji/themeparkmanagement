@@ -198,15 +198,28 @@ reports on them.
 
 <!-- TODO NAUMI start -->
 
-## Semantic Constraints and Triggers
+## Triggers
 
-- Trigger 1:
-    - If an event is canceled, all the customers who signed up for it get a notification saying that this event was unfortunately canceled. They are also unregistered from that event by default when the event is deleted. 
-- Trigger 2:
-    - If a ride is currently under maintenance, no ride operator can log it. All rides under maintenance are not removed from the dropdown for ride logging until they are fixed again.
-- Semantic constraints
-    - If an event is at maximum capacity, no customer can sign up for it until someone else cancels their registration.
-    - Similarly, customers also cannot register for a ticket pass if the theme park is at maximum capacity for that particular pass.
+#### Trigger 1
+
+If an event is canceled, all the customers who signed up for it get a notification saying that this event was unfortunately canceled. They are also unregistered from that event by default when the event is deleted. 
+
+- How to test this trigger:
+    - Create a dummy event through the Admin portal
+    - Login as a customer and sign up/ register for this event to see the trigger in action
+    - Back in the admin portal, delete the event (implying that for some reason this event was canceled)
+    - Log back into the customer portal and you will see you no longer have the ticket for that event, plus you have an unread notification. This notification has come from the trigger alerting you that the event was canceled. 
+
+#### Trigger 2
+
+If a ride is currently under maintenance, no ride operator can log it. All rides under maintenance are not removed from the dropdown for ride logging until they are fixed again.
+
+- How to test this trigger:
+    - Accessible through both Employee and Admin portals, navigate to the Maintenance Request tab
+    - Submit an 'Out Of Order' status for any ride(s) of your choice
+    - Once submitted, check in the Ride Operator Portal to see the trigger take action
+    - In the dropdown to log rides, you will only see the rides that are functioning and not the ones that you just submitted as 'Out Of Order'
+    - Check back and submit new requests in the Maintenace portal for the same ride(s) with the status 'Operational' and then these rides will resurface in the dropdown in the Ride Operator Portal.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
