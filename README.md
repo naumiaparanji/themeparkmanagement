@@ -46,7 +46,8 @@
       <ul>
       <li><a href="#user-roles-and-data-management">User Roles and Data Management</a></li>
       <li><a href="#queriesreports">Queries/Reports</a></li>
-      <li><a href="#triggers">Triggers</a></li>
+      <li><a href="#trigger-1">Trigger 1</a></li>
+      <li><a href="#trigger-2">Trigger 2</a></li>
       </ul>
     <li><a href="#contributors">Contributors</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -191,16 +192,16 @@ reports on them.
 
 - Customer: Can sign up for an account, purchase tickets, and sign up for events as well as view all the amenities that Seven Flags has to offer.
 - Employee: Can submit, modify, or delete maintenance requests and submit ride runs.
-- Manager: Have the same priviledges as employees on top of the ability to view reports.
-- Admin: Have the same priviledges as managers as well as the following capabilities:
-  - Add, modify, and delete Customers and Employees information
+- Manager: Have the same privileges as employees on top of the ability to view reports.
+- Admin: Have the same privileges as managers as well as the following capabilities:
+  - Add and delete Customers and Employees information (the 'edit' button is currently not working, but the User will be notified that it is broken through an alert on the web app)
   - Add, modify, and delete Rides
   - Add, modify, and delete Attractions
   - Add, modify, and delete Events
 
 #### Queries/Reports
 
-- Queries can be found in server &rarr; utils &rarr; [db.js](server\utils\db.js)
+- Queries can be found in server &rarr; utils &rarr; [db.js](server\utils\db.js) as well as various routes files under server &arr; routes
 - Maintenance Status: A report of all maintenance requests that allows for filtering by ride name, ride category,
   maintenance ticket status, and the dates between which the ticket was submitted.
 - Event Sales:
@@ -213,10 +214,6 @@ reports on them.
     occupancy versus capacity of the ride.
   - Individual Runs: Detailed log of each time a ride is operated on; allows for filtering by dates between which the
     rides were run.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## Triggers
 
 #### Trigger 1
 
