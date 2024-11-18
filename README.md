@@ -71,37 +71,35 @@ collection to provide reports on rides and events of a theme park, as well as pr
 
 ## Getting Started
 
-To get a local copy up and running follow these simple example steps.
+To get a local copy up and running follow these steps.
 
 ### Prerequisites
 
 <!-- TODO IAN start -->
 
-- npm
-  ```sh
-  npm install npm@latest -g
-  ```
+* ### Node.js version 20 or higher
+  * Windows/macOS: [download link](https://nodejs.org/en/download/prebuilt-installer)
+  * Linux: 
+    ```sh
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+    nvm install 20 && nvm use 20
+    ```
+
+* ### MySQL version 8 or higher
+  * Windows/macOS: [download link](https://dev.mysql.com/downloads/mysql/)
+  * Linux: [installation guide](https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/linux-installation.html)
+
+* ### [MySQL Workbench](https://dev.mysql.com/downloads/workbench/)
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repo
    ```sh
    git clone https://github.com/naumiaparanji/themeparkmanagement.git
    ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = "ENTER YOUR API";
-   ```
-5. Change git remote url to avoid accidental pushes to base project
-   ```sh
-   git remote set-url origin github_username/repo_name
-   git remote -v # confirm the changes
-   ```
+2. Configure MySQL
+    - Add a user with the DB Admin role to the system
+    - 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -237,7 +235,7 @@ Template: [https://github.com/othneildrew/Best-README-Template](https://github.c
 
 [contributors-url]: https://github.com/naumiaparanji/themeparkmanagement/graphs/contributors
 
-[product-screenshot]: src/images/LiveWebsiteScreenShot.png
+[product-screenshot]: src\images\LiveWebsiteScreenShot.png
 
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 
