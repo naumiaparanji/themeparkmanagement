@@ -58,6 +58,7 @@ async function getRides() {
     return await db("RIDES").where("Deleted", 0).orderBy("RideID");
 }
 
+//the dynamic dropdown funciton
 async function getAvailableRides() {
     return await db("RIDES")
         .select("RideID", "RideName", "Category", "Capacity")

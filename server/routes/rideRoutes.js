@@ -6,7 +6,7 @@ const getCurrentTime = require("../utils/currentTime");
 
 // App routes
 module.exports = (app) => {
-
+    // new function defined for dynamic dropdown
     const { getAvailableRides } = require('../utils/db');
 
     app.get("/rides/available", (req, res) => {

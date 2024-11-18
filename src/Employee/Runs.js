@@ -11,6 +11,7 @@ export function RunsInfoBox(props) {
     const [rideOptions, setRideOptions] = useState([]);
 
     useEffect(() => {
+        //haha dynamic dropdown woooo
         api.get("/rides/available")
             .then((res) => setRideOptions(res.data.rideNames))
             .catch((e) => {
